@@ -821,6 +821,12 @@ body.writer-focus #main:has(>.writer-heading){padding:14px clamp(14px,2vw,28px)!
 body.writer-focus #main:has(>.writer-heading) #ed{min-height:68vh!important;font-size:18px!important;line-height:2!important}
 @media(max-width:760px){.workspace-split.has-multiple>#main{padding-top:44px!important}#main:has(>.writer-heading) #ed{padding:14px!important;font-size:16px!important;min-height:52vh!important}}
 
+
+/* 1.2.2: give work-list actions breathing room and anchor version label to bottom-left */
+.wkf>span:last-child{display:inline-flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:8px 10px}
+.wkf>span:last-child .btn{margin:0}
+.app-version{left:18px!important;bottom:12px!important}
+@media(max-width:600px){.wkf>span:last-child{gap:8px}.app-version{left:10px!important;bottom:10px!important}}
 </style>
 </head>
 <body>
