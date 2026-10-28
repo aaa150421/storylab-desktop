@@ -715,35 +715,64 @@ body.app-pane-mode #workspaceSplit>#main{box-sizing:border-box!important;flex:1 
 @media(min-width:1100px){.btn,.gear,.theme-toggle{font-size:12px}.btn,.gear{min-height:29px;padding:5px 9px}.home-tiles{gap:8px}.menu.mini.home-tile{min-height:94px;padding:10px}.writer-goal{padding:10px 12px}}
 @media(max-width:760px){.workspace-split.has-multiple>#main{padding-left:8px!important;padding-right:8px!important}.workspace-split.has-multiple>#main .writer-toolbar .btn,.workspace-split.has-multiple #appSplitPane .writer-toolbar .btn{font-size:10px!important;padding:4px 6px!important}}
 
-/* 1.1.9: align split panes, compact workspace, improve theme contrast, move revision history right */
-.workspace-split.has-multiple{align-items:stretch!important}
-.workspace-split.has-multiple>#main{padding-top:12px!important}
-.workspace-split.has-multiple>#appSplitPane{padding-top:0!important;align-items:stretch!important}
-.workspace-split.has-multiple>#appSplitPane>.app-pane-frame{padding-top:0!important;margin-top:0!important;align-self:stretch!important}
+/* 1.2.0: exact split-pane top alignment, strong theme contrast, compact full-screen layout, history left */
+.workspace-split.has-multiple>#main{padding-top:0!important}
+.workspace-split.has-multiple>#main>.tr:first-child,
+.workspace-split.has-multiple>#main>.writer-top:first-child{margin-top:0!important;padding-top:0!important}
+.workspace-split.has-multiple>#appSplitPane,
+.workspace-split.has-multiple>#appSplitPane>.app-pane-frame{padding-top:0!important;margin-top:0!important}
 .workspace-split.has-multiple #appSplitPane .app-live-pane{padding-top:0!important;margin-top:0!important}
-.workspace-split.has-multiple #appSplitPane iframe{display:block!important;width:100%!important;height:100%!important;border:0!important;margin:0!important}
-.workspace-split.has-multiple #appSplitPane .app-pane-frame>iframe{vertical-align:top!important}
-#ed.editor{resize:none!important;overflow-y:hidden!important;max-height:none!important}
-.writer-heading,.writer-goal,.writer-stats,.writer-toolbar,.dual-editors,.bar{max-width:100%;min-width:0}
-.writer-heading{margin-bottom:6px}
-.writer-goal{padding:9px 11px!important;margin:8px 0!important}
-.writer-stats{gap:6px!important;margin:8px 0 4px!important}
-.writer-stats>div{padding:7px 9px!important}
-.writer-toolbar{gap:6px!important;margin:7px 0 9px!important}
-.writer-toolbar .btn{padding:5px 8px!important;min-height:28px!important;font-size:12px!important}
-#ed.editor{padding:12px 14px!important;line-height:1.8!important}
-.chapter-history{width:min(100%,560px)!important;max-width:560px!important;left:auto!important;right:0!important;transform:none!important;margin:14px 0 24px auto!important}
-.chapter-history-head{justify-content:flex-end!important}
+.workspace-split.has-multiple #appSplitPane iframe{display:block!important;margin:0!important;vertical-align:top!important}
+.workspace-split.has-multiple>#main>*{max-width:min(100%,1100px)}
+.workspace-split.has-multiple>#main>.writer-heading,
+.workspace-split.has-multiple>#main>.writer-goal,
+.workspace-split.has-multiple>#main>.writer-stats,
+.workspace-split.has-multiple>#main>.writer-toolbar,
+.workspace-split.has-multiple>#main>.dual-editors,
+.workspace-split.has-multiple>#main>.bar{max-width:100%!important}
+#main:not(.wide-layout)>*:not(.chapter-history){max-width:min(100%,1100px)}
+.writer-heading{max-width:min(100%,42em)!important}
+.writer-goal,.writer-stats,.writer-toolbar{max-width:min(100%,42em)!important}
+.chapter-history{width:min(100%,560px)!important;max-width:560px!important;left:auto!important;right:auto!important;transform:none!important;margin:14px auto 24px 0!important}
+.chapter-history-head{justify-content:flex-start!important}
 .chapter-history-head>div{margin-right:auto!important}
-:root[data-theme="light"] .writer-preview,:root[data-theme="light"] .revision-text,:root[data-theme="light"] .revision-column h4,:root[data-theme="light"] .chapter-history,:root[data-theme="light"] .chapter-history-controls select{color:var(--ink)!important;background:var(--surface)!important;border-color:var(--line)!important}
-:root[data-theme="light"] .ms,:root[data-theme="light"] .setting-help,:root[data-theme="light"] .writer-goal-top label,:root[data-theme="light"] .writer-goal-bottom,:root[data-theme="light"] .revision-empty{color:#4d5a51!important}
-:root[data-theme="light"] input,:root[data-theme="light"] textarea,:root[data-theme="light"] select,:root[data-theme="light"] option{color:var(--ink)!important;background-color:var(--surface)!important;border-color:var(--line)!important}
-:root[data-theme="dark"] input,:root[data-theme="dark"] textarea,:root[data-theme="dark"] select,:root[data-theme="dark"] option{color:var(--ink)!important;background-color:var(--surface)!important;border-color:var(--line)!important}
-:root[data-theme="light"] button{color:var(--ink)}
-:root[data-theme="light"] .btn.del{color:#a72f3c!important}
-:root[data-theme="dark"] .btn.del{color:#ff9aa3!important}
-@media(max-width:760px){.chapter-history{width:100%!important;max-width:100%!important}.workspace-split.has-multiple>#main{padding-top:8px!important}}
-
+.revision-compare-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px!important}
+.revision-text{height:min(48vh,480px)!important;min-height:180px!important;max-height:480px!important}
+:root[data-theme="light"]{--bg:#f5f7f6;--surface:#ffffff;--ink:#17231c;--mute:#45564b;--line:#b8c6bd;--accent:#087a48;--on-accent:#ffffff}
+:root[data-theme="dark"]{--bg:#101113;--surface:#1b1d20;--ink:#f5f6f7;--mute:#c0c5cc;--line:#454a52;--accent:#5ee39a;--on-accent:#07140d}
+:root[data-theme="light"] body,
+:root[data-theme="light"] main,
+:root[data-theme="light"] .chapter-history,
+:root[data-theme="light"] .writer-goal,
+:root[data-theme="light"] .writer-stats>div,
+:root[data-theme="light"] .split-panel,
+:root[data-theme="light"] .writer-preview,
+:root[data-theme="light"] .revision-column,
+:root[data-theme="light"] .revision-text{color:#17231c!important;background-color:#fff!important;border-color:#b8c6bd!important}
+:root[data-theme="dark"] body,
+:root[data-theme="dark"] main,
+:root[data-theme="dark"] .chapter-history,
+:root[data-theme="dark"] .writer-goal,
+:root[data-theme="dark"] .writer-stats>div,
+:root[data-theme="dark"] .split-panel,
+:root[data-theme="dark"] .writer-preview,
+:root[data-theme="dark"] .revision-column,
+:root[data-theme="dark"] .revision-text{color:#f5f6f7!important;background-color:#1b1d20!important;border-color:#454a52!important}
+:root[data-theme="light"] .ms,
+:root[data-theme="light"] .setting-help,
+:root[data-theme="light"] .writer-goal-top label,
+:root[data-theme="light"] .writer-goal-bottom,
+:root[data-theme="light"] .revision-empty{color:#35483b!important}
+:root[data-theme="dark"] .ms,
+:root[data-theme="dark"] .setting-help,
+:root[data-theme="dark"] .writer-goal-top label,
+:root[data-theme="dark"] .writer-goal-bottom,
+:root[data-theme="dark"] .revision-empty{color:#d0d5dc!important}
+:root[data-theme="light"] input,:root[data-theme="light"] textarea,:root[data-theme="light"] select,:root[data-theme="light"] option{color:#17231c!important;background:#fff!important;border-color:#9aaba0!important}
+:root[data-theme="dark"] input,:root[data-theme="dark"] textarea,:root[data-theme="dark"] select,:root[data-theme="dark"] option{color:#f5f6f7!important;background:#1b1d20!important;border-color:#59616b!important}
+:root[data-theme="light"] input::placeholder,:root[data-theme="light"] textarea::placeholder{color:#65766b!important;opacity:1}
+:root[data-theme="dark"] input::placeholder,:root[data-theme="dark"] textarea::placeholder{color:#b2bac5!important;opacity:1}
+@media(max-width:760px){.chapter-history{width:100%!important;max-width:100%!important}.workspace-split.has-multiple>#main{padding-top:0!important}.revision-compare-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
