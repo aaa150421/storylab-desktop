@@ -864,11 +864,12 @@ body.app-split-active #workspaceSplit > #main {
   padding-top: 44px !important;
   margin-top: 0 !important;
 }
+/* Reduce only the right pane's excess top gap; leave left pane unchanged. */
 body.app-pane-mode > .workspace-split > #main,
 body.app-pane-mode #main:has(> .writer-heading) {
   box-sizing: border-box !important;
   padding-top: 0 !important;
-  margin-top: 0 !important;
+  margin-top: -14px !important;
 }
 body.app-pane-mode #main:has(> .writer-heading) > .writer-top {
   margin-top: 0 !important;
@@ -880,7 +881,7 @@ body.app-pane-mode #main:has(> .writer-heading) > .writer-top {
   }
   body.app-pane-mode > .workspace-split > #main,
   body.app-pane-mode #main:has(> .writer-heading) {
-    margin-top: 0 !important;
+    margin-top: -10px !important;
   }
 }
 
