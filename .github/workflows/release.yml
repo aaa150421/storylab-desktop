@@ -28,37 +28,21 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build the Windows installer only
-        run: npm run dist:win
+      - name: Build and publish installer with electron-updater metadata
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm run publish:win
 
-      - name: Publish only the versioned EXE
+      - name: Verify published release assets
         shell: pwsh
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           $version = node -p "require('./package.json').version"
           $tag = "v$version"
-          $installer = "dist/$version.exe"
-          if (!(Test-Path $installer)) {
-            throw "Installer not found: $installer"
-          }
-
-          gh release view $tag --json assets *> $null
-          if ($LASTEXITCODE -eq 0) {
-            $release = gh release view $tag --json assets | ConvertFrom-Json
-            foreach ($asset in $release.assets) {
-              gh release delete-asset $tag $asset.name --yes
-              if ($LASTEXITCODE -ne 0) { throw "Failed to remove old asset: $($asset.name)" }
-            }
-            gh release upload $tag $installer --clobber
-            if ($LASTEXITCODE -ne 0) { throw "Failed to upload $installer" }
-          } else {
-            gh release create $tag $installer --title "이야기공방 $version" --notes "이야기공방 $version 업데이트"
-            if ($LASTEXITCODE -ne 0) { throw "Failed to create release $tag" }
-          }
-
-          $finalRelease = gh release view $tag --json assets | ConvertFrom-Json
-          $names = @($finalRelease.assets | ForEach-Object { $_.name })
-          if ($names.Count -ne 1 -or $names[0] -ne "$version.exe") {
-            throw "Release must contain exactly one asset: $version.exe. Actual: $($names -join ', ')"
-          }
+          $release = gh release view $tag --json assets | ConvertFrom-Json
+          $names = @($release.assets | ForEach-Object { $_.name })
+          if ($names -notcontains "$version.exe") { throw "Missing installer: $version.exe" }
+          if ($names -notcontains "latest.yml") { throw "Missing electron-updater metadata: latest.yml" }
+          if ($names -notcontains "$version.exe.blockmap") { Write-Host "Blockmap not present; full installer updates will still be available." }
+          Write-Host "Verified release assets: $($names -join ', ')"
