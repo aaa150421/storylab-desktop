@@ -648,6 +648,51 @@ button{box-shadow:none}
 :root[data-theme="light"] .scene-memo-entry span,:root[data-theme="light"] .scene-memo-entry .ms,:root[data-theme="light"] .settings-page .setting-help,:root[data-theme="light"] .settings-page .shortcut-desc{color:var(--mute)}
 :root[data-theme="light"] button:not(.primary):not([aria-pressed="true"]){color:var(--ink)}
 :root[data-theme="light"] input,:root[data-theme="light"] textarea,:root[data-theme="light"] select{color:var(--ink);background:var(--surface);border-color:var(--line)}
+
+/* 1.1.7: equal-width live panes, per-work scene memos, and reliable theme contrast */
+.workspace-split.has-multiple{display:flex!important;align-items:stretch!important}
+.workspace-split.has-multiple>#main{box-sizing:border-box!important;flex:0 0 calc(100% / var(--pane-count,2))!important;width:calc(100% / var(--pane-count,2))!important;max-width:calc(100% / var(--pane-count,2))!important;min-width:0!important}
+.workspace-split.has-multiple>#appSplitPane{box-sizing:border-box!important;display:flex!important;flex:0 0 calc(100% - (100% / var(--pane-count,2)))!important;width:calc(100% - (100% / var(--pane-count,2)))!important;max-width:none!important;min-width:0!important;overflow:hidden!important}
+.workspace-split.has-multiple>#appSplitPane>.app-pane-frame{box-sizing:border-box!important;display:flex!important;flex:1 1 0!important;width:0!important;max-width:none!important;min-width:0!important}
+.workspace-split.has-multiple>#appSplitPane .app-live-pane{box-sizing:border-box!important;display:block!important;flex:1 1 0!important;width:100%!important;max-width:100%!important;min-width:0!important;height:100%!important;min-height:0!important}
+body.app-pane-mode #main{box-sizing:border-box!important;width:100%!important;max-width:none!important}
+body.app-pane-mode #workspaceSplit{width:100%!important;min-width:0!important}
+body.app-pane-mode #workspaceSplit>#main{box-sizing:border-box!important;flex:1 1 100%!important;width:100%!important;max-width:none!important}
+:root[data-theme="light"] #main,
+:root[data-theme="light"] #main h1,
+:root[data-theme="light"] #main h2,
+:root[data-theme="light"] #main h3,
+:root[data-theme="light"] #main p,
+:root[data-theme="light"] #main label,
+:root[data-theme="light"] #main legend,
+:root[data-theme="light"] #main summary{color:var(--ink)}
+:root[data-theme="light"] #main .ms,
+:root[data-theme="light"] #main .note,
+:root[data-theme="light"] #main .empty,
+:root[data-theme="light"] #main .sec,
+:root[data-theme="light"] #main .setting-help,
+:root[data-theme="light"] #main .small,
+:root[data-theme="light"] #main .muted,
+:root[data-theme="light"] #main .hint,
+:root[data-theme="light"] #main .sub,
+:root[data-theme="light"] #main .desc,
+:root[data-theme="light"] #main .meta,
+:root[data-theme="light"] #main .wks,
+:root[data-theme="light"] #main .chapter-meta{color:var(--mute)!important}
+:root[data-theme="light"] #main input,
+:root[data-theme="light"] #main textarea,
+:root[data-theme="light"] #main select,
+:root[data-theme="light"] #main option{background:var(--surface)!important;color:var(--ink)!important;border-color:var(--line)!important}
+:root[data-theme="light"] #main button:not(.primary):not([aria-pressed="true"]){color:var(--ink)}
+:root[data-theme="light"] .scene-memo-dialog,
+:root[data-theme="light"] .scene-memo-card,
+:root[data-theme="light"] .scene-memos-page{color:var(--ink)}
+:root[data-theme="light"] .scene-memo-entry{background:var(--surface);color:var(--ink);border-color:var(--line)}
+@media(max-width:760px){
+ body.app-pane-mode .writer-toolbar{flex-wrap:wrap;gap:6px!important}
+ body.app-pane-mode .writer-toolbar .btn{min-height:29px;padding:5px 8px;font-size:11px}
+ body.app-pane-mode .home-tiles{grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr))}
+}
 </style>
 </head>
 <body>
@@ -896,6 +941,9 @@ function renderSplitPreview(){
        var child=iframe.contentDocument;
        if(!child||!child.body||!child.getElementById('main'))throw new Error('작업 화면 DOM이 만들어지지 않았습니다.');
        if(!child.body.classList.contains('app-pane-mode'))console.warn('분할 화면 모드 초기화 확인 필요');
+       var currentTheme=document.documentElement.getAttribute('data-theme')||'dark';
+       child.documentElement.setAttribute('data-theme',currentTheme);
+       child.documentElement.style.colorScheme=currentTheme;
      }catch(loadError){console.warn('작업 창 로드 확인 실패:',loadError);}
    };
    iframe.srcdoc=html;
@@ -1200,10 +1248,10 @@ function rHome(){
 }
 
 function rSceneMemos(){
- var m=$('#main'),items=[];
- R.works.filter(function(w){return SCENE_MEMO_WORK_ID==null||String(w.id)===String(SCENE_MEMO_WORK_ID);}).forEach(function(w){(w.chapters||[]).forEach(function(c){var memo=String(c.memo||'').trim();if(memo)items.push({work:w,chapter:c,memo:memo});});});
- items.sort(function(a,b){return String(a.work.name||'').localeCompare(String(b.work.name||''),'ko')||String(a.chapter.title||'').localeCompare(String(b.chapter.title||''),'ko');});
- m.innerHTML='<div class="scene-memos-page"><div class="tr" style="margin-bottom:12px"><div><div class="home-kicker">REFERENCE</div><h2 class="hi" style="margin:2px 0 4px">장면 메모 모아보기</h2><div class="ms">작품별 장면 메모를 한곳에서 확인할 수 있어요.</div></div><span class="ms" style="margin-left:auto">'+items.length+'개</span></div>'+(items.length?'<div class="scene-memos-list">'+items.map(function(it,i){return '<button type="button" class="scene-memo-entry" data-scene-memo-index="'+i+'"><span class="scene-memo-context">'+esc(it.work.name||'제목 없는 작품')+' · '+esc(it.chapter.title||'제목 없는 장면')+'</span><span>'+esc(it.memo.length>800?it.memo.slice(0,800)+'…':it.memo)+'</span></button>';}).join('')+'</div>':'<div class="empty">아직 저장된 장면 메모가 없어요.<br>원고의 ‘장면 메모’에서 기록하면 여기에 모여요.</div>')+'</div>';
+ var m=$('#main'),items=[],work=R.works.find(function(w){return SCENE_MEMO_WORK_ID!=null&&String(w.id)===String(SCENE_MEMO_WORK_ID);});
+ if(work){(work.chapters||[]).forEach(function(c){var memo=String(c.memo||'').trim();if(memo)items.push({work:work,chapter:c,memo:memo});});}
+ items.sort(function(a,b){return String(a.chapter.title||'').localeCompare(String(b.chapter.title||''),'ko');});
+ m.innerHTML='<div class="scene-memos-page"><div class="tr" style="margin-bottom:12px"><div><div class="home-kicker">REFERENCE</div><h2 class="hi" style="margin:2px 0 4px">'+esc(work?(work.name||'제목 없는 작품')+' · 장면 메모':'작품별 장면 메모')+'</h2><div class="ms">선택한 작품에 기록한 장면 메모만 표시합니다.</div></div><span class="ms" style="margin-left:auto">'+items.length+'개</span></div>'+(items.length?'<div class="scene-memos-list">'+items.map(function(it,i){return '<button type="button" class="scene-memo-entry" data-scene-memo-index="'+i+'"><span class="scene-memo-context">'+esc(it.chapter.title||'제목 없는 장면')+'</span><span>'+esc(it.memo.length>800?it.memo.slice(0,800)+'…':it.memo)+'</span></button>';}).join('')+'</div>':'<div class="empty">'+(work?'이 작품에는 아직 저장된 장면 메모가 없어요. 원고의 ‘장면 메모’에서 기록하면 여기에 모여요.':'작품 목록에서 작품의 ‘이 작품의 장면 메모’를 눌러 확인하세요.')+'</div>')+'</div>';
  m.querySelectorAll('[data-scene-memo-index]').forEach(function(b){b.onclick=function(){var it=items[Number(b.dataset.sceneMemoIndex)];if(!it)return;R.w=it.work.id;S=it.work;S.cur=it.chapter.id;R.tab='write';EDIT=true;TRASH=false;save();render();};});
 }
 function rSettings(){
@@ -1351,7 +1399,7 @@ function rShelf(){
   m.innerHTML='<button class="btn primary" id="addw" style="width:100%;margin-bottom:14px">새 작품 만들기</button>'+R.works.map(function(w){
     var n=0;w.chapters.forEach(function(c){n+=cnt(c.body);});
     var on=w.id===S.id;
-    return '<div class="card wk" data-id="'+w.id+'">'+(RN===w.id?'<input class="name wkn" aria-label="작품 제목" value="'+esc(w.name)+'">':'<div class="wkn">'+esc(w.name||'제목 없음')+'</div>')+'<div class="wks">파일 '+w.chapters.length+'개, 인물 '+w.chars.length+'명, '+n.toLocaleString()+'자</div><div class="wkf"><span class="wko">'+(on?'이어서 쓰기':'열기')+' ›</span><span><button class="btn" data-work-memos="1">장면 메모</button><button class="btn lk" data-rn="1">이름 변경</button><button class="btn del" data-del="1">삭제</button></span></div>'+workProgressHtml(w)+'</div>';
+    return '<div class="card wk" data-id="'+w.id+'">'+(RN===w.id?'<input class="name wkn" aria-label="작품 제목" value="'+esc(w.name)+'">':'<div class="wkn">'+esc(w.name||'제목 없음')+'</div>')+'<div class="wks">파일 '+w.chapters.length+'개, 인물 '+w.chars.length+'명, '+n.toLocaleString()+'자</div><div class="wkf"><span class="wko">'+(on?'이어서 쓰기':'열기')+' ›</span><span><button class="btn" data-work-memos="1">이 작품의 장면 메모</button><button class="btn lk" data-rn="1">이름 변경</button><button class="btn del" data-del="1">삭제</button></span></div>'+workProgressHtml(w)+'</div>';
   }).join('');
   $('#addw').onclick=function(){var w=newWork('제목 없는 작품');R.works.unshift(w);RN=w.id;save();render();var i=m.querySelector('.name');if(i){i.focus();i.select();}};
   m.querySelectorAll('.card').forEach(function(card){
@@ -1750,7 +1798,8 @@ render();
  function applyTheme(value){
   var theme=value==="light"?"light":"dark";
   document.documentElement.setAttribute("data-theme",theme);
-  document.querySelectorAll("#appSplitPane iframe.app-live-pane").forEach(function(frame){try{if(frame.contentDocument)frame.contentDocument.documentElement.setAttribute("data-theme",theme);}catch(e){}});
+  document.documentElement.style.colorScheme=theme;
+  document.querySelectorAll("#appSplitPane iframe.app-live-pane").forEach(function(frame){try{if(frame.contentDocument){frame.contentDocument.documentElement.setAttribute("data-theme",theme);frame.contentDocument.documentElement.style.colorScheme=theme;}}catch(e){}});
   var button=document.getElementById("themeToggle");
   if(button){button.textContent=theme==="dark"?"☼":"☾";button.setAttribute("aria-label",theme==="dark"?"라이트 테마로 전환":"다크 테마로 전환");button.title=theme==="dark"?"라이트 테마":"다크 테마";}
  }
