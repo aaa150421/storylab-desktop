@@ -1,6 +1,6 @@
 {
   "name": "storylab-desktop",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "description": "이야기공방 데스크톱 앱",
   "main": "main.js",
   "author": "StoryLab",
@@ -46,7 +46,8 @@
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
-      "createStartMenuShortcut": true
+      "createStartMenuShortcut": true,
+      "artifactName": "${version}.exe"
     },
     "publish": [
       {
