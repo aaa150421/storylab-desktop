@@ -850,6 +850,10 @@ body.app-split-active #workspaceSplit>#main{padding-top:14px!important;padding-b
 /* 1.2.5: keep the left pane content below its tab strip so the manuscript list remains visible */
 body.app-split-active #workspaceSplit>#main{box-sizing:border-box!important;padding-top:58px!important}
 @media(max-width:760px){body.app-split-active #workspaceSplit>#main{padding-top:50px!important}}
+/* 1.2.6: reduce the right pane top gap to align its content with the left pane */
+body.app-pane-mode>.workspace-split>#main{padding-top:0!important;margin-top:-14px!important}
+body.app-pane-mode #main:has(>.writer-heading){padding-top:0!important;margin-top:-14px!important}
+@media(max-width:760px){body.app-pane-mode>.workspace-split>#main,body.app-pane-mode #main:has(>.writer-heading){margin-top:-10px!important}}
 </style>
 </head>
 <body>
