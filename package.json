@@ -1,6 +1,6 @@
 {
   "name": "storylab-desktop",
-  "version": "1.1.8",
+  "version": "1.1.9",
   "description": "이야기공방 데스크톱 앱",
   "main": "main.js",
   "author": "StoryLab",
