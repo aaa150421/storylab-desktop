@@ -923,6 +923,14 @@ body.app-pane-mode .workspace-split main#main {
     margin-top: 0 !important;
   }
 }
+
+/* v1.3.5: readable keyboard shortcut keys in light mode */
+:root[data-theme="light"] .settings-page .shortcut-row,
+:root[data-theme="light"] .settings-page .shortcut-desc,
+:root[data-theme="light"] .settings-page .shortcut-keys,
+:root[data-theme="light"] .settings-page .shortcut-keys span { color:#17231c!important; }
+:root[data-theme="light"] .settings-page kbd { color:#17231c!important; background:#f0f4f1!important; border-color:#788b7e!important; box-shadow:inset 0 1px 0 #fff; }
+:root[data-theme="dark"] .settings-page kbd { color:#f7f9fb!important; background:#22262b!important; border-color:#68717b!important; }
 </style>
 </head>
 <body>
