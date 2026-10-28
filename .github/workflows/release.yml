@@ -8,6 +8,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: storylab-release-main
+  cancel-in-progress: true
+
 jobs:
   release:
     runs-on: windows-latest
@@ -19,32 +23,42 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
-      - name: Build and publish installer with updater metadata
-        run: npm run publish:win
+      - name: Build the Windows installer only
+        run: npm run dist:win
+
+      - name: Publish only the versioned EXE
+        shell: pwsh
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Keep installer and metadata required by auto-update
-        shell: pwsh
         run: |
           $version = node -p "require('./package.json').version"
           $tag = "v$version"
-          $keep = @("$version.exe", "latest.yml")
-          $assets = gh release view $tag --json assets | ConvertFrom-Json
-          foreach ($asset in $assets.assets) {
-            if ($asset.name -notin $keep) {
+          $installer = "dist/$version.exe"
+          if (!(Test-Path $installer)) {
+            throw "Installer not found: $installer"
+          }
+
+          gh release view $tag --json assets *> $null
+          if ($LASTEXITCODE -eq 0) {
+            $release = gh release view $tag --json assets | ConvertFrom-Json
+            foreach ($asset in $release.assets) {
               gh release delete-asset $tag $asset.name --yes
+              if ($LASTEXITCODE -ne 0) { throw "Failed to remove old asset: $($asset.name)" }
             }
+            gh release upload $tag $installer --clobber
+            if ($LASTEXITCODE -ne 0) { throw "Failed to upload $installer" }
+          } else {
+            gh release create $tag $installer --title "이야기공방 $version" --notes "이야기공방 $version 업데이트"
+            if ($LASTEXITCODE -ne 0) { throw "Failed to create release $tag" }
           }
-          $finalAssets = gh release view $tag --json assets | ConvertFrom-Json
-          $names = @($finalAssets.assets | ForEach-Object { $_.name } | Sort-Object)
-          $expected = @($keep | Sort-Object)
-          if ($names.Count -ne 2 -or (Compare-Object $names $expected)) {
-            throw "Release must contain $version.exe and latest.yml for electron-updater"
+
+          $finalRelease = gh release view $tag --json assets | ConvertFrom-Json
+          $names = @($finalRelease.assets | ForEach-Object { $_.name })
+          if ($names.Count -ne 1 -or $names[0] -ne "$version.exe") {
+            throw "Release must contain exactly one asset: $version.exe. Actual: $($names -join ', ')"
           }
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
