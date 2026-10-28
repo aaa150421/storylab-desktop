@@ -28,12 +28,14 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Keep only the installer on the release page
+      - name: Keep the updater metadata and remove only the blockmap
         shell: pwsh
         run: |
           $version = node -p "require('./package.json').version"
           $tag = "v$version"
-          foreach ($asset in @("storylab-desktop-setup-$version.exe.blockmap")) {
+          $asset = "storylab-desktop-setup-$version.exe.blockmap"
+          $assets = gh release view $tag --json assets | ConvertFrom-Json
+          if ($assets.assets.name -contains $asset) {
             gh release delete-asset $tag $asset --yes
           }
         env:
