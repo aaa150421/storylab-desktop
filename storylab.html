@@ -877,7 +877,7 @@ body.app-pane-mode #main:has(> .writer-heading) > .writer-top {
 }
 @media (max-width: 760px) {
   body.app-split-active #workspaceSplit > #main {
-    padding-top: 44px !important;
+    padding-top: 50px !important;
   }
   body.app-pane-mode > .workspace-split > #main,
   body.app-pane-mode #main:has(> .writer-heading) {
@@ -885,6 +885,20 @@ body.app-pane-mode #main:has(> .writer-heading) > .writer-top {
   }
 }
 
+
+/* v1.3.0: preserve the left pane's 58px reserve and lift only right-pane content. */
+body.app-pane-mode #workspaceSplit > #main {
+  position: relative !important;
+  top: -14px !important;
+  height: calc(100% + 14px) !important;
+  padding-top: 0 !important;
+}
+@media (max-width: 760px) {
+  body.app-pane-mode #workspaceSplit > #main {
+    top: -10px !important;
+    height: calc(100% + 10px) !important;
+  }
+}
 </style>
 </head>
 <body>
@@ -1091,7 +1105,7 @@ function renderSplitPreview(){
  wrap.style.setProperty('--pane-count',String(APP_TABS.length));
  var paneWidth=(100/APP_TABS.length)+'%';
  var mainPane=document.getElementById('main');
- if(mainPane){mainPane.style.flex='0 0 '+paneWidth;mainPane.style.width=paneWidth;mainPane.style.maxWidth=paneWidth;if(APP_TABS.length>1){mainPane.style.setProperty('padding-top','44px','important');mainPane.style.setProperty('margin-top','0','important');}else{mainPane.style.removeProperty('padding-top');mainPane.style.removeProperty('margin-top');}}
+ if(mainPane){mainPane.style.flex='0 0 '+paneWidth;mainPane.style.width=paneWidth;mainPane.style.maxWidth=paneWidth;if(APP_TABS.length>1){mainPane.style.setProperty('padding-top','58px','important');mainPane.style.setProperty('margin-top','0','important');}else{mainPane.style.removeProperty('padding-top');mainPane.style.removeProperty('margin-top');}}
  pane.style.flex='1 1 0';pane.style.width='auto';pane.style.maxWidth='none';
  pane.hidden=!others.length;
  var nav=document.querySelector('body > nav');if(nav)nav.hidden=APP_TABS.length>1;
