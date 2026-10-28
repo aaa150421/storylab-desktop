@@ -529,6 +529,24 @@ body.app-split-active #workspaceSplit>#main .writer-heading:first-child{
 .writer-stats>div{padding:6px 8px!important;gap:2px!important}
 .writer-stats strong{font-size:12px!important}
 .writer-stats span{font-size:10px!important}
+
+/* Layout fixes: keep the original pane content below its tab strip and scale controls fluidly. */
+body.app-split-active #workspaceSplit>#main{padding-top:58px!important}
+body.app-split-active #workspaceSplit>#main .writer-heading:first-of-type{margin-top:0!important}
+body.app-split-active #workspaceSplit>#main .writer-heading>label{display:block;margin-top:0!important;margin-bottom:6px!important}
+body.app-split-active #workspaceSplit>#main .writer-heading .title{width:100%;min-width:0;box-sizing:border-box}
+body.app-split-active #workspaceSplit>#main .writer-toolbar{flex-wrap:wrap;gap:6px!important}
+body.app-split-active #workspaceSplit>#main .writer-toolbar .btn{max-width:100%;min-height:32px;padding:6px 9px;font-size:clamp(11px,1vw,13px)}
+body.app-split-active #workspaceSplit>#main .writer-goal,body.app-split-active #workspaceSplit>#main .writer-stats{width:100%;box-sizing:border-box}
+body.app-split-active #workspaceSplit>#main .writer-stats>div{min-width:0}
+body.app-split-active #workspaceSplit>#main .writer-stats strong{overflow-wrap:anywhere}
+.scene-memo-collection-tools{display:flex;justify-content:flex-end;margin-top:8px}
+.all-scene-memos{margin-top:12px;max-height:38vh;overflow:auto;border-top:1px solid var(--line);padding-top:8px}
+.scene-memo-entry{display:block;width:100%;text-align:left;padding:10px;margin:0 0 7px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);cursor:pointer;white-space:normal}
+.scene-memo-entry strong{display:block;margin-bottom:4px}
+.scene-memo-entry span{display:block;color:var(--mute);font-size:12px;white-space:pre-wrap;overflow-wrap:anywhere}
+@media(min-width:1200px){body.app-split-active #workspaceSplit>#main{padding-left:clamp(14px,1.4vw,24px)!important;padding-right:clamp(14px,1.4vw,24px)!important}}
+@media(max-width:760px){body.app-split-active #workspaceSplit>#main{padding-top:52px!important}body.app-split-active #workspaceSplit>#main .writer-toolbar .btn{font-size:11px;padding:5px 7px}}
 </style>
 </head>
 <body>
@@ -970,7 +988,7 @@ function rEdit(){
   +'<details class="split-section split-detail-section" id="splitWorld"><summary><strong>세계관 참고</strong><span class="ms">'+S.world.length+'개 자료 · 눌러서 보기</span></summary><div class="split-detail">'+S.world.slice(0,30).map(function(wi){return '<button class="split-link" data-split-world="'+wi.id+'"><strong>'+esc(wi.title||'이름 없음')+'</strong><span class="ms" style="display:block">'+esc((wi.summary||wi.body||'').slice(0,100))+'</span></button>';}).join('')+(S.world.length?'':'<span class="ms">세계관 자료가 없어요.</span>')+'</div></details></aside>'
 +'<div class="dual-editors"><textarea class="editor" id="ed" placeholder="여기에 이야기를 쓰세요. 문단을 나누려면 빈 줄을 넣으세요." '+(EDITOR_VIEW==='preview'&&!DUAL_VIEW?'hidden':'')+'>'+esc(body)+'</textarea>'
   +'<article class="writer-preview" id="writerPreview" '+(EDITOR_VIEW==='edit'&&!DUAL_VIEW?'hidden':'')+'>'+preview+'</article></div>'
-  +'<div class="bar"><span id="cc">자동 저장 중</span><button class="btn del" id="delch">휴지통으로</button></div><div id="sceneMemoDialog" class="scene-memo-dialog" hidden><div class="scene-memo-card" role="dialog" aria-modal="true" aria-labelledby="sceneMemoTitle"><div class="scene-memo-head"><strong id="sceneMemoTitle">장면 메모</strong><button class="btn" id="sceneMemoClose" type="button">닫기</button></div><p class="ms">이 장면의 목적, 감정 변화, 복선, 다음에 쓸 내용 등을 기록하세요. 자동 저장됩니다.</p><textarea id="memo" class="memo" rows="8" placeholder="이 장면의 목적, 감정 변화, 복선, 다음 장면에서 이어갈 내용…"></textarea></div></div><section class="chapter-history"><div class="chapter-history-head"><div><strong>이 원고의 이전 기록</strong><div class="ms">현재 원고와 이전 기록을 직접 비교할 수 있어요.</div></div><button class="btn" id="recordChapterRevision">현재 원고 기록</button><button class="btn" id="toggleChapterHistory">'+(REVISION_PANEL_OPEN?'기록 닫기':'기록·비교')+'</button></div><div id="chapterHistoryPanel" class="chapter-history-panel" '+(REVISION_PANEL_OPEN?'':'hidden')+'></div></section>';
+  +'<div class="bar"><span id="cc">자동 저장 중</span><button class="btn del" id="delch">휴지통으로</button></div><div id="sceneMemoDialog" class="scene-memo-dialog" hidden><div class="scene-memo-card" role="dialog" aria-modal="true" aria-labelledby="sceneMemoTitle"><div class="scene-memo-head"><strong id="sceneMemoTitle">장면 메모</strong><button class="btn" id="sceneMemoClose" type="button">닫기</button></div><p class="ms">이 장면의 목적, 감정 변화, 복선, 다음에 쓸 내용 등을 기록하세요. 자동 저장됩니다.</p><textarea id="memo" class="memo" rows="8" placeholder="이 장면의 목적, 감정 변화, 복선, 다음 장면에서 이어갈 내용…"></textarea><div class="scene-memo-collection-tools"><button class="btn" id="showAllSceneMemos" type="button">모든 장면 메모 모아보기</button></div><div id="allSceneMemos" class="all-scene-memos" hidden></div></div></div><section class="chapter-history"><div class="chapter-history-head"><div><strong>이 원고의 이전 기록</strong><div class="ms">현재 원고와 이전 기록을 직접 비교할 수 있어요.</div></div><button class="btn" id="recordChapterRevision">현재 원고 기록</button><button class="btn" id="toggleChapterHistory">'+(REVISION_PANEL_OPEN?'기록 닫기':'기록·비교')+'</button></div><div id="chapterHistoryPanel" class="chapter-history-panel" '+(REVISION_PANEL_OPEN?'':'hidden')+'></div></section>';
   function updateStats(){
     var text=c.body||'',n=cnt(text),g=c.wordGoal==null?1000:Math.max(0,parseInt(c.wordGoal,10)||0),pr=g?Math.min(100,Math.round(n/g*100)):0;
     $('#cc').textContent='이 장 '+n.toLocaleString()+'자';$('#statNoSpace').textContent=n.toLocaleString();$('#statRaw').textContent=text.length.toLocaleString();
@@ -983,7 +1001,7 @@ function rEdit(){
   $('#toggleChapterHistory').onclick=function(){REVISION_PANEL_OPEN=!REVISION_PANEL_OPEN;$('#chapterHistoryPanel').hidden=!REVISION_PANEL_OPEN;this.textContent=REVISION_PANEL_OPEN?'기록 닫기':'기록·비교';if(REVISION_PANEL_OPEN)paintChapterHistory(c);};
   if(REVISION_PANEL_OPEN)paintChapterHistory(c);
   $('#memo').oninput=function(e){c.memo=e.target.value;save();scheduleChapterRevision(c);};
-  var memoDialog=$('#sceneMemoDialog');$('#sceneMemoOpen').onclick=function(){memoDialog.hidden=false;$('#memo').focus();};$('#sceneMemoClose').onclick=function(){memoDialog.hidden=true;};memoDialog.addEventListener('click',function(e){if(e.target===memoDialog)memoDialog.hidden=true;});
+  var memoDialog=$('#sceneMemoDialog');$('#memo').value=c.memo||'';$('#sceneMemoOpen').onclick=function(){memoDialog.hidden=false;$('#memo').value=c.memo||'';$('#memo').focus();};$('#sceneMemoClose').onclick=function(){memoDialog.hidden=true;};memoDialog.addEventListener('click',function(e){if(e.target===memoDialog)memoDialog.hidden=true;});$('#showAllSceneMemos').onclick=function(){var box=$('#allSceneMemos');box.hidden=!box.hidden;if(box.hidden)return;var items=S.chapters.filter(function(ch){return String(ch.memo||'').trim();});box.innerHTML=items.length?items.map(function(ch){return '<button type="button" class="scene-memo-entry" data-open-memo="'+esc(ch.id)+'"><strong>'+esc(ch.title||'제목 없음')+'</strong><span>'+esc(String(ch.memo||'').slice(0,500))+'</span></button>';}).join(''):'<p class="ms">아직 작성된 장면 메모가 없습니다.</p>';box.querySelectorAll('[data-open-memo]').forEach(function(btn){btn.onclick=function(){var target=S.chapters.find(function(ch){return String(ch.id)===String(btn.getAttribute('data-open-memo'));});if(!target)return;memoDialog.hidden=true;var work=S.works.find(function(w){return (w.chapters||[]).some(function(ch){return String(ch.id)===String(target.id);});});if(work)jump(work,'write',target.id);};});};
   $('#ed').oninput=function(e){c.body=e.target.value;updateStats();updTotal();save();scheduleChapterRevision(c);if(EDITOR_VIEW==='preview'||DUAL_VIEW)paintPreview();};
   $('#wordGoal').onchange=function(e){c.wordGoal=Math.max(0,parseInt(e.target.value,10)||0);e.target.value=c.wordGoal;updateStats();save();};
   $('#editView').onclick=function(){DUAL_VIEW=false;document.body.classList.remove('writer-dual-view');if(EDITOR_VIEW==='edit'){render();return;}EDITOR_VIEW='edit';render();var ed=$('#ed');ed.focus();var pos=Math.min(WRITER_CURSOR,ed.value.length);ed.setSelectionRange(pos,pos);};
