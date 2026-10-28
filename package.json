@@ -8,7 +8,8 @@
   "scripts": {
     "start": "electron .",
     "dist:win": "electron-builder --win nsis portable",
-    "publish:win": "electron-builder --win nsis --x64 --publish always"
+    "publish:win": "electron-builder --win nsis --x64 --publish always",
+    "release": "node release.js"
   },
   "devDependencies": {
     "electron": "^34.0.0",
