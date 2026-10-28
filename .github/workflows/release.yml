@@ -27,3 +27,14 @@ jobs:
         run: npm run publish:win
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Keep only the installer on the release page
+        shell: pwsh
+        run: |
+          $version = node -p "require('./package.json').version"
+          $tag = "v$version"
+          foreach ($asset in @("latest.yml", "storylab-desktop-setup-$version.exe.blockmap")) {
+            gh release delete-asset $tag $asset --yes
+          }
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
