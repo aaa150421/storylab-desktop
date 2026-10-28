@@ -28,15 +28,21 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Keep the updater metadata and remove only the blockmap
+      - name: Keep only the versioned EXE in the GitHub release
         shell: pwsh
         run: |
           $version = node -p "require('./package.json').version"
           $tag = "v$version"
-          $asset = "storylab-desktop-setup-$version.exe.blockmap"
+          $keep = "$version.exe"
           $assets = gh release view $tag --json assets | ConvertFrom-Json
-          if ($assets.assets.name -contains $asset) {
-            gh release delete-asset $tag $asset --yes
+          foreach ($asset in $assets.assets) {
+            if ($asset.name -ne $keep) {
+              gh release delete-asset $tag $asset.name --yes
+            }
+          }
+          $finalAssets = gh release view $tag --json assets | ConvertFrom-Json
+          if ($finalAssets.assets.Count -ne 1 -or $finalAssets.assets[0].name -ne $keep) {
+            throw "Release must contain only $keep"
           }
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
