@@ -847,6 +847,9 @@ body.app-split-active #workspaceSplit>#main{padding-top:14px!important;padding-b
 #main:has(>.writer-heading)>.writer-goal{padding:7px 10px!important;margin:5px 0!important;border-radius:7px!important}#main:has(>.writer-heading) .writer-goal-top label{font-size:11px!important;font-weight:600}#main:has(>.writer-heading) #wordGoal{width:72px!important;padding:3px 5px!important;font-size:12px!important}#main:has(>.writer-heading) .writer-progress{height:3px!important;margin:5px 0 4px!important}#main:has(>.writer-heading) .writer-goal-bottom{font-size:10px!important;gap:4px 10px!important}
 #main:has(>.writer-heading) .writer-stats{display:flex!important;align-items:center!important;flex-wrap:wrap!important;gap:5px 14px!important;margin:4px 0 6px!important;padding:0!important;border:0!important;background:transparent!important}#main:has(>.writer-heading) .writer-stats>div{display:inline-flex!important;flex-direction:row!important;align-items:baseline!important;gap:5px!important;min-width:0!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important}#main:has(>.writer-heading) .writer-stats strong{font-size:12px!important;font-weight:700!important}#main:has(>.writer-heading) .writer-stats span{font-size:10px!important;color:var(--mute)!important}
 @media(max-width:760px){body.app-pane-mode>.workspace-split>#main{padding:0 10px 14px!important}body.app-split-active #workspaceSplit>#main{padding-top:14px!important}#main:has(>.writer-heading) .writer-stats{gap:4px 10px!important}}
+/* 1.2.5: keep the left pane content below its tab strip so the manuscript list remains visible */
+body.app-split-active #workspaceSplit>#main{box-sizing:border-box!important;padding-top:58px!important}
+@media(max-width:760px){body.app-split-active #workspaceSplit>#main{padding-top:50px!important}}
 </style>
 </head>
 <body>
@@ -1388,14 +1391,13 @@ function workProgressHtml(w){
   chapters.forEach(function(c){var n=cnt(c.body||'');total+=n;if((c.body||'').trim())written++;goal+=c.wordGoal==null?1000:Math.max(0,parseInt(c.wordGoal,10)||0);});
   plots.forEach(function(p){if(p.chapterId&&chapters.some(function(c){return c.id===p.chapterId;}))linked++;});
   var done=plots.filter(function(p){return p.done;}).length,percent=goal?Math.min(100,Math.round(total/goal*100)):0;
-  return '<details class="work-progress work-progress-details"><summary><span>작품 진행 현황</span><span class="ms">'+percent+'% · 자세히 보기</span></summary><div class="work-progress-head"><div class="work-progress-title">'+esc(w.name||'제목 없음')+'</div><span class="ms">목표 분량 기준 '+percent+'%</span></div><div class="work-progress-grid"><div class="work-progress-stat"><strong>'+total.toLocaleString()+'자</strong><span>전체 원고 분량</span></div><div class="work-progress-stat"><strong>'+written+' / '+chapters.length+'</strong><span>본문이 있는 장면·장</span></div><div class="work-progress-stat"><strong>'+done+' / '+plots.length+'</strong><span>완료한 플롯 사건</span></div><div class="work-progress-stat"><strong>'+linked+' / '+plots.length+'</strong><span>본문과 연결된 사건</span></div></div><div class="writer-progress"><span style="width:'+percent+'%"></span></div><div class="writer-goal-bottom"><span>장면 목표 합계 기준</span><span>'+Math.max(0,goal-total).toLocaleString()+'자 남음</span></div></details>';
+  return '<details class="work-progress work-progress-details"><summary><span>작품 진행 현황</span></summary><div class="work-progress-head"><div class="work-progress-title">'+esc(w.name||'제목 없음')+'</div></div><div class="work-progress-grid"><div class="work-progress-stat"><strong>'+total.toLocaleString()+'자</strong><span>전체 원고 분량</span></div><div class="work-progress-stat"><strong>'+written+' / '+chapters.length+'</strong><span>본문이 있는 장면·장</span></div><div class="work-progress-stat"><strong>'+done+' / '+plots.length+'</strong><span>완료한 플롯 사건</span></div><div class="work-progress-stat"><strong>'+linked+' / '+plots.length+'</strong><span>본문과 연결된 사건</span></div></div><div class="writer-progress"><span style="width:'+percent+'%"></span></div></details>';
 }
 function rHome(){
   var m=$('#main');
   var items=[['shelf','내 작품',R.works.length+'편','작품과 원고 정리'],['ideas','아이디어 노트',R.ideas.length+'개','소재와 장면 메모']];
-  m.innerHTML='<div class="tool-strip"><button class="btn" id="auditBtn">설정 검사</button></div><div class="sbar home-search"><label for="q">검색</label><input id="q" type="search" placeholder="작품, 원고, 인물, 플롯 검색" aria-label="전체 검색" value="'+esc(Q)+'"></div><div id="res"></div><div id="hm"><section class="home-hero"><button class="home-continue" id="cont"><span class="home-continue-copy"><span>최근 작업 · 이어서 쓰기</span><strong>'+esc(S.name||'제목 없음')+'</strong></span><span class="home-arrow" aria-hidden="true">→</span></button></section><div class="home-section-label">내 작업</div><div class="mgrid home-tiles">'+items.map(function(t){return '<button class="menu mini home-tile" data-t="'+t[0]+'"><span class="home-tile-top"><span class="home-tile-count">'+esc(t[2])+'</span><span class="home-tile-arrow" aria-hidden="true">↗</span></span><span class="mn">'+t[1]+'</span><span class="ms">'+t[3]+'</span></button>';}).join('')+'</div></div>';
+  m.innerHTML='<div class="sbar home-search"><label for="q">검색</label><input id="q" type="search" placeholder="작품, 원고, 인물, 플롯 검색" aria-label="전체 검색" value="'+esc(Q)+'"></div><div id="res"></div><div id="hm"><section class="home-hero"><button class="home-continue" id="cont"><span class="home-continue-copy"><span>최근 작업 · 이어서 쓰기</span><strong>'+esc(S.name||'제목 없음')+'</strong></span><span class="home-arrow" aria-hidden="true">→</span></button></section><div class="home-section-label">내 작업</div><div class="mgrid home-tiles">'+items.map(function(t){return '<button class="menu mini home-tile" data-t="'+t[0]+'"><span class="home-tile-top"><span class="home-tile-count">'+esc(t[2])+'</span><span class="home-tile-arrow" aria-hidden="true">↗</span></span><span class="mn">'+t[1]+'</span><span class="ms">'+t[3]+'</span></button>';}).join('')+'</div></div>';
   var q=$('#q');q.oninput=function(){Q=q.value;showSearch();};showSearch();
-  $('#auditBtn').onclick=function(){R.tab='audit';render();};
   m.querySelectorAll('[data-chapter-drag]').forEach(function(el){el.addEventListener('dragstart',function(e){e.dataTransfer.setData('text/story-chapter',String(R.w)+'|'+el.dataset.chapterDrag);e.dataTransfer.effectAllowed='copy';});});
   $('#cont').onclick=function(){EDIT=true;TRASH=false;R.tab='write';save();render();};
   m.querySelectorAll('.home-tile').forEach(function(b){b.onclick=function(){R.tab=b.dataset.t;save();render();};});
@@ -1550,11 +1552,12 @@ function enableIdeaCardDrag(root,A,visibleList){
 
 function rShelf(){
   var m=$('#main');
-  m.innerHTML='<button class="btn primary" id="addw" style="width:100%;margin-bottom:14px">새 작품 만들기</button>'+R.works.map(function(w){
+  m.innerHTML='<div class="tr" style="gap:8px;margin-bottom:12px"><button class="btn" id="auditBtn">설정 검사</button><button class="btn primary" id="addw" style="flex:1">새 작품 만들기</button></div>'+R.works.map(function(w){
     var n=0;w.chapters.forEach(function(c){n+=cnt(c.body);});
     var on=w.id===S.id;
     return '<div class="card wk" data-id="'+w.id+'">'+(RN===w.id?'<input class="name wkn" aria-label="작품 제목" value="'+esc(w.name)+'">':'<div class="wkn">'+esc(w.name||'제목 없음')+'</div>')+'<div class="wks">파일 '+w.chapters.length+'개, 인물 '+w.chars.length+'명, '+n.toLocaleString()+'자</div><div class="wkf"><span class="wko">'+(on?'이어서 쓰기':'열기')+' ›</span><span><button class="btn" data-work-memos="1">이 작품의 장면 메모</button><button class="btn lk" data-rn="1">이름 변경</button><button class="btn del" data-del="1">삭제</button></span></div>'+workProgressHtml(w)+'</div>';
   }).join('');
+  $('#auditBtn').onclick=function(){R.tab='audit';render();};
   $('#addw').onclick=function(){var w=newWork('제목 없는 작품');R.works.unshift(w);RN=w.id;save();render();var i=m.querySelector('.name');if(i){i.focus();i.select();}};
   m.querySelectorAll('.card').forEach(function(card){
     var w=R.works.find(function(x){return x.id===+card.dataset.id;});
