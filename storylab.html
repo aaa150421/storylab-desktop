@@ -714,6 +714,36 @@ body.app-pane-mode #workspaceSplit>#main{box-sizing:border-box!important;flex:1 
 :root[data-theme="light"] .scene-memo-trigger:not(.has-scene-memo) .scene-memo-status{background:#89948b}
 @media(min-width:1100px){.btn,.gear,.theme-toggle{font-size:12px}.btn,.gear{min-height:29px;padding:5px 9px}.home-tiles{gap:8px}.menu.mini.home-tile{min-height:94px;padding:10px}.writer-goal{padding:10px 12px}}
 @media(max-width:760px){.workspace-split.has-multiple>#main{padding-left:8px!important;padding-right:8px!important}.workspace-split.has-multiple>#main .writer-toolbar .btn,.workspace-split.has-multiple #appSplitPane .writer-toolbar .btn{font-size:10px!important;padding:4px 6px!important}}
+
+/* 1.1.9: align split panes, compact workspace, improve theme contrast, move revision history right */
+.workspace-split.has-multiple{align-items:stretch!important}
+.workspace-split.has-multiple>#main{padding-top:12px!important}
+.workspace-split.has-multiple>#appSplitPane{padding-top:0!important;align-items:stretch!important}
+.workspace-split.has-multiple>#appSplitPane>.app-pane-frame{padding-top:0!important;margin-top:0!important;align-self:stretch!important}
+.workspace-split.has-multiple #appSplitPane .app-live-pane{padding-top:0!important;margin-top:0!important}
+.workspace-split.has-multiple #appSplitPane iframe{display:block!important;width:100%!important;height:100%!important;border:0!important;margin:0!important}
+.workspace-split.has-multiple #appSplitPane .app-pane-frame>iframe{vertical-align:top!important}
+#ed.editor{resize:none!important;overflow-y:hidden!important;max-height:none!important}
+.writer-heading,.writer-goal,.writer-stats,.writer-toolbar,.dual-editors,.bar{max-width:100%;min-width:0}
+.writer-heading{margin-bottom:6px}
+.writer-goal{padding:9px 11px!important;margin:8px 0!important}
+.writer-stats{gap:6px!important;margin:8px 0 4px!important}
+.writer-stats>div{padding:7px 9px!important}
+.writer-toolbar{gap:6px!important;margin:7px 0 9px!important}
+.writer-toolbar .btn{padding:5px 8px!important;min-height:28px!important;font-size:12px!important}
+#ed.editor{padding:12px 14px!important;line-height:1.8!important}
+.chapter-history{width:min(100%,560px)!important;max-width:560px!important;left:auto!important;right:0!important;transform:none!important;margin:14px 0 24px auto!important}
+.chapter-history-head{justify-content:flex-end!important}
+.chapter-history-head>div{margin-right:auto!important}
+:root[data-theme="light"] .writer-preview,:root[data-theme="light"] .revision-text,:root[data-theme="light"] .revision-column h4,:root[data-theme="light"] .chapter-history,:root[data-theme="light"] .chapter-history-controls select{color:var(--ink)!important;background:var(--surface)!important;border-color:var(--line)!important}
+:root[data-theme="light"] .ms,:root[data-theme="light"] .setting-help,:root[data-theme="light"] .writer-goal-top label,:root[data-theme="light"] .writer-goal-bottom,:root[data-theme="light"] .revision-empty{color:#4d5a51!important}
+:root[data-theme="light"] input,:root[data-theme="light"] textarea,:root[data-theme="light"] select,:root[data-theme="light"] option{color:var(--ink)!important;background-color:var(--surface)!important;border-color:var(--line)!important}
+:root[data-theme="dark"] input,:root[data-theme="dark"] textarea,:root[data-theme="dark"] select,:root[data-theme="dark"] option{color:var(--ink)!important;background-color:var(--surface)!important;border-color:var(--line)!important}
+:root[data-theme="light"] button{color:var(--ink)}
+:root[data-theme="light"] .btn.del{color:#a72f3c!important}
+:root[data-theme="dark"] .btn.del{color:#ff9aa3!important}
+@media(max-width:760px){.chapter-history{width:100%!important;max-width:100%!important}.workspace-split.has-multiple>#main{padding-top:8px!important}}
+
 </style>
 </head>
 <body>
@@ -1149,7 +1179,7 @@ function rEdit(){
   m.innerHTML='<div class="tr writer-top" style="margin-bottom:12px"><button class="btn" id="back">← 원고 목록</button></div>'
   +'<div class="writer-heading"><label class="ml" for="ct" style="margin:0 0 4px">장면 / 장 제목</label><input class="title" id="ct" placeholder="예: 1장 — 낯선 편지" value="'+esc(c.title)+'"></div>'
   +(linkedPlot?'<section class="work-progress" style="margin:10px auto;max-width:42em"><div class="work-progress-title">연결된 플롯 사건</div><p style="margin:7px 0 4px">'+esc(linkedPlot.title||'제목 없음')+'</p>'+(linkedPlot.storyTime?'<div class="ms">'+esc(linkedPlot.storyTime)+'</div>':'')+(linkedPlot.note?'<p class="setting-help" style="white-space:pre-wrap;margin:6px 0 0">'+esc(linkedPlot.note)+'</p>':'<p class="setting-help" style="margin:6px 0 0">플롯 탭에서 사건 메모를 작성하면 여기에 표시됩니다.</p>')+'</section>':'')
-  +'<div class="writer-toolbar"><button class="btn scene-memo-trigger" id="sceneMemoOpen" type="button" aria-label="장면 메모">✎ 장면 메모 <span class="scene-memo-status" id="sceneMemoStatus" aria-label="메모 없음"></span></button><div class="writer-view-switch"><button class="btn" id="editView" aria-pressed="'+(EDITOR_VIEW==='edit')+'">✎ 편집</button><button class="btn" id="previewView" aria-pressed="'+(EDITOR_VIEW==='preview')+'">☷ 읽기 미리보기</button></div><button class="btn" id="focusToggle" aria-pressed="'+FOCUS_MODE+'">'+(FOCUS_MODE?'집중 모드 끄기':'⛶ 집중 모드')+'</button></div>'
+  +'<div class="writer-toolbar"><button class="btn scene-memo-trigger" id="sceneMemoOpen" type="button" aria-label="장면 메모">✎ 장면 메모 <span class="scene-memo-status" id="sceneMemoStatus" aria-label="메모 없음"></span></button><button class="btn" id="focusToggle" aria-pressed="'+FOCUS_MODE+'">'+(FOCUS_MODE?'집중 모드 끄기':'⛶ 집중 모드')+'</button></div>'
   +'<div class="writer-goal"><div class="writer-goal-top"><label for="wordGoal">이번 장 목표 글자 수</label><div><input id="wordGoal" type="number" min="0" step="100" value="'+(goal||1000)+'" aria-label="목표 글자 수"><span class="ms">자</span></div></div><div class="writer-progress"><span id="goalProgress" style="width:'+pct+'%"></span></div><div class="writer-goal-bottom"><span id="goalLabel">'+(goal?words.toLocaleString()+' / '+goal.toLocaleString()+'자 · '+pct+'%':'목표를 설정하면 진행률을 볼 수 있어요')+'</span><span>'+Math.max(0,goal-words).toLocaleString()+'자 남음</span></div></div>'
   +'<div class="writer-stats" aria-live="polite"><div><strong id="statNoSpace">'+words.toLocaleString()+'</strong><span>공백 제외 글자</span></div><div><strong id="statRaw">'+body.length.toLocaleString()+'</strong><span>전체 글자</span></div></div>'
   +'<aside class="split-panel" id="splitPanel">'
