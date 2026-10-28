@@ -595,6 +595,13 @@ button{box-shadow:none}
 @media(min-width:900px){header{padding-left:18px;padding-right:18px}.workspace-split.has-multiple>#main{padding-left:clamp(12px,1.2vw,20px)!important;padding-right:clamp(12px,1.2vw,20px)!important}}
 @media(max-width:760px){header{padding:6px 9px}.workspace-split.has-multiple{overflow:hidden}}
 
+/* Dedicated scene memo collection page */
+.scene-memos-page{max-width:900px;margin:0 auto;padding-bottom:36px}
+.scene-memos-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:8px}
+.scene-memo-entry{display:block;width:100%;min-width:0;text-align:left;padding:12px;border:1px solid var(--line);border-radius:7px;background:var(--surface);color:var(--ink);cursor:pointer;white-space:normal}
+.scene-memo-entry:hover{border-color:var(--accent);background:var(--surface-2)}
+.scene-memo-entry .scene-memo-context{display:block;margin-bottom:7px;color:var(--accent);font-size:11px;font-weight:600}
+.scene-memo-entry>span:last-child{display:block;color:var(--ink);font-size:13px;line-height:1.65;white-space:pre-wrap;overflow-wrap:anywhere}
 </style>
 </head>
 <body>
@@ -762,7 +769,7 @@ function render(){
   document.querySelectorAll('nav button').forEach(function(b){b.setAttribute('aria-selected',b.dataset.tab===R.tab);});
   updTotal();
   var ws=['write','chars','world','plot','wideas'];if(ws.indexOf(R.tab)>=0&&ws.indexOf(PREV)<0)BACK=PREV;PREV=R.tab;
-  ({home:rHome,shelf:rShelf,ideas:rIdeas,wideas:rWIdeas,settings:rSettings,write:rWrite,chars:rChars,world:rWorld,plot:rPlot,versions:renderVersions,audit:renderAudit})[R.tab]();
+  ({home:rHome,shelf:rShelf,ideas:rIdeas,wideas:rWIdeas,settings:rSettings,write:rWrite,chars:rChars,world:rWorld,plot:rPlot,versions:renderVersions,audit:renderAudit,scenememos:rSceneMemos})[R.tab]();
 }
 var EDIT=false,RN=null;
 var APP_TAB_LIMIT=8,APP_ACTIVE_TAB='app-tab-1',APP_TAB_SEQ=1,APP_SPLIT=false,APP_SPLIT_TAB=null,APP_PANE_MODE=false,APP_PANE_SCREEN=null;
@@ -1125,7 +1132,7 @@ function showSearch(){
   res.innerHTML=out.length?'<div class="sec">검색 결과 '+out.length+'곳'+(out.length>200?' (앞의 200곳만 표시)':'')+'</div>'+out.slice(0,200).map(function(o,i){return '<button class="res" data-i="'+i+'"><span class="rk">'+o.k+'</span><span class="rl">'+esc(o.loc)+'</span><span class="rs">'+hl(o.text,q,o.pos)+'</span></button>';}).join(''):'<div class="empty">“'+esc(q)+'” 검색 결과가 없어요.<br>다른 단어로 다시 찾아보세요.</div>';
   res.querySelectorAll('.res').forEach(function(b){b.onclick=function(){out[+b.dataset.i].go();};});
 }
-var BACK='',PREV='home',TITLES={shelf:'내 작품',ideas:'아이디어 노트',settings:'설정',world:'세계관'};
+var BACK='',PREV='home',TITLES={shelf:'내 작품',ideas:'아이디어 노트',settings:'설정',world:'세계관',scenememos:'장면 메모 모아보기'};
 var TAGS=R.ideaTags;
 function workProgressHtml(w){
   w=w||S;
@@ -1137,7 +1144,8 @@ function workProgressHtml(w){
 }
 function rHome(){
   var m=$('#main');
-  var items=[['shelf','내 작품',R.works.length+'편','작품과 원고 정리'],['ideas','아이디어 노트',R.ideas.length+'개','소재와 장면 메모']];
+  var memoCount=R.works.reduce(function(n,w){return n+(w.chapters||[]).filter(function(c){return String(c.memo||'').trim();}).length;},0);
+  var items=[['shelf','내 작품',R.works.length+'편','작품과 원고 정리'],['ideas','아이디어 노트',R.ideas.length+'개','소재와 장면 메모'],['scenememos','장면 메모 모아보기',memoCount+'개','모든 작품의 장면 메모 한곳에서 보기']];
   m.innerHTML='<div class="tool-strip"><button class="btn" id="auditBtn">설정 검사</button></div><div class="sbar home-search"><label for="q">검색</label><input id="q" type="search" placeholder="작품, 원고, 인물, 플롯 검색" aria-label="전체 검색" value="'+esc(Q)+'"></div><div id="res"></div><div id="hm"><section class="home-hero"><button class="home-continue" id="cont"><span class="home-continue-copy"><span>최근 작업 · 이어서 쓰기</span><strong>'+esc(S.name||'제목 없음')+'</strong></span><span class="home-arrow" aria-hidden="true">→</span></button></section><div class="home-section-label">내 작업</div><div class="mgrid home-tiles">'+items.map(function(t){return '<button class="menu mini home-tile" data-t="'+t[0]+'"><span class="home-tile-top"><span class="home-tile-count">'+esc(t[2])+'</span><span class="home-tile-arrow" aria-hidden="true">↗</span></span><span class="mn">'+t[1]+'</span><span class="ms">'+t[3]+'</span></button>';}).join('')+'</div></div>';
   var q=$('#q');q.oninput=function(){Q=q.value;showSearch();};showSearch();
   $('#auditBtn').onclick=function(){R.tab='audit';render();};
@@ -1146,6 +1154,13 @@ function rHome(){
   m.querySelectorAll('.home-tile').forEach(function(b){b.onclick=function(){R.tab=b.dataset.t;save();render();};});
 }
 
+function rSceneMemos(){
+ var m=$('#main'),items=[];
+ R.works.forEach(function(w){(w.chapters||[]).forEach(function(c){var memo=String(c.memo||'').trim();if(memo)items.push({work:w,chapter:c,memo:memo});});});
+ items.sort(function(a,b){return String(a.work.name||'').localeCompare(String(b.work.name||''),'ko')||String(a.chapter.title||'').localeCompare(String(b.chapter.title||''),'ko');});
+ m.innerHTML='<div class="scene-memos-page"><div class="tr" style="margin-bottom:12px"><div><div class="home-kicker">REFERENCE</div><h2 class="hi" style="margin:2px 0 4px">장면 메모 모아보기</h2><div class="ms">작품별 장면 메모를 한곳에서 확인할 수 있어요.</div></div><span class="ms" style="margin-left:auto">'+items.length+'개</span></div>'+(items.length?'<div class="scene-memos-list">'+items.map(function(it,i){return '<button type="button" class="scene-memo-entry" data-scene-memo-index="'+i+'"><span class="scene-memo-context">'+esc(it.work.name||'제목 없는 작품')+' · '+esc(it.chapter.title||'제목 없는 장면')+'</span><span>'+esc(it.memo.length>800?it.memo.slice(0,800)+'…':it.memo)+'</span></button>';}).join('')+'</div>':'<div class="empty">아직 저장된 장면 메모가 없어요.<br>원고의 ‘장면 메모’에서 기록하면 여기에 모여요.</div>')+'</div>';
+ m.querySelectorAll('[data-scene-memo-index]').forEach(function(b){b.onclick=function(){var it=items[Number(b.dataset.sceneMemoIndex)];if(!it)return;R.w=it.work.id;S=it.work;S.cur=it.chapter.id;R.tab='write';EDIT=true;TRASH=false;save();render();};});
+}
 function rSettings(){
   var m=$('#main');
   m.innerHTML='<div class="settings-page"><div class="settings-heading"><div class="home-kicker">PREFERENCES</div><h2 class="hi">설정</h2><p class="setting-help">필요한 항목을 눌러 펼쳐 보세요. 자주 쓰지 않는 설정은 접어 둘 수 있어요.</p></div>'+
