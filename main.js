@@ -21,7 +21,7 @@ function createWindow() {
     }
   });
 
-  mainWindow.loadFile(path.join(__dirname, 'storylab.html'));
+  mainWindow.loadFile(path.join(__dirname, 'storylab.html'), { query: { version: app.getVersion() } });
   mainWindow.on('closed', () => { mainWindow = null; });
 }
 
