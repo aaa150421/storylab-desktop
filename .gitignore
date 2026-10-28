@@ -2,3 +2,5 @@
 dist/
 *.backup
 backup-before-upgrade-*/
+/release.yml
+/README_DEPLOY_KO.md
