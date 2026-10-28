@@ -854,6 +854,36 @@ body.app-split-active #workspaceSplit>#main{box-sizing:border-box!important;padd
 body.app-pane-mode>.workspace-split>#main{padding-top:0!important;margin-top:-14px!important}
 body.app-pane-mode #main:has(>.writer-heading){padding-top:0!important;margin-top:-14px!important}
 @media(max-width:760px){body.app-pane-mode>.workspace-split>#main,body.app-pane-mode #main:has(>.writer-heading){margin-top:-10px!important}}
+
+<!-- split-pane-top-alignment-final-override -->
+/* Make both split-pane content areas begin at the same vertical coordinate.
+   The right pane already has a 44px tab bar in normal flow. Do not offset its
+   iframe upward; reserve the same 44px for the left pane's absolutely placed tab bar. */
+body.app-split-active #workspaceSplit > #main {
+  box-sizing: border-box !important;
+  padding-top: 44px !important;
+  margin-top: 0 !important;
+}
+body.app-pane-mode > .workspace-split > #main,
+body.app-pane-mode #main:has(> .writer-heading) {
+  box-sizing: border-box !important;
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+body.app-pane-mode #main:has(> .writer-heading) > .writer-top {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+@media (max-width: 760px) {
+  body.app-split-active #workspaceSplit > #main {
+    padding-top: 44px !important;
+  }
+  body.app-pane-mode > .workspace-split > #main,
+  body.app-pane-mode #main:has(> .writer-heading) {
+    margin-top: 0 !important;
+  }
+}
+
 </style>
 </head>
 <body>
