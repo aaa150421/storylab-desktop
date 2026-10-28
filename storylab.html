@@ -773,6 +773,54 @@ body.app-pane-mode #workspaceSplit>#main{box-sizing:border-box!important;flex:1 
 :root[data-theme="light"] input::placeholder,:root[data-theme="light"] textarea::placeholder{color:#65766b!important;opacity:1}
 :root[data-theme="dark"] input::placeholder,:root[data-theme="dark"] textarea::placeholder{color:#b2bac5!important;opacity:1}
 @media(max-width:760px){.chapter-history{width:100%!important;max-width:100%!important}.workspace-split.has-multiple>#main{padding-top:0!important}.revision-compare-grid{grid-template-columns:1fr}}
+/* 1.2.1: rebuild writing layout, align split-pane content below matching tab bars, force file contrast */
+.workspace-split.has-multiple>.app-main-tabbar{height:44px!important}
+.workspace-split.has-multiple>#main{padding-top:44px!important}
+.workspace-split.has-multiple #appSplitPane>.app-pane-frame>.app-pane-tabbar{height:44px!important;min-height:44px!important}
+.workspace-split.has-multiple #appSplitPane>.app-pane-frame>.app-live-pane{padding-top:0!important;margin-top:0!important}
+.workspace-split.has-multiple #appSplitPane .app-live-pane body{padding-top:0!important}
+.workspace-split.has-multiple>#main>.tr:first-child{margin-top:0!important}
+.workspace-split.has-multiple>#main .fh,
+.workspace-split.has-multiple>#main .fb,
+.workspace-split.has-multiple>#main .file-row,
+.workspace-split.has-multiple>#main .chapter-row,
+.workspace-split.has-multiple>#main [data-file-id],
+.workspace-split.has-multiple>#main .fn{color:var(--ink)!important}
+.fh{color:var(--ink)!important;background:var(--surface)!important}
+.fb{color:var(--ink)!important}
+.fn{color:var(--ink)!important;background:var(--surface)!important;border-color:var(--line)!important}
+.fn:focus{color:var(--ink)!important;background:var(--surface)!important}
+:root[data-theme="light"] .fh,:root[data-theme="light"] .fb,:root[data-theme="light"] .fn,
+:root[data-theme="light"] .fh button,:root[data-theme="light"] .fb button,
+:root[data-theme="light"] .fb a,:root[data-theme="light"] .fb span{color:#17231c!important}
+:root[data-theme="dark"] .fh,:root[data-theme="dark"] .fb,:root[data-theme="dark"] .fn,
+:root[data-theme="dark"] .fh button,:root[data-theme="dark"] .fb button,
+:root[data-theme="dark"] .fb a,:root[data-theme="dark"] .fb span{color:#f5f6f7!important}
+:root[data-theme="light"] .fh,:root[data-theme="light"] .fb{background-color:#fff!important}
+:root[data-theme="dark"] .fh,:root[data-theme="dark"] .fb{background-color:#1b1d20!important}
+:root[data-theme="light"] .fb .ms,:root[data-theme="light"] .fh .ms{color:#46564b!important}
+:root[data-theme="dark"] .fb .ms,:root[data-theme="dark"] .fh .ms{color:#c0c5cc!important}
+/* Writing is the primary surface: title stays close to the editor, editor grows with text. */
+.writer-heading{max-width:100%!important;margin:0 0 8px!important}
+.writer-heading>label{display:block;margin:0 0 3px!important}
+.writer-heading .title{width:100%!important;max-width:100%!important;font-size:18px!important}
+body:not(.writer-focus) #main:has(>.writer-heading){padding-top:10px!important}
+#main:has(>.writer-heading)>.writer-top{margin:0 0 8px!important}
+#main:has(>.writer-heading)>.writer-toolbar{margin:5px 0 8px!important}
+#main:has(>.writer-heading)>.writer-goal{margin:6px 0!important}
+#main:has(>.writer-heading)>.writer-stats{margin:5px 0 8px!important}
+#main:has(>.writer-heading)>.dual-editors{display:block!important;width:100%!important;max-width:100%!important;margin:0!important}
+#main:has(>.writer-heading) #ed.editor{display:block!important;width:100%!important;max-width:100%!important;min-height:58vh!important;height:auto;overflow-y:hidden!important;resize:none!important;margin:0!important;padding:20px 22px!important;border:1px solid var(--line)!important;border-radius:10px!important;background:var(--surface)!important;color:var(--ink)!important;font-family:var(--serif)!important;font-size:17px!important;line-height:1.95!important;white-space:pre-wrap!important;overflow-wrap:anywhere!important}
+#main:has(>.writer-heading) #writerPreview{display:none!important}
+#main:has(>.writer-heading)>.bar{margin:8px 0 14px!important}
+#main:has(>.writer-heading)>.chapter-history{margin:16px 0 24px!important}
+:root[data-theme="light"] #main:has(>.writer-heading) #ed{background:#fff!important;color:#17231c!important;border-color:#aab9af!important}
+:root[data-theme="dark"] #main:has(>.writer-heading) #ed{background:#1b1d20!important;color:#f5f6f7!important;border-color:#59616b!important}
+#main:has(>.writer-heading) #ed::placeholder{color:var(--mute)!important;opacity:1}
+body.writer-focus #main:has(>.writer-heading){padding:14px clamp(14px,2vw,28px)!important;max-width:none!important}
+body.writer-focus #main:has(>.writer-heading) #ed{min-height:68vh!important;font-size:18px!important;line-height:2!important}
+@media(max-width:760px){.workspace-split.has-multiple>#main{padding-top:44px!important}#main:has(>.writer-heading) #ed{padding:14px!important;font-size:16px!important;min-height:52vh!important}}
+
 </style>
 </head>
 <body>
@@ -1231,7 +1279,7 @@ function rEdit(){
   $('#toggleChapterHistory').onclick=function(){REVISION_PANEL_OPEN=!REVISION_PANEL_OPEN;$('#chapterHistoryPanel').hidden=!REVISION_PANEL_OPEN;this.textContent=REVISION_PANEL_OPEN?'기록 닫기':'기록·비교';if(REVISION_PANEL_OPEN)paintChapterHistory(c);};
   if(REVISION_PANEL_OPEN)paintChapterHistory(c);
   function updateSceneMemoStatus(){var hasMemo=!!String(c.memo||'').trim(),status=$('#sceneMemoStatus'),trigger=$('#sceneMemoOpen');if(status){status.textContent=hasMemo?'●':'○';status.setAttribute('aria-label',hasMemo?'메모 있음':'메모 없음');status.title=hasMemo?'장면 메모가 저장되어 있어요':'장면 메모가 비어 있어요';}if(trigger)trigger.classList.toggle('has-scene-memo',hasMemo);} $('#memo').oninput=function(e){c.memo=e.target.value;updateSceneMemoStatus();save();scheduleChapterRevision(c);};
-  var memoDialog=$('#sceneMemoDialog');$('#memo').value=c.memo||'';updateSceneMemoStatus();$('#sceneMemoOpen').onclick=function(){memoDialog.hidden=false;$('#memo').value=c.memo||'';$('#memo').focus();};$('#sceneMemoClose').onclick=function(){memoDialog.hidden=true;};memoDialog.addEventListener('click',function(e){if(e.target===memoDialog)memoDialog.hidden=true;});  var editor=$('#ed');function resizeWriterEditor(){if(!editor)return;editor.style.height='auto';editor.style.height=Math.max(editor.scrollHeight,180)+'px';}resizeWriterEditor();editor.oninput=function(e){c.body=e.target.value;resizeWriterEditor();updateStats();updTotal();save();scheduleChapterRevision(c);if(EDITOR_VIEW==='preview'||DUAL_VIEW)paintPreview();};
+  var memoDialog=$('#sceneMemoDialog');$('#memo').value=c.memo||'';updateSceneMemoStatus();$('#sceneMemoOpen').onclick=function(){memoDialog.hidden=false;$('#memo').value=c.memo||'';$('#memo').focus();};$('#sceneMemoClose').onclick=function(){memoDialog.hidden=true;};memoDialog.addEventListener('click',function(e){if(e.target===memoDialog)memoDialog.hidden=true;});  var editor=$('#ed');function resizeWriterEditor(){if(!editor)return;editor.style.height='auto';editor.style.height=Math.max(editor.scrollHeight,Math.round(window.innerHeight*0.58),320)+'px';}resizeWriterEditor();window.addEventListener('resize',resizeWriterEditor);editor.oninput=function(e){c.body=e.target.value;resizeWriterEditor();updateStats();updTotal();save();scheduleChapterRevision(c);if(EDITOR_VIEW==='preview'||DUAL_VIEW)paintPreview();};
   $('#wordGoal').onchange=function(e){c.wordGoal=Math.max(0,parseInt(e.target.value,10)||0);e.target.value=c.wordGoal;updateStats();save();};
   $('#editView').onclick=function(){DUAL_VIEW=false;document.body.classList.remove('writer-dual-view');if(EDITOR_VIEW==='edit'){render();return;}EDITOR_VIEW='edit';render();var ed=$('#ed');ed.focus();var pos=Math.min(WRITER_CURSOR,ed.value.length);ed.setSelectionRange(pos,pos);};
   $('#previewView').onclick=function(){DUAL_VIEW=false;document.body.classList.remove('writer-dual-view');if(EDITOR_VIEW==='preview'){render();return;}var ed=$('#ed');if(ed)WRITER_CURSOR=ed.selectionStart||0;EDITOR_VIEW='preview';render();};
