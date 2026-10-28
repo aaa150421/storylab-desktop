@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: storylab-release-main
+  group: storylab-release-electron-updater
   cancel-in-progress: true
 
 jobs:
