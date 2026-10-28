@@ -7,8 +7,8 @@
   "license": "UNLICENSED",
   "scripts": {
     "start": "electron .",
-    "dist:win": "electron-builder --win nsis portable",
-    "publish:win": "electron-builder --win nsis --x64 --publish always",
+    "dist:win": "electron-builder --win nsis --x64",
+    "publish:win": "electron-builder --win nsis --x64",
     "release": "node release.js"
   },
   "devDependencies": {
@@ -30,12 +30,6 @@
       "target": [
         {
           "target": "nsis",
-          "arch": [
-            "x64"
-          ]
-        },
-        {
-          "target": "portable",
           "arch": [
             "x64"
           ]
