@@ -35,7 +35,7 @@ async function main() {
   }
 
   if (git(["status", "--porcelain"])) {
-    return stop("작업 폴더에 미커밋 파일 또는 변경 사항이 있습니다. 파일을 삭제하지 말고 먼저 상태를 확인해 주세요.");
+    return stop("작업 폴더에 변경 사항이 있습니다. 파일을 삭제하지 말고 먼저 상태를 확인해 주세요.");
   }
 
   runGit(["fetch", "origin", "main", "--tags"]);
@@ -72,16 +72,19 @@ async function main() {
 
   pkg.version = next;
   lock.version = next;
-  if (lock.packages?.[""]) lock.packages[""].version = next;
+  lock.packages[""].version = next;
 
   fs.writeFileSync("package.json", JSON.stringify(pkg, null, 2) + "\n", "utf8");
   fs.writeFileSync("package-lock.json", JSON.stringify(lock, null, 2) + "\n", "utf8");
 
   runGit(["add", "package.json", "package-lock.json"]);
   runGit(["commit", "-m", `Prepare release ${next}`]);
-  runGit(["push", "origin", "main"]);
   runGit(["tag", tag]);
-  runGit(["push", "origin", tag]);
+
+  console.log(`\n${tag}를 로컬에서 준비했습니다.`);
+  console.log("GitHub에 main과 태그를 원자적으로 푸시합니다.");
+
+  runGit(["push", "--atomic", "origin", "main", tag]);
 
   console.log(`\n${tag} 태그를 올렸습니다. GitHub Actions에서 빌드 및 배포 상태를 확인해 주세요.`);
 }
