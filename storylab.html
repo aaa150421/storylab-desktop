@@ -906,6 +906,23 @@ body.app-split-active #workspaceSplit #appSplitPane .app-pane-frame > iframe.app
     height: 100% !important;
   }
 }
+
+/* v1.3.4: definitive right-pane home/layout correction.
+   The right iframe's inner #main inherits the split-pane 44px top spacer even
+   though its outer pane tabbar already occupies that space. Reset the inner
+   content box directly in pane mode; keep the left pane's 44px reservation. */
+body.app-pane-mode main#main,
+body.app-pane-mode .workspace-split main#main {
+  padding-top: 14px !important;
+  margin-top: 0 !important;
+}
+@media (max-width: 760px) {
+  body.app-pane-mode main#main,
+  body.app-pane-mode .workspace-split main#main {
+    padding-top: 10px !important;
+    margin-top: 0 !important;
+  }
+}
 </style>
 </head>
 <body>
