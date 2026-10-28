@@ -886,23 +886,24 @@ body.app-pane-mode #main:has(> .writer-heading) > .writer-top {
 }
 
 
-/* v1.3.2: align the right pane's content origin with the left pane.
-   Avoid the previous -24px iframe translation, which can clip the viewport.
-   The embedded page gets a 4px lift and no extra top padding. */
+/* v1.3.3: the embedded app was rendering its own global nav above
+   #workspaceSplit. That extra nav row pushed every right-pane item down.
+   Hide that child-only nav and let the iframe start at the pane tabbar's bottom.
+   Do not translate the iframe: both panes keep their natural viewport origin. */
+body.app-pane-mode>nav {
+  display: none !important;
+}
 body.app-split-active #workspaceSplit #appSplitPane .app-pane-frame > iframe.app-live-pane {
-  position: relative !important;
-  top: -4px !important;
-  height: calc(100% + 4px) !important;
+  position: static !important;
+  top: auto !important;
+  height: 100% !important;
   flex: 1 1 0 !important;
   align-self: stretch !important;
 }
-body.app-pane-mode>.workspace-split>#main {
-  padding-top: 0 !important;
-}
 @media (max-width: 760px) {
+  body.app-pane-mode>nav { display: none !important; }
   body.app-split-active #workspaceSplit #appSplitPane .app-pane-frame > iframe.app-live-pane {
-    top: -4px !important;
-    height: calc(100% + 4px) !important;
+    height: 100% !important;
   }
 }
 </style>
