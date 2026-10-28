@@ -1090,7 +1090,7 @@ function renderSplitPreview(){
  wrap.style.setProperty('--pane-count',String(APP_TABS.length));
  var paneWidth=(100/APP_TABS.length)+'%';
  var mainPane=document.getElementById('main');
- if(mainPane){mainPane.style.flex='0 0 '+paneWidth;mainPane.style.width=paneWidth;mainPane.style.maxWidth=paneWidth;}
+ if(mainPane){mainPane.style.flex='0 0 '+paneWidth;mainPane.style.width=paneWidth;mainPane.style.maxWidth=paneWidth;if(APP_TABS.length>1){mainPane.style.setProperty('padding-top','44px','important');mainPane.style.setProperty('margin-top','0','important');}else{mainPane.style.removeProperty('padding-top');mainPane.style.removeProperty('margin-top');}}
  pane.style.flex='1 1 0';pane.style.width='auto';pane.style.maxWidth='none';
  pane.hidden=!others.length;
  var nav=document.querySelector('body > nav');if(nav)nav.hidden=APP_TABS.length>1;
