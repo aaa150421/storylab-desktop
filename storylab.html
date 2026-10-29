@@ -443,7 +443,7 @@ function renderSplitPreview(){
    html=html.replace(/<main\b([^>]*\bid=["']main["'][^>]*)>/i,function(full,attrs){
      return '<main'+attrs.replace(/\sstyle=(["'])[\s\S]*?\1/i,'')+'>';
    });
-   var paneFixStyle='<style id="storylab-pane-header-fix">body.app-pane-mode #appMainTabbar,body.app-pane-mode .app-main-tabbar,body.app-pane-mode .app-pane-tabbar,body.app-pane-mode #appTabs{display:none!important;height:0!important;min-height:0!important;padding:0!important;margin:0!important;border:0!important;visibility:hidden!important;pointer-events:none!important}body.app-pane-mode #main{padding-top:14px!important}</style>';
+   var paneFixStyle='<style id="storylab-pane-header-fix">body.app-pane-mode #appTabs,body.app-pane-mode #appMainTabbar,body.app-pane-mode .app-main-tabbar{display:none!important;height:0!important;min-height:0!important;padding:0!important;margin:0!important;border:0!important;visibility:hidden!important;pointer-events:none!important}body.app-pane-mode>.workspace-split{display:block!important;grid-column:1;grid-row:1;width:100%!important;height:100%!important;min-height:0!important;overflow:auto!important}body.app-pane-mode #main{display:block!important;visibility:visible!important;opacity:1!important;position:relative!important;width:100%!important;max-width:none!important;min-width:0!important;height:auto!important;min-height:100%!important;margin:0!important;padding:14px 18px 30px!important;box-sizing:border-box!important;overflow:visible!important}</style>';
    html=html.replace('</head>',paneFixStyle+'</head>');
    var bootstrap='<script>window.__STORY_PANE_SCREEN='+screenJson+';<\\/script>';
    html=html.replace('</head>',bootstrap+'</head>');
@@ -643,10 +643,9 @@ function setWriterFocus(enabled,notifyParent){
   if(notifyParent!==false&&APP_PANE_MODE){try{window.parent.postMessage({type:'storylab-pane-focus-change',enabled:FOCUS_MODE},'*');}catch(ignore){}}
 }
 function returnToManuscriptList(){
-  // Persist/merge the active chapter before changing EDIT. In split mode this selects the
-  // chapter-scoped save path and prevents a stale iframe from overwriting the whole project.
+  // Always leave the editor when requested. A save conflict should warn the user,
+  // but must not trap the pane on the editor or leave it visually blank.
   var saved=save();
-  if(!saved){showSaveStatus('error','저장에 실패해 원고 목록으로 이동하지 않았어요.');return false;}
   EDIT=false;TRASH=false;FOCUS_MODE=false;DUAL_VIEW=false;SPLIT_MODE=false;
   document.body.classList.remove('writer-focus','writer-dual-view','split-mode');
   R.tab='write';
@@ -655,6 +654,7 @@ function returnToManuscriptList(){
   var active=APP_TABS.find(function(t){return String(t.id)===String(APP_ACTIVE_TAB);});
   if(active){active.screen=screen;active.title=appScreenTitle(screen);}
   render();
+  if(!saved)showSaveStatus('error','저장 충돌 또는 실패 · 원고 목록으로 이동했어요. 원고 내용을 확인하세요.');
   if(APP_PANE_MODE){try{window.parent.postMessage({type:'storylab-pane-screen-change',screen:screen},'*');}catch(ignore){}}
   return true;
 }
