@@ -218,7 +218,7 @@ function mountWorkTools(){
   var small=document.createElement('span');small.textContent='현재 작품';var name=document.createElement('strong');name.textContent=S.name||'제목 없는 작품';label.appendChild(small);label.appendChild(name);bar.appendChild(label);
   [['write','원고'],['chars','인물'],['world','세계관'],['plot','플롯'],['wideas','아이디어']].forEach(function(item){
     var button=document.createElement('button');button.type='button';button.className='work-tool-button'+(R.tab===item[0]?' is-active':'');button.textContent=item[1];button.setAttribute('aria-current',R.tab===item[0]?'page':'false');
-    button.onclick=function(){if(R.tab==='write'&&EDIT&&!save())return;R.tab=item[0];EDIT=false;TRASH=false;FOCUS_MODE=false;DUAL_VIEW=false;SPLIT_MODE=false;document.body.classList.remove('writer-focus','writer-dual-view','split-mode');save();render();};bar.appendChild(button);
+    button.onclick=function(){if(R.tab==='write'&&EDIT&&!save())return;R.tab=item[0];EDIT=false;TRASH=false;FOCUS_MODE=false;DUAL_VIEW=false;SPLIT_MODE=false;document.body.classList.remove('writer-focus','writer-dual-view','split-mode');render();};bar.appendChild(button);
   });
   main.insertBefore(bar,main.firstChild);
 }
