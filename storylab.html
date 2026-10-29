@@ -937,8 +937,7 @@ body.writer-focus #main #writerPreview{box-sizing:border-box!important;width:100
 body.writer-focus #main .work-progress{margin-left:0!important;margin-right:auto!important}
 body.writer-focus #main>.bar{margin:8px 0 14px!important}
 body.writer-focus #main>.chapter-history{margin:16px 0 24px!important}
-@media(max-width:760px){body.writer-focus #main{padding:12px!important}body.writer-focus #main #ed.editor{min-height:60vh!important;font-size:16px!important;padding:14px!important}}
- body.writer-focus #main:has(>.writer-heading) #ed.editor{min-height:60vh!important;font-size:16px!important;padding:14px!important}
+@media(max-width:760px){body.writer-focus #main{padding:12px!important}body.writer-focus #main #ed.editor{min-height:60vh!important;font-size:16px!important;padding:14px!important}} 
 }
 
 </style>
@@ -963,21 +962,6 @@ body.app-pane-mode > #workspaceSplit > #main:has(> .writer-heading) {
     margin-top: 0 !important;
   }
 }
-
-/* v1.5.2: final overrides for legacy pane/focus selectors. Keep these last to
-   prevent older !important declarations from taking precedence in srcdoc panes. */
-body.writer-focus header,body.writer-focus nav,body.writer-focus #appTabs{display:none!important}
-body.app-pane-mode.writer-focus>nav{display:none!important}
-body.app-pane-mode.writer-focus #main{padding-top:14px!important}
-body.app-pane-mode.writer-focus #main:has(>.writer-heading){padding:14px clamp(14px,2vw,28px)!important;max-width:none!important}
-body.app-pane-mode.writer-focus #main:has(>.writer-heading) #ed{min-height:68vh!important;font-size:18px!important;line-height:2!important}
-body.app-split-active .app-pane-frame.is-writer-focus>.app-pane-tabbar{display:none!important}
-.scene-memo-head{user-select:none;-webkit-user-select:none}
-.scene-memo-head strong{cursor:inherit}
-
-/* v1.5.3: override legacy centered-editor rules in focus mode. */
-body.writer-focus #main:has(>.writer-heading) .editor,body.writer-focus #main:has(>.writer-heading) .writer-preview,body.app-pane-mode.writer-focus #main:has(>.writer-heading) .editor,body.app-pane-mode.writer-focus #main:has(>.writer-heading) .writer-preview{margin-left:0!important;margin-right:auto!important;max-width:min(58em,100%)!important;}
-body.writer-focus #main:has(>.writer-heading) .writer-toolbar,body.app-pane-mode.writer-focus #main:has(>.writer-heading) .writer-toolbar{justify-content:flex-start!important;margin-left:0!important;}
 
 </style>
 </head>
