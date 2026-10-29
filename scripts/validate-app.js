@@ -98,7 +98,7 @@ check(html.includes("if(isSplit)topTabs.style.setProperty('display','none','impo
 check(html.includes("mainBar.style.setProperty('display',isSplit?'flex':'none','important');"), 'Main pane title bar can remain visible when no split is active.');
 check(html.includes("pane.style.setProperty('display',isSplit?'flex':'none','important');"), 'Secondary pane visibility can drift from the active tab count.');
 check(html.includes("if(!APP_TABS.some(function(t){return String(t.id)===String(APP_ACTIVE_TAB);}))APP_ACTIVE_TAB=APP_TABS[0].id;"), 'Missing active tab is not recovered before rendering.');
-check(html.includes('body.writer-focus #workspaceSplit>#main{flex:1 1 100%;width:100%;max-width:none;padding:14px 24px 32px!important;border:0!important}'), 'Focus mode does not expand the active editor pane.');
+check(html.includes('body.writer-focus #workspaceSplit>#main{grid-column:1 / -1;flex:1 1 100%;width:100%;max-width:none;padding:14px 24px 32px!important;border:0!important}'), 'Focus mode does not expand the active editor pane.');
 check(html.includes('function mountWorkTools()') && html.includes("['write','chars','world','plot','wideas'].indexOf(R.tab)<0"), 'Work tools are not mounted only inside a work context.');
 check(html.includes("[['write','원고'],['chars','인물'],['world','세계관'],['plot','플롯'],['wideas','아이디어']]"), 'Work-scoped navigation does not include all requested tools.');
 check(html.includes('main.insertBefore(bar,main.firstChild)'), 'Work tools are not placed inside the current work pane.');
