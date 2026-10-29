@@ -57,6 +57,7 @@ check(pkg.version === lock.version, 'package.json and package-lock.json versions
 check(pkg.version === lock.packages?.['']?.version, 'Root package-lock version differs from package.json.');
 check((html.match(/id="split-pane-top-alignment-canonical"/g) || []).length === 1, 'Expected exactly one canonical split-pane alignment block.');
 check(!html.includes('split-pane-top-alignment-canonical-1-4-8'), 'Legacy split-pane alignment block remains.');
+check(!/\\.workspace-split\\.has-multiple\\s*>\\s*#main\\s*\\{[^}]*flex:\\s*0\\s+0\\s+50%/i.test(html), 'Legacy hard-coded 50% main-pane sizing remains.');
 check(!/body\.app-split-active[^{}]*#workspaceSplit\s*>\s*#main\s*\{[^}]*padding-top:\s*(?:50|52|58)px\s*!important/i.test(html), 'Conflicting legacy left-pane top offset remains.');
 check(!/body\.app-pane-mode[^{}]*#main[^{}]*\{[^}]*margin-top:\s*-14px\s*!important/i.test(html), 'Conflicting negative right-pane offset remains.');
 

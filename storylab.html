@@ -425,7 +425,7 @@ body.split-mode .split-panel .split-section h3{margin:0}
 .app-tab-add:disabled{opacity:.35;cursor:not-allowed}
 @media(max-width:600px){.app-tabs{padding:7px 8px}.app-tab{min-width:112px;max-width:180px;flex-basis:145px}}
 .app-tab{position:relative}.app-tab[draggable="true"]{cursor:grab}.app-tab.dragging{opacity:.45}.app-tab.drop-target{outline:2px solid var(--accent);outline-offset:-2px}.app-tab-split{width:26px;flex:none;border:0;background:transparent;color:var(--mute);cursor:pointer;font-size:14px;padding:0}.app-tab-split:hover{color:var(--accent)}
- .workspace-split{position:relative;display:flex;flex:1;min-height:0;overflow:hidden;width:100%;max-width:none!important}.workspace-split>#main{min-width:0;flex:1 1 0;width:0;max-width:none!important;overflow-y:auto;padding-left:14px!important;padding-right:14px!important}.workspace-split #appSplitPane{display:flex;flex:0 0 0%;min-width:0;overflow:hidden;padding:0;background:var(--bg)}.workspace-split #appSplitPane[hidden]{display:none!important}.workspace-split.has-multiple{overflow:hidden;align-items:stretch}.workspace-split.has-multiple>#main{box-sizing:border-box;flex:0 0 calc(100% / var(--pane-count, 2));width:calc(100% / var(--pane-count, 2));min-width:0;max-width:calc(100% / var(--pane-count, 2));height:100%;min-height:0;border-right:1px solid var(--line);overflow-y:auto;overflow-x:hidden}.workspace-split.has-multiple #appSplitPane{box-sizing:border-box;display:flex;flex:1 1 0;width:auto;min-width:0;max-width:none;height:100%;min-height:0;overflow:hidden}.workspace-split.has-multiple #appSplitPane .app-pane-frame{box-sizing:border-box;flex:1 1 0;width:0;min-width:0;max-width:none;height:100%;min-height:0;overflow:hidden}.workspace-split.has-multiple .app-live-pane{display:block;flex:1 1 0;width:100%;max-width:100%;min-width:0;height:0;min-height:0;border:0}
+ .workspace-split{position:relative;display:flex;flex:1;min-height:0;overflow:hidden;width:100%;max-width:none!important}.workspace-split>#main{min-width:0;flex:1 1 0;width:0;max-width:none!important;overflow-y:auto;padding-left:14px!important;padding-right:14px!important}.workspace-split #appSplitPane{display:flex;flex:0 0 0%;min-width:0;overflow:hidden;padding:0;background:var(--bg)}.workspace-split #appSplitPane[hidden]{display:none!important}.workspace-split.has-multiple{overflow:hidden;align-items:stretch}.workspace-split.has-multiple>#main{border-right:1px solid var(--line);overflow-y:auto}.workspace-split.has-multiple #appSplitPane{box-sizing:border-box;display:flex;flex:1 1 0;width:auto;min-width:0;max-width:none;height:100%;min-height:0;overflow:hidden}.workspace-split.has-multiple #appSplitPane .app-pane-frame{box-sizing:border-box;flex:1 1 0;width:0;min-width:0;max-width:none;height:100%;min-height:0;overflow:hidden}.workspace-split.has-multiple .app-live-pane{display:block;flex:1 1 0;width:100%;max-width:100%;min-width:0;height:0;min-height:0;border:0}
 .workspace-split.has-multiple>#main>*{box-sizing:border-box;min-width:0;max-width:100%}
 .workspace-split.has-multiple #appSplitPane .app-live-pane{overflow:auto}
 .workspace-split.has-multiple #main img,.workspace-split.has-multiple #main canvas,.workspace-split.has-multiple #main table,.workspace-split.has-multiple #main .table-wrap,.workspace-split.has-multiple #main .split-panel{max-width:100%}
@@ -488,7 +488,6 @@ body.app-split-active #workspaceSplit>#appMainTabbar{
   box-sizing:border-box!important;
   margin:0!important;
 }
-body.app-split-active #workspaceSplit>#main{}
 body.app-split-active #workspaceSplit>#main>.writer-top:first-child,
 body.app-split-active #workspaceSplit>#main>.tr:first-child,
 body.app-split-active #workspaceSplit>#main>.folder-list:first-child{
@@ -504,7 +503,6 @@ body.app-split-active #workspaceSplit>#main .writer-heading:first-child{
 
 /* Final layout overrides: equal tab widths and compact writing goal */
 .workspace-split.has-multiple{display:flex!important;gap:0!important}
-.workspace-split.has-multiple>#main{flex:0 0 calc(100% / var(--pane-count, 2))!important;width:calc(100% / var(--pane-count, 2))!important;max-width:calc(100% / var(--pane-count, 2))!important;min-width:0!important;box-sizing:border-box!important;overflow-x:hidden!important}
 .workspace-split.has-multiple>#appSplitPane{flex:1 1 0!important;width:0!important;min-width:0!important;max-width:none!important;display:flex!important;overflow:hidden!important}
 .workspace-split.has-multiple>#appSplitPane>.app-pane-frame{flex:1 1 0!important;width:0!important;min-width:0!important;max-width:none!important;box-sizing:border-box!important}
 .writer-goal{padding:7px 10px!important;margin:6px 0!important;border-radius:8px!important}
@@ -518,9 +516,6 @@ body.app-split-active #workspaceSplit>#main .writer-heading:first-child{
 .writer-stats>div{padding:6px 8px!important;gap:2px!important}
 .writer-stats strong{font-size:12px!important}
 .writer-stats span{font-size:10px!important}
-
-/* Layout fixes: keep the original pane content below its tab strip and scale controls fluidly. */
-body.app-split-active #workspaceSplit>#main{}
 body.app-split-active #workspaceSplit>#main .writer-heading:first-of-type{margin-top:0!important}
 body.app-split-active #workspaceSplit>#main .writer-heading>label{display:block;margin-top:0!important;margin-bottom:6px!important}
 body.app-split-active #workspaceSplit>#main .writer-heading .title{width:100%;min-width:0;box-sizing:border-box}
@@ -535,7 +530,7 @@ body.app-split-active #workspaceSplit>#main .writer-stats strong{overflow-wrap:a
 .scene-memo-entry strong{display:block;margin-bottom:4px}
 .scene-memo-entry span{display:block;color:var(--mute);font-size:12px;white-space:pre-wrap;overflow-wrap:anywhere}
 @media(min-width:1200px){body.app-split-active #workspaceSplit>#main{padding-left:clamp(14px,1.4vw,24px)!important;padding-right:clamp(14px,1.4vw,24px)!important}}
-@media(max-width:760px){body.app-split-active #workspaceSplit>#main{}body.app-split-active #workspaceSplit>#main .writer-toolbar .btn{font-size:11px;padding:5px 7px}}
+@media(max-width:760px){body.app-split-active #workspaceSplit>#main .writer-toolbar .btn{font-size:11px;padding:5px 7px}}
 
 /* 1.1.3 minimalist UI + mathematically equal split panes */
 :root{--bg:#101112;--surface:#181a1c;--surface-2:#202326;--ink:#e8e9e7;--mute:#969b9e;--line:#303437;--accent:#a5d6bd;--on-accent:#17231c;--warn:#e08a91;--focus:rgba(165,214,189,.22);color-scheme:dark}
@@ -564,7 +559,6 @@ input,textarea,select{border-color:var(--line);background:var(--surface);color:v
 .writer-goal{padding:8px 10px!important;margin:6px 0!important;border-radius:7px!important}
 .writer-stats>div{padding:6px 8px!important;border-radius:6px!important}
 .workspace-split.has-multiple{display:flex!important;gap:0!important;align-items:stretch!important}
-.workspace-split.has-multiple>#main{box-sizing:border-box!important;flex:0 0 calc(100% / var(--pane-count, 2))!important;width:calc(100% / var(--pane-count, 2))!important;min-width:0!important;max-width:calc(100% / var(--pane-count, 2))!important}
 .workspace-split.has-multiple>#appSplitPane{box-sizing:border-box!important;display:flex!important;flex:0 0 calc(100% - (100% / var(--pane-count, 2)))!important;width:calc(100% - (100% / var(--pane-count, 2)))!important;min-width:0!important;max-width:none!important;overflow:hidden!important}
 .workspace-split.has-multiple>#appSplitPane>.app-pane-frame{box-sizing:border-box!important;flex:0 0 calc(100% / (var(--pane-count, 2) - 1))!important;width:calc(100% / (var(--pane-count, 2) - 1))!important;min-width:0!important;max-width:none!important}
 .workspace-split.has-multiple #appSplitPane .app-live-pane{flex:1 1 0!important;width:100%!important;min-width:0!important}
@@ -606,7 +600,6 @@ button{box-shadow:none}
 :root[data-theme="light"] input,:root[data-theme="light"] textarea,:root[data-theme="light"] select{background:var(--surface);color:var(--ink);border-color:var(--line)}
 :root[data-theme="light"] ::placeholder{color:#737d75;opacity:1}
 :root[data-theme="light"] .empty,:root[data-theme="light"] .ms,:root[data-theme="light"] .note,:root[data-theme="light"] .setting-help,:root[data-theme="light"] .sec{color:var(--mute)}
-.workspace-split.has-multiple>#main{flex:0 0 calc(100% / var(--pane-count,2))!important;width:calc(100% / var(--pane-count,2))!important;max-width:calc(100% / var(--pane-count,2))!important;min-width:0!important;box-sizing:border-box!important}
 .workspace-split.has-multiple>#appSplitPane{flex:0 0 calc(100% - (100% / var(--pane-count,2)))!important;width:calc(100% - (100% / var(--pane-count,2)))!important;min-width:0!important;max-width:none!important;box-sizing:border-box!important;display:flex!important;overflow:hidden!important}
 .workspace-split.has-multiple>#appSplitPane>.app-pane-frame{flex:1 1 0!important;width:0!important;min-width:0!important;max-width:none!important;box-sizing:border-box!important;display:flex!important;flex-direction:column!important}
 .workspace-split.has-multiple #appSplitPane .app-live-pane{display:block!important;flex:1 1 0!important;width:100%!important;height:100%!important;min-width:0!important;min-height:0!important;box-sizing:border-box!important}
@@ -628,7 +621,6 @@ button{box-shadow:none}
 
 /* 1.1.6: consistent split sizing and light-theme contrast */
 .workspace-split.has-multiple{display:flex!important;align-items:stretch!important;gap:0!important;width:100%!important;min-width:0!important}
-.workspace-split.has-multiple>#main{flex:0 0 calc(100% / var(--pane-count,2))!important;width:calc(100% / var(--pane-count,2))!important;max-width:calc(100% / var(--pane-count,2))!important;min-width:0!important;box-sizing:border-box!important;overflow-x:hidden!important}
 .workspace-split.has-multiple>#appSplitPane{flex:0 0 calc(100% - (100% / var(--pane-count,2)))!important;width:calc(100% - (100% / var(--pane-count,2)))!important;max-width:calc(100% - (100% / var(--pane-count,2)))!important;min-width:0!important;display:flex!important;box-sizing:border-box!important}
 .workspace-split.has-multiple #appSplitPane>.app-pane-frame{flex:1 1 0!important;width:0!important;max-width:none!important;min-width:0!important;box-sizing:border-box!important}
 .workspace-split.has-multiple #appSplitPane .app-live-pane{display:block!important;flex:1 1 0!important;width:100%!important;max-width:100%!important;min-width:0!important;box-sizing:border-box!important}
@@ -639,7 +631,6 @@ button{box-shadow:none}
 
 /* 1.1.7: equal-width live panes, per-work scene memos, and reliable theme contrast */
 .workspace-split.has-multiple{display:flex!important;align-items:stretch!important}
-.workspace-split.has-multiple>#main{box-sizing:border-box!important;flex:0 0 calc(100% / var(--pane-count,2))!important;width:calc(100% / var(--pane-count,2))!important;max-width:calc(100% / var(--pane-count,2))!important;min-width:0!important}
 .workspace-split.has-multiple>#appSplitPane{box-sizing:border-box!important;display:flex!important;flex:0 0 calc(100% - (100% / var(--pane-count,2)))!important;width:calc(100% - (100% / var(--pane-count,2)))!important;max-width:none!important;min-width:0!important;overflow:hidden!important}
 .workspace-split.has-multiple>#appSplitPane>.app-pane-frame{box-sizing:border-box!important;display:flex!important;flex:1 1 0!important;width:0!important;max-width:none!important;min-width:0!important}
 .workspace-split.has-multiple>#appSplitPane .app-live-pane{box-sizing:border-box!important;display:block!important;flex:1 1 0!important;width:100%!important;max-width:100%!important;min-width:0!important;height:100%!important;min-height:0!important}
@@ -684,7 +675,7 @@ body.app-pane-mode #workspaceSplit>#main{box-sizing:border-box!important;flex:1 
 
 /* 1.1.8: equal split, compact controls, scene memo status, auto-growing editor */
 .workspace-split.has-multiple{display:flex!important;gap:0!important;padding:0!important}
-.workspace-split.has-multiple>#main{flex:0 0 50%!important;width:50%!important;max-width:50%!important;min-width:0!important;margin:0!important;padding-left:clamp(10px,1.1vw,16px) !important;padding-right:clamp(10px,1.1vw,16px) !important;padding-bottom:16px !important;box-sizing:border-box!important}
+.workspace-split.has-multiple>#main{padding-left:clamp(10px,1.1vw,16px) !important;padding-right:clamp(10px,1.1vw,16px) !important;padding-bottom:16px !important}
 .workspace-split.has-multiple>#appSplitPane{flex:0 0 50%!important;width:50%!important;max-width:50%!important;min-width:0!important;margin:0!important;padding:0!important;box-sizing:border-box!important;display:flex!important;overflow:hidden!important}
 .workspace-split.has-multiple>#appSplitPane>.app-pane-frame{flex:1 1 0!important;width:0!important;min-width:0!important;max-width:none!important;margin:0!important;padding:0!important;box-sizing:border-box!important;display:flex!important;flex-direction:column!important}
 .workspace-split.has-multiple #appSplitPane .app-live-pane{width:100%!important;max-width:100%!important;min-width:0!important;height:100%!important;min-height:0!important;flex:1 1 0!important;display:block!important;box-sizing:border-box!important}
@@ -702,9 +693,6 @@ body.app-pane-mode #workspaceSplit>#main{box-sizing:border-box!important;flex:1 
 :root[data-theme="light"] .scene-memo-trigger:not(.has-scene-memo) .scene-memo-status{background:#89948b}
 @media(min-width:1100px){.btn,.gear,.theme-toggle{font-size:12px}.btn,.gear{min-height:29px;padding:5px 9px}.home-tiles{gap:8px}.menu.mini.home-tile{min-height:94px;padding:10px}.writer-goal{padding:10px 12px}}
 @media(max-width:760px){.workspace-split.has-multiple>#main{padding-left:8px!important;padding-right:8px!important}.workspace-split.has-multiple>#main .writer-toolbar .btn,.workspace-split.has-multiple #appSplitPane .writer-toolbar .btn{font-size:10px!important;padding:4px 6px!important}}
-
-/* 1.2.0: exact split-pane top alignment, strong theme contrast, compact full-screen layout, history left */
-.workspace-split.has-multiple>#main{}
 .workspace-split.has-multiple>#main>.tr:first-child,
 .workspace-split.has-multiple>#main>.writer-top:first-child{margin-top:0!important;padding-top:0!important}
 .workspace-split.has-multiple>#appSplitPane,
@@ -760,10 +748,9 @@ body.app-pane-mode #workspaceSplit>#main{box-sizing:border-box!important;flex:1 
 :root[data-theme="dark"] input,:root[data-theme="dark"] textarea,:root[data-theme="dark"] select,:root[data-theme="dark"] option{color:#f5f6f7!important;background:#1b1d20!important;border-color:#59616b!important}
 :root[data-theme="light"] input::placeholder,:root[data-theme="light"] textarea::placeholder{color:#65766b!important;opacity:1}
 :root[data-theme="dark"] input::placeholder,:root[data-theme="dark"] textarea::placeholder{color:#b2bac5!important;opacity:1}
-@media(max-width:760px){.chapter-history{width:100%!important;max-width:100%!important}.workspace-split.has-multiple>#main{}.revision-compare-grid{grid-template-columns:1fr}}
+@media(max-width:760px){.chapter-history{width:100%!important;max-width:100%!important}.revision-compare-grid{grid-template-columns:1fr}}
 /* 1.2.1: rebuild writing layout, align split-pane content below matching tab bars, force file contrast */
 .workspace-split.has-multiple>.app-main-tabbar{height:44px!important}
-.workspace-split.has-multiple>#main{}
 .workspace-split.has-multiple #appSplitPane>.app-pane-frame>.app-pane-tabbar{height:44px!important;min-height:44px!important}
 .workspace-split.has-multiple #appSplitPane>.app-pane-frame>.app-live-pane{padding-top:0!important;margin-top:0!important}
 .workspace-split.has-multiple #appSplitPane .app-live-pane body{padding-top:0!important}
@@ -826,7 +813,7 @@ body.app-pane-mode #workspaceSplit>#main{box-sizing:border-box!important;flex:1 
 :root[data-theme="light"] .fh,:root[data-theme="light"] .fb,:root[data-theme="light"] .fr{background:#fff!important;border-color:#aabbb0!important}:root[data-theme="dark"] .fh,:root[data-theme="dark"] .fb,:root[data-theme="dark"] .fr{background:#1b1f23!important;border-color:#58616c!important}
 :root[data-theme="light"] .btn:not(.primary),:root[data-theme="light"] button:not(.primary):not([aria-pressed="true"]){color:#14231a}:root[data-theme="dark"] .btn:not(.primary),:root[data-theme="dark"] button:not(.primary):not([aria-pressed="true"]){color:#f7f9fb}
 /* The outer pane tab already provides 44px; remove the duplicate inner top gap. */
-body.app-pane-mode>.workspace-split>#main{padding-left:14px !important;padding-right:14px !important;padding-bottom:16px !important}body.app-pane-mode #main:has(>.writer-heading){}body.app-pane-mode #main:has(>.writer-heading)>.writer-top{margin-top:0!important;padding-top:0!important}body.app-pane-mode #main:has(>.writer-heading)>.writer-toolbar{margin-top:4px!important}
+body.app-pane-mode>.workspace-split>#main{padding-left:14px !important;padding-right:14px !important;padding-bottom:16px !important}body.app-pane-mode #main:has(>.writer-heading)>.writer-top{margin-top:0!important;padding-top:0!important}body.app-pane-mode #main:has(>.writer-heading)>.writer-toolbar{margin-top:4px!important}
 body.app-split-active #workspaceSplit>#main{padding-bottom:16px!important}body.app-split-active #workspaceSplit>#appSplitPane,body.app-split-active #workspaceSplit>#appSplitPane>.app-pane-frame{padding-top:0!important;margin-top:0!important}body.app-split-active #workspaceSplit>#appSplitPane .app-live-pane{display:block!important;height:100%!important;min-height:0!important}
 /* Keep goal tracking available without competing with the manuscript. */
 #main:has(>.writer-heading)>.writer-goal{padding:7px 10px!important;margin:5px 0!important;border-radius:7px!important}#main:has(>.writer-heading) .writer-goal-top label{font-size:11px!important;font-weight:600}#main:has(>.writer-heading) #wordGoal{width:72px!important;padding:3px 5px!important;font-size:12px!important}#main:has(>.writer-heading) .writer-progress{height:3px!important;margin:5px 0 4px!important}#main:has(>.writer-heading) .writer-goal-bottom{font-size:10px!important;gap:4px 10px!important}
@@ -835,9 +822,6 @@ body.app-split-active #workspaceSplit>#main{padding-bottom:16px!important}body.a
 /* 1.2.5: keep the left pane content below its tab strip so the manuscript list remains visible */
 body.app-split-active #workspaceSplit>#main{box-sizing:border-box!important}
 @media(max-width:760px){}
-/* 1.2.6: reduce the right pane top gap to align its content with the left pane */
-body.app-pane-mode>.workspace-split>#main{}
-@media(max-width:760px){body.app-pane-mode>.workspace-split>#main,body.app-pane-mode #main:has(>.writer-heading){}}
 
 <!-- split-pane-top-alignment-final-override -->
 /* Make both split-pane content areas begin at the same vertical coordinate.
@@ -854,9 +838,6 @@ body.app-pane-mode #main:has(> .writer-heading) > .writer-top {
   padding-top: 0 !important;
 }
 @media (max-width: 760px) {
-  body.app-split-active #workspaceSplit > #main {}
-  body.app-pane-mode > .workspace-split > #main,
-  body.app-pane-mode #main:has(> .writer-heading) {}
 }
 
 
@@ -880,16 +861,7 @@ body.app-split-active #workspaceSplit #appSplitPane .app-pane-frame > iframe.app
     height: 100% !important;
   }
 }
-
-/* v1.3.4: definitive right-pane home/layout correction.
-   The right iframe's inner #main inherits the split-pane 44px top spacer even
-   though its outer pane tabbar already occupies that space. Reset the inner
-   content box directly in pane mode; keep the left pane's 44px reservation. */
-body.app-pane-mode main#main,
-body.app-pane-mode .workspace-split main#main {}
 @media (max-width: 760px) {
-  body.app-pane-mode main#main,
-  body.app-pane-mode .workspace-split main#main {}
 }
 
 /* v1.3.5: readable keyboard shortcut keys in light mode */
@@ -951,8 +923,18 @@ body.writer-focus #main > .chapter-history { margin-top:16px!important; margin-b
 </style>
 
 <style id="split-pane-top-alignment-canonical">
-/* Single source of truth: the left tab strip overlays its pane; the right
-   tab strip lives outside its iframe. Keep the content offsets explicit. */
+/* One canonical rule set for pane sizing and top alignment. */
+.workspace-split.has-multiple > #main {
+  box-sizing: border-box !important;
+  flex: 0 0 calc(100% / var(--pane-count, 2)) !important;
+  width: calc(100% / var(--pane-count, 2)) !important;
+  max-width: calc(100% / var(--pane-count, 2)) !important;
+  min-width: 0 !important;
+  height: 100%;
+  min-height: 0;
+  margin: 0 !important;
+  overflow-x: hidden !important;
+}
 body.app-split-active:not(.writer-focus) #workspaceSplit > #main {
   box-sizing: border-box !important;
   padding-top: 44px !important;
@@ -965,6 +947,11 @@ body.app-pane-mode.writer-focus > #workspaceSplit > #main {
   margin-top: 0 !important;
 }
 @media (max-width: 760px) {
+  .workspace-split.has-multiple > #main {
+    flex: 0 0 80vw !important;
+    width: 80vw !important;
+    max-width: 80vw !important;
+  }
   body.app-split-active:not(.writer-focus) #workspaceSplit > #main {
     padding-top: 44px !important;
   }
