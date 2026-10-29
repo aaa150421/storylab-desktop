@@ -79,7 +79,7 @@ check(html.includes('id="findReplaceDialog"') && html.includes('id="findNext"') 
 check(html.includes("e.key.toLowerCase()==='f'"), 'Ctrl+F manuscript search shortcut is missing.');
 check(!html.includes('id="replaceAllButton"') && !html.includes('id="replaceWith"'), 'Unrequested find-and-replace controls remain.');
 check(html.includes('.scene-memo-dialog[hidden]{display:none!important}'), 'Hidden dialogs can still be shown by the dialog display rule.');
-check(html.includes('class="workspace-context"') && html.includes('이 작품에만 저장되는 설정입니다.'), 'Manuscript-scoped tools do not identify the active work.');
+check(html.includes("context.className='workspace-context'") && html.includes('이 작품에만 저장되는 설정입니다.'), 'Manuscript-scoped tools do not identify the active work.');
 check(html.includes("localStorage.setItem(KEY+'-recovery'"), 'Deleted chapter recovery copy is not preserved.');
 check(!/if\(chapter\)\{var ix=work\.chapters\.indexOf\(chapter\);work\.chapters\[ix\]=preserved;\}else work\.chapters\.push\(preserved\);/.test(html), 'Remote deletion is still silently undone by chapter resurrection.');
 check(html.includes('function setWriterFocus(enabled,notifyParent)'), 'Focus mode does not use the centralized state transition.');
