@@ -189,7 +189,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 
 
 /* Writing workspace: goals, stats, preview and distraction-free mode. */
-.writer-goal{padding:8px 11px;margin:7px 0;border-radius:9px}.writer-goal-top label{font-size:11px}.writer-goal-top>div{gap:5px}#wordGoal{width:78px;padding:3px 6px;font-size:11px}.writer-progress{height:4px;margin:7px 0 5px}.writer-goal-bottom{font-size:10px;gap:6px}.writer-goal-top .ms{font-size:10px}.writer-stats{gap:6px;margin:7px 0 4px}.writer-stats>div{padding:7px 9px;gap:2px}.writer-stats strong{font-size:13px}.writer-stats span{font-size:10px}.scene-memo-dialog{position:fixed;z-index:200;inset:0;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.68)}.scene-memo-dialog[hidden]{display:none!important}.scene-memo-card{width:min(620px,100%);max-height:85vh;overflow:auto;padding:18px;border:1px solid var(--line);border-radius:14px;background:var(--surface);box-shadow:0 18px 60px #0009}.scene-memo-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}.scene-memo-head strong{font-size:16px}.scene-memo-card .memo{width:100%;min-height:180px;resize:vertical;line-height:1.8;margin-top:10px}
+.writer-goal{padding:8px 11px;margin:7px 0;border-radius:9px}.writer-goal-top label{font-size:11px}.writer-goal-top>div{gap:5px}#wordGoal{width:78px;padding:3px 6px;font-size:11px}.writer-progress{height:4px;margin:7px 0 5px}.writer-goal-bottom{font-size:10px;gap:6px}.writer-goal-top .ms{font-size:10px}.writer-stats{gap:6px;margin:7px 0 4px}.writer-stats>div{padding:7px 9px;gap:2px}.writer-stats strong{font-size:13px}.writer-stats span{font-size:10px}.scene-memo-dialog{position:fixed;z-index:200;inset:0;display:flex;align-items:center;justify-content:center;padding:20px;background:transparent;pointer-events:none}.scene-memo-card{pointer-events:auto}.scene-memo-dialog[hidden]{display:none!important}.scene-memo-card{width:min(620px,100%);max-height:85vh;overflow:auto;padding:18px;border:1px solid var(--line);border-radius:14px;background:var(--surface);box-shadow:0 18px 60px #0009}.scene-memo-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}.scene-memo-head strong{font-size:16px}.scene-memo-card .memo{width:100%;min-height:180px;resize:vertical;line-height:1.8;margin-top:10px}
 .writer-toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0 14px}
 .writer-view-switch{display:flex;gap:6px;flex-wrap:wrap}
 .writer-view-switch .btn[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);background:rgba(130,217,173,.08)}
@@ -210,7 +210,8 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 .writer-preview p{margin:0 0 1.2em;text-indent:1em;white-space:normal}
 .writer-preview .writer-preview-empty{color:var(--mute);text-indent:0}
 .writer-heading{max-width:42em;margin:0 auto}
-body.writer-focus header,body.writer-focus nav{display:none!important}
+body.writer-focus header,body.writer-focus nav,body.writer-focus #appTabs{display:none!important}
+body.app-split-active .app-pane-frame.is-writer-focus>.app-pane-tabbar{display:none!important}
 body.writer-focus main{max-width:900px;padding:24px clamp(18px,5vw,56px);}
 body.writer-focus .writer-top{margin-bottom:18px!important}
 body.writer-focus .doc-tabs{opacity:.72}
@@ -1129,7 +1130,7 @@ var APP_TAB_LIMIT=8,APP_ACTIVE_TAB='app-tab-1',APP_TAB_SEQ=1,APP_SPLIT=false,APP
    the iframe can show the list while the host still remembers edit:true. */
 window.addEventListener('message',function(event){
   var data=event&&event.data;
-  if(!data||data.type!=='storylab-pane-screen-change'||!data.screen||APP_PANE_MODE)return;
+  if(!data||APP_PANE_MODE)return;
   var pane=document.getElementById('appSplitPane');
   if(!pane)return;
   var frame=null;
@@ -1138,13 +1139,20 @@ window.addEventListener('message',function(event){
   });
   if(!frame)return;
   var holder=frame.closest('[data-live-pane]');
-  var id=holder&&holder.getAttribute('data-live-pane');
+  if(!holder)return;
+  if(data.type==='storylab-pane-focus-change'){
+    holder.classList.toggle('is-writer-focus',!!data.enabled);
+    return;
+  }
+  if(data.type!=='storylab-pane-screen-change'||!data.screen)return;
+  var id=holder.getAttribute('data-live-pane');
   var tab=APP_TABS.find(function(item){return String(item.id)===String(id);});
   if(!tab)return;
   var screen=data.screen;
   if(typeof screen.tab!=='string'||screen.workId==null)return;
   tab.screen={tab:screen.tab,workId:screen.workId,cur:screen.cur,edit:!!screen.edit};
   tab.title=appScreenTitle(tab.screen);
+  holder.classList.remove('is-writer-focus');
   renderSplitPreview();
 });
 var APP_TABS=[{id:APP_ACTIVE_TAB,title:'이야기공방',screen:{tab:'home',workId:R.w,cur:S.cur,edit:false}}];
@@ -1494,7 +1502,14 @@ function rEdit(){
    editor.oninput=function(e){c.body=e.target.value;resizeWriterEditor();updateStats();updTotal();save();scheduleChapterRevision(c);if(EDITOR_VIEW==='preview'||DUAL_VIEW)paintPreview();};
   $('#editView').onclick=function(){DUAL_VIEW=false;document.body.classList.remove('writer-dual-view');if(EDITOR_VIEW==='edit'){render();return;}EDITOR_VIEW='edit';render();var ed=$('#ed');ed.focus();var pos=Math.min(WRITER_CURSOR,ed.value.length);ed.setSelectionRange(pos,pos);};
   $('#previewView').onclick=function(){DUAL_VIEW=false;document.body.classList.remove('writer-dual-view');if(EDITOR_VIEW==='preview'){render();return;}var ed=$('#ed');if(ed)WRITER_CURSOR=ed.selectionStart||0;EDITOR_VIEW='preview';render();};
-  $('#focusToggle').onclick=function(){FOCUS_MODE=!FOCUS_MODE;render();};
+  $('#focusToggle').onclick=function(){
+     FOCUS_MODE=!FOCUS_MODE;
+     document.body.classList.toggle('writer-focus',FOCUS_MODE);
+     this.setAttribute('aria-pressed',String(FOCUS_MODE));
+     this.textContent=FOCUS_MODE?'집중 모드 끄기':'⛶ 집중 모드';
+     if(APP_PANE_MODE){try{window.parent.postMessage({type:'storylab-pane-focus-change',enabled:FOCUS_MODE},'*');}catch(ignore){}}
+     render();
+   };
   m.querySelectorAll('[data-scene-char]').forEach(function(cb){cb.onchange=function(){if(!Array.isArray(c.charIds))c.charIds=[];var raw=cb.dataset.sceneChar,id=Number(raw);if(!Number.isFinite(id))id=raw;if(cb.checked&&c.charIds.indexOf(id)<0)c.charIds.push(id);if(!cb.checked)c.charIds=c.charIds.filter(function(x){return String(x)!==String(id);});save();var row=cb.closest('.split-char-item');if(row){row.classList.toggle('is-linked',cb.checked);var status=row.querySelector('.ms');if(status)status.textContent=cb.checked?'연결됨':'추가';}var list=$('#splitCharList');if(list&&$('#splitCharSearch').value)$('#splitCharSearch').dispatchEvent(new Event('input'));};});
   var splitSearch=$('#splitCharSearch');if(splitSearch)splitSearch.oninput=function(){var q=this.value.trim().toLowerCase();m.querySelectorAll('[data-char-row]').forEach(function(row){row.hidden=!!q&&row.textContent.toLowerCase().indexOf(q)<0;});};
   var splitChapterSelect=$('#splitChapterSelect');if(splitChapterSelect){splitChapterSelect.onchange=function(){SPLIT_REFERENCE_ID=this.value||null;paintSplitChapterReference();};paintSplitChapterReference();}
@@ -1506,8 +1521,6 @@ function rEdit(){
   m.querySelectorAll('.chip[data-id]').forEach(function(b){b.onclick=function(){S.cur=+b.dataset.id;save();render();};});
   $('#back').onclick=function(e){
      if(e){e.preventDefault();e.stopPropagation();}
-     /* Save while EDIT is still true so the iframe uses chapter-scoped merge
-        instead of writing its entire potentially stale state over localStorage. */
      R.tab='write';
      save();
      EDIT=false;
@@ -1518,8 +1531,8 @@ function rEdit(){
        APP_PANE_SCREEN.workId=R.w;
        APP_PANE_SCREEN.cur=S.cur;
        APP_PANE_SCREEN.edit=false;
-       /* Keep the host tab's saved screen in sync with this iframe. */
        try{
+         window.parent.postMessage({type:'storylab-pane-focus-change',enabled:false},'*');
          window.parent.postMessage({
            type:'storylab-pane-screen-change',
            screen:{tab:'write',workId:R.w,cur:S.cur,edit:false}
