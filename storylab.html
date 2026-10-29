@@ -1228,9 +1228,9 @@ function renderSplitPreview(){
    // The cloned parent nav can carry a hidden attribute, while pane-mode CSS
    // elsewhere forces nav back to display:flex!important. Hide this extra 30px
    // row at the source so it cannot shift the embedded pane content downward.
-   html=html.replace(/<nav\\b([^>]*)>/i,function(full,attrs){
-     attrs=attrs.replace(/\\sstyle="[^"]*"/i,'');
-     attrs=attrs.replace(/\\shidden(?:="[^"]*")?/i,'');
+   html=html.replace(/<nav\b([^>]*)>/i,function(full,attrs){
+     attrs=attrs.replace(/\sstyle="[^"]*"/i,'');
+     attrs=attrs.replace(/\shidden(?:="[^"]*")?/i,'');
      return '<nav'+attrs+' hidden style="display:none!important;flex:none!important;height:0!important;min-height:0!important;margin:0!important;padding:0!important;border:0!important">';
    });
    var bootstrap='<script>window.__STORY_PANE_SCREEN='+screenJson+';<\/script>';
