@@ -119,6 +119,7 @@ if (chapterSnapshotSource && findStoredChapterSource && saveSource) {
       HISTORY_LAST_AT: 0,
       HISTORY_APPLYING: false,
       HISTORY_LIMIT: 40,
+      saveStatusTimer: null,
       UNDO_STACK: [],
       REDO_STACK: [],
       stateString: () => JSON.stringify(localRoot),
