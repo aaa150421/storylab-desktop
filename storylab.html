@@ -1218,6 +1218,13 @@ function renderSplitPreview(){
        return ' class="'+value.split(/\s+/).filter(function(name){return name!=='app-split-active';}).join(' ')+'"';
      })+'>';
    });
+   // A cloned parent can retain workspace-split.has-multiple. In the iframe,
+   // that class re-enables the parent's 44px top padding on #main even though
+   // the iframe already has its own 44px tab bar. The embedded pane is a
+   // single-pane workspace, so remove that parent-only layout state as well.
+   html=html.replace(/(<(?:div|section)[^>]*id="workspaceSplit"[^>]*class=")([^"]*)(")/i,function(full,before,classes,after){
+     return before+classes.split(/\s+/).filter(function(name){return name!=='has-multiple';}).join(' ')+after;
+   });
    var bootstrap='<script>window.__STORY_PANE_SCREEN='+screenJson+';<\/script>';
    html=html.replace('</head>',bootstrap+'</head>');
    iframe.onload=function(){
