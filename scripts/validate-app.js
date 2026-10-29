@@ -49,6 +49,10 @@ check(primaryCss.includes('body.writer-focus>header,body.writer-focus>#appTabs,b
 check(primaryCss.includes('body.app-pane-mode>header,body.app-pane-mode>#appTabs,body.app-pane-mode>nav'), 'Embedded pane mode does not hide application chrome.');
 check(primaryCss.includes('padding-top:58px!important'), 'Split main pane does not reserve the tab strip and content inset.');
 check(primaryCss.includes('body.app-split-active.writer-focus #workspaceSplit>#main{padding-top:14px!important}'), 'Focus mode does not release the split-tab offset.');
+check(primaryCss.includes('body.app-split-active:not(.writer-focus){grid-template-rows:var(--header) 0 minmax(0,1fr)}'), 'Split layout is overriding the focus-mode grid.');
+check(primaryCss.includes('body.writer-focus #workspaceSplit>#appSplitPane,body.writer-focus #workspaceSplit>.app-main-tabbar{display:none!important}'), 'Focus mode leaves the sibling pane or pane title visible.');
+check(primaryCss.includes('.workspace-split.has-multiple>#appSplitPane{display:flex!important;flex:1 1 0;width:0;min-width:0;min-height:0;position:relative;box-sizing:border-box;padding:0!important;overflow:hidden;border-left:1px solid var(--line)}'), 'Right split pane has a duplicate top offset.');
+check(primaryCss.includes('.work-tool-nav{display:flex;align-items:center;gap:6px;flex-wrap:wrap;'), 'Work-scoped navigation styles are missing.');
 check(!/body\.app-pane-mode[^{}]*#main[^{}]*\{[^}]*margin-top:\s*-14px\s*!important/i.test(html), 'Conflicting negative right-pane offset remains.');
 
 check(primaryCss.includes('[data-theme="light"]'), 'Light theme styling is missing after the UI redesign.');
@@ -75,11 +79,18 @@ check((html.match(/--rail:108px/g) || []).length === 1, 'Expected one consolidat
 check(!html.includes('split-pane-top-alignment-canonical'), 'Separate legacy alignment style block remains.');
 check(!/body\.app-pane-mode[^{}]*#main[^{}]*\{[^}]*margin-top:\s*-14px\s*!important/i.test(html), 'Conflicting negative right-pane offset remains.');
 check(!html.includes('chapterLockToggle') && !html.includes('c.locked'), 'Unrequested manuscript-lock logic remains.');
-check(html.includes('id="findReplaceDialog"') && html.includes('id="findNext"') && html.includes('id="findPrev"'), 'Find-only dialog controls are missing.');
-check(html.includes("e.key.toLowerCase()==='f'"), 'Ctrl+F manuscript search shortcut is missing.');
-check(!html.includes('id="replaceAllButton"') && !html.includes('id="replaceWith"'), 'Unrequested find-and-replace controls remain.');
+check(html.includes('id="manuscriptFindDialog"') && html.includes('id="findNext"') && html.includes('id="findPrev"'), 'Find-only dialog controls are missing.');
+check(html.includes("e.key.toLowerCase()==='f'&&R.tab==='write'&&EDIT"), 'Ctrl+F manuscript search shortcut is missing.');
+check(!html.includes('id="replaceOpen"') && !html.includes('원고 찾기'), 'Unrequested manuscript-find button remains.');
+check(html.includes("findDialog.hidden=false;findInput.value='';"), 'Ctrl+F does not open the search dialog directly.');
+check(!html.includes('id="replaceAllButton"') && !html.includes('id="replaceWith"') && !html.includes('replaceAllButton'), 'Unrequested find-and-replace controls remain.');
 check(html.includes('.scene-memo-dialog[hidden]{display:none!important}'), 'Hidden dialogs can still be shown by the dialog display rule.');
-check(html.includes("context.className='workspace-context'") && html.includes('이 작품에만 저장되는 설정입니다.'), 'Manuscript-scoped tools do not identify the active work.');
+check(html.includes('body.app-split-active:not(.writer-focus)>#appTabs{display:none!important}'), 'Global tabs remain duplicated above split-pane title bars.');
+check(html.includes('body.writer-focus #workspaceSplit>#main{flex:1 1 100%;width:100%;max-width:none;padding:14px 24px 32px!important;border:0!important}'), 'Focus mode does not expand the active editor pane.');
+check(html.includes('function mountWorkTools()') && html.includes("['write','chars','world','plot','wideas'].indexOf(R.tab)<0"), 'Work tools are not mounted only inside a work context.');
+check(html.includes("[['write','원고'],['chars','인물'],['world','세계관'],['plot','플롯'],['wideas','아이디어']]"), 'Work-scoped navigation does not include all requested tools.');
+check(html.includes('main.insertBefore(bar,main.firstChild)'), 'Work tools are not placed inside the current work pane.');
+check(!html.includes('data-tab="chars"') && !html.includes('data-tab="world"') && !html.includes('data-tab="plot"') && !html.includes('data-tab="wideas"'), 'Work-scoped tools remain in global left navigation.');
 check(html.includes("localStorage.setItem(KEY+'-recovery'"), 'Deleted chapter recovery copy is not preserved.');
 check(!/if\(chapter\)\{var ix=work\.chapters\.indexOf\(chapter\);work\.chapters\[ix\]=preserved;\}else work\.chapters\.push\(preserved\);/.test(html), 'Remote deletion is still silently undone by chapter resurrection.');
 check(html.includes('function setWriterFocus(enabled,notifyParent)'), 'Focus mode does not use the centralized state transition.');
