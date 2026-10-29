@@ -54,7 +54,7 @@ check(primaryCss.includes('body.writer-focus #workspaceSplit>#appSplitPane,body.
 check(primaryCss.includes('.workspace-split.has-multiple>#appSplitPane{display:flex!important;flex:1 1 0;width:0;min-width:0;min-height:0;position:relative;box-sizing:border-box;padding:0!important;overflow:hidden;border-left:1px solid var(--line)}'), 'Right split pane has a duplicate top offset.');
 check(primaryCss.includes('.work-tool-nav{display:flex;align-items:center;gap:6px;flex-wrap:wrap;'), 'Work-scoped navigation styles are missing.');
 check(html.includes('Reorder existing pane elements instead of rebuilding their iframes'), 'Split-tab reordering still recreates live editor iframes.');
-check(html.includes('var activeScreenKey=JSON.stringify(active&&active.screen') && html.includes('}).slice(0,1);'), 'Split view must render one secondary pane and suppress duplicate screens.');
+check(html.includes('var activeScreenKey=JSON.stringify(active&&active.screen') && html.includes('seenPaneScreens[screenKey]=true;'), 'Split view must render one secondary pane and suppress duplicate screens.');
 check(html.includes('id="contextPanelToggle"') && html.includes('id="contextPanelClose"'), 'Scene reference tools are missing their compact sidebar controls.');
 check(primaryCss.includes('.split-panel.is-open{display:block}'), 'Scene reference tools are not hidden in a compact sidebar by default.');
 check(!/body\.app-pane-mode[^{}]*#main[^{}]*\{[^}]*margin-top:\s*-14px\s*!important/i.test(html), 'Conflicting negative right-pane offset remains.');
