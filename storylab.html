@@ -932,6 +932,23 @@ body.app-pane-mode .workspace-split main#main {
 :root[data-theme="light"] .settings-page .shortcut-keys span { color:#17231c!important; }
 :root[data-theme="light"] .settings-page kbd { color:#17231c!important; background:#f0f4f1!important; border-color:#788b7e!important; box-shadow:inset 0 1px 0 #fff; }
 :root[data-theme="dark"] .settings-page kbd { color:#f7f9fb!important; background:#22262b!important; border-color:#68717b!important; }
+
+/* v1.5.6: authoritative focus-mode layout overrides, after all legacy rules. */
+body.writer-focus #main:has(>.writer-heading){display:flex!important;flex-direction:column!important;align-items:stretch!important;box-sizing:border-box!important;width:100%!important;max-width:none!important;margin-left:0!important;margin-right:0!important;padding:14px clamp(14px,2vw,28px)!important}
+body.writer-focus #main:has(>.writer-heading)>.writer-top,
+body.writer-focus #main:has(>.writer-heading)>.writer-heading,
+body.writer-focus #main:has(>.writer-heading)>.writer-toolbar,
+body.writer-focus #main:has(>.writer-heading)>.dual-editors,
+body.writer-focus #main:has(>.writer-heading)>.bar,
+body.writer-focus #main:has(>.writer-heading)>.chapter-history{align-self:stretch!important;width:100%!important;max-width:none!important;margin-left:0!important;margin-right:0!important;box-sizing:border-box!important}
+body.writer-focus #main:has(>.writer-heading)>.writer-heading{max-width:58em!important}
+body.writer-focus #main:has(>.writer-heading)>.writer-toolbar{justify-content:flex-start!important}
+body.writer-focus #main:has(>.writer-heading)>.dual-editors{display:block!important}
+body.writer-focus #main:has(>.writer-heading) #ed.editor{display:block!important;box-sizing:border-box!important;width:100%!important;max-width:58em!important;min-width:0!important;margin-left:0!important;margin-right:auto!important}
+body.writer-focus #main:has(>.writer-heading) #writerPreview{width:100%!important;max-width:58em!important;margin-left:0!important;margin-right:auto!important}
+body.writer-focus #main:has(>.writer-heading) .work-progress{margin-left:0!important;margin-right:auto!important}
+body.writer-focus #main:has(>.writer-heading) #ed.editor{min-height:68vh!important;font-size:18px!important;line-height:2!important}
+@media(max-width:760px){body.writer-focus #main:has(>.writer-heading){padding:12px!important}body.writer-focus #main:has(>.writer-heading) #ed.editor{min-height:60vh!important;font-size:16px!important}}
 </style>
 
 <style id="split-pane-top-alignment-canonical-1-4-8">
@@ -1568,7 +1585,7 @@ function rEdit(){
   if(REV){var rv=REV;REV=null;EDITOR_VIEW='edit';revealIn($('#ed'),rv.pos,rv.len);}
   $('#ct').oninput=function(e){c.title=e.target.value;save();scheduleChapterRevision(c);var chip=m.querySelector('.chip[data-id="'+c.id+'"]');if(chip)chip.textContent=c.title||'제목 없음';var tab=m.querySelector('[data-open="'+c.id+'"]');if(tab)tab.textContent=c.title||'제목 없음';if(tab)tab.title=c.title||'제목 없음';};
   m.querySelectorAll('.chip[data-id]').forEach(function(b){b.onclick=function(){S.cur=+b.dataset.id;save();render();};});
-  $('#back').onclick=function(e){if(e){e.preventDefault();e.stopPropagation();}EDIT=false;TRASH=false;FOCUS_MODE=false;R.tab='write';document.body.classList.remove('writer-focus');var screen={tab:'write',workId:R.w,cur:S.cur,edit:false};if(APP_PANE_MODE&&APP_PANE_SCREEN)APP_PANE_SCREEN=screen;var active=typeof APP_TABS!=='undefined'?APP_TABS.find(function(t){return t.id===APP_ACTIVE_TAB;}):null;if(active){active.screen=screen;active.title=appScreenTitle(screen);}save();render();if(APP_PANE_MODE){try{window.parent.postMessage({type:'storylab-pane-focus-change',enabled:false},'*');window.parent.postMessage({type:'storylab-pane-screen-change',screen:screen},'*');}catch(ignore){}}};
+  $('#back').onclick=function(e){if(e){e.preventDefault();e.stopPropagation();}EDIT=false;TRASH=false;FOCUS_MODE=false;DUAL_VIEW=false;SPLIT_MODE=false;R.tab='write';document.body.classList.remove('writer-focus','writer-dual-view','split-mode');var screen={tab:'write',workId:R.w,cur:S.cur,edit:false};if(APP_PANE_MODE)APP_PANE_SCREEN=screen;var active=typeof APP_TABS!=='undefined'?APP_TABS.find(function(t){return String(t.id)===String(APP_ACTIVE_TAB);}):null;if(active){active.screen=screen;active.title=appScreenTitle(screen);}save();if(APP_PANE_MODE){try{window.parent.postMessage({type:'storylab-pane-focus-change',enabled:false},'*');window.parent.postMessage({type:'storylab-pane-screen-change',screen:screen},'*');}catch(ignore){}}render();};
    $('#delch').onclick=function(e){if(S.chapters.length<2){e.target.textContent='마지막 파일은 삭제할 수 없어요';return;}trashFile(c);EDIT=false;FOCUS_MODE=false;document.body.classList.remove('writer-focus');save();render();};
 }
 var Q='',REV=null,NOTE='';
