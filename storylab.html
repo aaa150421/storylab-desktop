@@ -969,6 +969,12 @@ body.app-split-active .app-pane-frame.is-writer-focus>.app-pane-tabbar{display:n
 /* v1.5.3: override legacy centered-editor rules in focus mode. */
 body.writer-focus #main:has(>.writer-heading) .editor,body.writer-focus #main:has(>.writer-heading) .writer-preview,body.app-pane-mode.writer-focus #main:has(>.writer-heading) .editor,body.app-pane-mode.writer-focus #main:has(>.writer-heading) .writer-preview{margin-left:0!important;margin-right:auto!important;max-width:min(58em,100%)!important;}
 body.writer-focus #main:has(>.writer-heading) .writer-toolbar,body.app-pane-mode.writer-focus #main:has(>.writer-heading) .writer-toolbar{justify-content:flex-start!important;margin-left:0!important;}
+
+/* v1.5.4: override legacy centered editor rules on the real wrapper and heading. */
+body.writer-focus #main .writer-heading,body.writer-focus #main .writer-toolbar,body.writer-focus #main .dual-editors,body.writer-focus #main .editor,body.writer-focus #main .writer-preview,body.app-pane-mode.writer-focus #main .writer-heading,body.app-pane-mode.writer-focus #main .writer-toolbar,body.app-pane-mode.writer-focus #main .dual-editors,body.app-pane-mode.writer-focus #main .editor,body.app-pane-mode.writer-focus #main .writer-preview{margin-left:0!important;margin-right:auto!important;}
+body.writer-focus #main .writer-heading,body.app-pane-mode.writer-focus #main .writer-heading{width:min(58em,100%)!important;max-width:min(58em,100%)!important;}
+body.writer-focus #main .dual-editors,body.app-pane-mode.writer-focus #main .dual-editors{width:min(58em,100%)!important;max-width:min(58em,100%)!important;justify-content:flex-start!important;}
+body.writer-focus #main #ed,body.writer-focus #main #writerPreview,body.app-pane-mode.writer-focus #main #ed,body.app-pane-mode.writer-focus #main #writerPreview{width:100%!important;max-width:100%!important;box-sizing:border-box!important;}
 </style>
 </head>
 <body>
@@ -1557,7 +1563,7 @@ function rEdit(){
    editor.oninput=function(e){c.body=e.target.value;resizeWriterEditor();updateStats();updTotal();save();scheduleChapterRevision(c);if(EDITOR_VIEW==='preview'||DUAL_VIEW)paintPreview();};
   $('#editView').onclick=function(){DUAL_VIEW=false;document.body.classList.remove('writer-dual-view');if(EDITOR_VIEW==='edit'){render();return;}EDITOR_VIEW='edit';render();var ed=$('#ed');ed.focus();var pos=Math.min(WRITER_CURSOR,ed.value.length);ed.setSelectionRange(pos,pos);};
   $('#previewView').onclick=function(){DUAL_VIEW=false;document.body.classList.remove('writer-dual-view');if(EDITOR_VIEW==='preview'){render();return;}var ed=$('#ed');if(ed)WRITER_CURSOR=ed.selectionStart||0;EDITOR_VIEW='preview';render();};
-  $('#focusToggle').onclick=function(e){if(e){e.preventDefault();e.stopPropagation();}FOCUS_MODE=!FOCUS_MODE;document.body.classList.toggle('writer-focus',FOCUS_MODE);this.setAttribute('aria-pressed',String(FOCUS_MODE));this.textContent=FOCUS_MODE?'집중 모드 끄기':'⛶ 집중 모드';if(APP_PANE_MODE){try{window.parent.postMessage({type:'storylab-pane-focus-change',enabled:FOCUS_MODE},'*');}catch(ignore){}}render();var nodes=[document.querySelector('body > nav'),document.querySelector('body > header'),document.getElementById('appTabs')];nodes.forEach(function(node){if(!node)return;if(FOCUS_MODE)node.style.setProperty('display','none','important');else node.style.removeProperty('display');});};
+  $('#focusToggle').onclick=function(e){if(e){e.preventDefault();e.stopPropagation();}FOCUS_MODE=!FOCUS_MODE;render();document.body.classList.toggle('writer-focus',FOCUS_MODE);var freshToggle=$('#focusToggle');if(freshToggle){freshToggle.setAttribute('aria-pressed',String(FOCUS_MODE));freshToggle.textContent=FOCUS_MODE?'집중 모드 끄기':'⛶ 집중 모드';}var nodes=[document.querySelector('body > nav'),document.querySelector('body > header'),document.getElementById('appTabs')];nodes.forEach(function(node){if(!node)return;if(FOCUS_MODE)node.style.setProperty('display','none','important');else node.style.removeProperty('display');});if(APP_PANE_MODE){try{window.parent.postMessage({type:'storylab-pane-focus-change',enabled:FOCUS_MODE},'*');}catch(ignore){}}};
   m.querySelectorAll('[data-scene-char]').forEach(function(cb){cb.onchange=function(){if(!Array.isArray(c.charIds))c.charIds=[];var raw=cb.dataset.sceneChar,id=Number(raw);if(!Number.isFinite(id))id=raw;if(cb.checked&&c.charIds.indexOf(id)<0)c.charIds.push(id);if(!cb.checked)c.charIds=c.charIds.filter(function(x){return String(x)!==String(id);});save();var row=cb.closest('.split-char-item');if(row){row.classList.toggle('is-linked',cb.checked);var status=row.querySelector('.ms');if(status)status.textContent=cb.checked?'연결됨':'추가';}var list=$('#splitCharList');if(list&&$('#splitCharSearch').value)$('#splitCharSearch').dispatchEvent(new Event('input'));};});
   var splitSearch=$('#splitCharSearch');if(splitSearch)splitSearch.oninput=function(){var q=this.value.trim().toLowerCase();m.querySelectorAll('[data-char-row]').forEach(function(row){row.hidden=!!q&&row.textContent.toLowerCase().indexOf(q)<0;});};
   var splitChapterSelect=$('#splitChapterSelect');if(splitChapterSelect){splitChapterSelect.onchange=function(){SPLIT_REFERENCE_ID=this.value||null;paintSplitChapterReference();};paintSplitChapterReference();}
@@ -1567,29 +1573,8 @@ function rEdit(){
   if(REV){var rv=REV;REV=null;EDITOR_VIEW='edit';revealIn($('#ed'),rv.pos,rv.len);}
   $('#ct').oninput=function(e){c.title=e.target.value;save();scheduleChapterRevision(c);var chip=m.querySelector('.chip[data-id="'+c.id+'"]');if(chip)chip.textContent=c.title||'제목 없음';var tab=m.querySelector('[data-open="'+c.id+'"]');if(tab)tab.textContent=c.title||'제목 없음';if(tab)tab.title=c.title||'제목 없음';};
   m.querySelectorAll('.chip[data-id]').forEach(function(b){b.onclick=function(){S.cur=+b.dataset.id;save();render();};});
-  $('#back').onclick=function(e){
-     if(e){e.preventDefault();e.stopPropagation();}
-     R.tab='write';
-     save();
-     EDIT=false;
-     FOCUS_MODE=false;
-     document.body.classList.remove('writer-focus');
-     if(APP_PANE_MODE&&APP_PANE_SCREEN){
-       APP_PANE_SCREEN.tab='write';
-       APP_PANE_SCREEN.workId=R.w;
-       APP_PANE_SCREEN.cur=S.cur;
-       APP_PANE_SCREEN.edit=false;
-       try{
-         window.parent.postMessage({type:'storylab-pane-focus-change',enabled:false},'*');
-         window.parent.postMessage({
-           type:'storylab-pane-screen-change',
-           screen:{tab:'write',workId:R.w,cur:S.cur,edit:false}
-         },'*');
-       }catch(ignore){}
-     }
-     render();
-   };
-  $('#delch').onclick=function(e){if(S.chapters.length<2){e.target.textContent='마지막 파일은 삭제할 수 없어요';return;}trashFile(c);EDIT=false;FOCUS_MODE=false;document.body.classList.remove('writer-focus');save();render();};
+  $('#back').onclick=function(e){if(e){e.preventDefault();e.stopPropagation();}R.tab='write';EDIT=false;FOCUS_MODE=false;document.body.classList.remove('writer-focus');var screen={tab:'write',workId:R.w,cur:S.cur,edit:false};if(APP_PANE_MODE&&APP_PANE_SCREEN){APP_PANE_SCREEN=screen;try{window.parent.postMessage({type:'storylab-pane-focus-change',enabled:false},'*');window.parent.postMessage({type:'storylab-pane-screen-change',screen:screen},'*');}catch(ignore){}}save();render();if(EDIT){EDIT=false;R.tab='write';render();}if(APP_PANE_MODE){try{window.parent.postMessage({type:'storylab-pane-screen-change',screen:{tab:'write',workId:R.w,cur:S.cur,edit:false}},'*');}catch(ignore){}}};
+   $('#delch').onclick=function(e){if(S.chapters.length<2){e.target.textContent='마지막 파일은 삭제할 수 없어요';return;}trashFile(c);EDIT=false;FOCUS_MODE=false;document.body.classList.remove('writer-focus');save();render();};
 }
 var Q='',REV=null,NOTE='';
 function ymd(){var d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
