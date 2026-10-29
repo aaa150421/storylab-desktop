@@ -70,6 +70,12 @@ check(/\.writer-toolbar\{display:flex;justify-content:flex-start!important/.test
 check(html.includes('APP_PANE_SCREEN={tab:screen.tab,workId:work.id,cur:screen.cur,edit:!!screen.edit};'), 'Pane navigation state is not synchronized when the host changes screen.');
 check(html.includes("data.type!=='storylab-pane-screen-change'"), 'Embedded pane return-to-list message handler is missing.');
 
+check(html.includes('id="chapterLockToggle"'), 'Per-chapter lock control is missing.');
+check(html.includes("editor.readOnly=!!c.locked;"), 'Locked chapters do not make the editor read-only.');
+check(html.includes("$('#ct').readOnly=!!c.locked;"), 'Locked chapters do not protect the title and memo.');
+check(html.includes('id="findReplaceDialog"') && html.includes('id="replaceAllButton"'), 'Find-and-replace dialog is missing.');
+check(html.includes("e.key.toLowerCase()==='h'"), 'Ctrl+H find-and-replace shortcut is missing.');
+
 if (failures.length) {
   console.error('이야기공방 정적 검사 실패:');
   for (const failure of failures) console.error(`- ${failure}`);
