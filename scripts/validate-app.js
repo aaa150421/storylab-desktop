@@ -121,6 +121,14 @@ check(html.includes("status.textContent=hasMemo?'●':'○';"), 'Scene memo butt
 check(primaryCss.includes('.scene-memo-trigger.has-scene-memo .scene-memo-status') && primaryCss.includes('padding:0;border:0;border-radius:0;background:transparent'), 'Scene memo indicator is not borderless and compact.');
 check(!html.includes("FOCUS_MODE=!FOCUS_MODE;document.body.classList.toggle('writer-focus',FOCUS_MODE);render();"), 'Focus mode still redraws the entire editor when toggled.');
 check(html.includes('function returnToManuscriptList()'), 'Manuscript-list navigation does not use the centralized transition.');
+check(!html.includes('var paneFixStyle='), 'Competing injected split-pane stylesheet still overrides the embedded layout.');
+check(html.includes("body.app-pane-mode>.workspace-split{display:flex!important;flex:1 1 auto!important"), 'Embedded pane workspace does not retain its flex layout.');
+check(html.includes('id="chapterCharCount"'), 'Manuscript character count is missing above the editor.');
+check(html.includes("count.textContent=cnt(current).toLocaleString()+'자'"), 'Manuscript character count is not updated while typing.');
+check(/#main>\.writer-toolbar\{[^}]*justify-content:flex-end!important/.test(html), 'Writer tools are not aligned to the side.');
+check(/\.work-tool-nav\{[^}]*flex-wrap:nowrap!important/.test(html), 'Work tool navigation can wrap into an unintended second row.');
+check(html.includes('html:fullscreen body{grid-template-rows:minmax(0,1fr)!important}'), 'Fullscreen layout does not use a viewport-filling single row.');
+
 check(html.includes('var saved=save();') && html.indexOf('var saved=save();') < html.indexOf('EDIT=false;TRASH=false;FOCUS_MODE=false;DUAL_VIEW=false;SPLIT_MODE=false;', html.indexOf('function returnToManuscriptList()')), 'Return-to-list changes edit state before saving the active chapter.');
 check(!/function render\(\)\{\s*DUAL_VIEW=false;SPLIT_MODE=false/.test(html), 'render() still clears editor modes on every redraw.');
 check(!/body\\\.app-pane-mode[^{}]*#main[^{}]*\\\{[^}]*margin-top:\\s*-14px\\s*!important/i.test(html), 'Conflicting negative right-pane offset remains.');
