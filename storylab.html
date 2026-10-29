@@ -1341,9 +1341,13 @@ window.addEventListener('storage',function(ev){
       var chapter=work&&Array.isArray(work.chapters)&&work.chapters.find(function(c){return String(c.id)===String(preserved.id);});
       if(chapter){var ix=work.chapters.indexOf(chapter);work.chapters[ix]=preserved;}
       else if(work){
-        var keepDeletedLocal=confirm('다른 화면에서 이 원고가 삭제됐지만, 현재 화면에는 아직 저장되지 않은 수정 내용이 있어요.\\n\\n[확인] 원고를 복원하고 현재 수정 내용을 유지\\n[취소] 삭제를 반영하고 수정 내용은 복구용 사본으로 보관');
+        var keepDeletedLocal=confirm('다른 화면에서 이 원고가 삭제됐지만, 현재 화면에는 아직 저장되지 않은 수정 내용이 있어요.\n\n[확인] 원고를 복원하고 현재 수정 내용을 유지\\n[취소] 삭제를 반영하고 수정 내용은 복구용 사본으로 보관');
         if(keepDeletedLocal){work.chapters.push(preserved);showSaveStatus('conflict','삭제된 원고를 복원했어요. 내용을 확인한 뒤 저장하세요.');}
         else{try{localStorage.setItem(KEY+'-recovery',JSON.stringify({savedAt:Date.now(),workId:S.id,chapterId:preserved.id,chapter:preserved}));}catch(recoveryError){console.warn('복구용 사본 저장 실패:',recoveryError);}showSaveStatus('conflict','삭제를 반영했어요. 미저장 수정은 이 기기의 복구용 사본에 보관했어요.');}
+      }else{
+        var keepDeletedWork=confirm('다른 화면에서 작품 전체가 삭제됐지만, 현재 화면에는 저장되지 않은 수정 내용이 있어요.\\n\\n[확인] 이 화면의 작품을 복원\\n[취소] 작품 삭제를 반영하고 원고를 복구용 사본으로 보관');
+        if(keepDeletedWork){if(!S.chapters.some(function(c){return String(c.id)===String(preserved.id);}))S.chapters.push(preserved);else{var oldChapter=S.chapters.find(function(c){return String(c.id)===String(preserved.id);});Object.assign(oldChapter,preserved);}R.works.push(S);showSaveStatus('conflict','삭제된 작품을 복원했어요. 내용을 확인한 뒤 저장하세요.');}
+        else{try{localStorage.setItem(KEY+'-recovery',JSON.stringify({savedAt:Date.now(),workId:S.id,chapterId:preserved.id,chapter:preserved}));}catch(recoveryError){console.warn('복구용 사본 저장 실패:',recoveryError);}showSaveStatus('conflict','작품 삭제를 반영했어요. 미저장 원고는 이 기기의 복구용 사본에 보관했어요.');}
       }
     }
     if(typeof APP_PANE_MODE!=='undefined'&&APP_PANE_MODE&&APP_PANE_SCREEN){
