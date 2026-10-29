@@ -43,6 +43,10 @@ check(styles.length === (html.match(/<\/style>/gi) || []).length, 'CSS style tag
 for (const [index, match] of styles.entries()) {
   check(balancedCss(match[1]), `CSS braces or comments are unbalanced in style block ${index + 1}.`);
 }
+const canonicalStart = styles[0]?.[1].indexOf('/* Canonical application shell, workspace panes, and writer focus mode.') ?? -1;
+const legacyShellCss = canonicalStart >= 0 ? styles[0][1].slice(0, canonicalStart) : styles[0]?.[1] || '';
+check(canonicalStart >= 0, 'Canonical shell layout block is missing.');
+check(!/(?:\\.workspace-split|#workspaceSplit|#appSplitPane|body\\.app-split-active|body\\.app-pane-mode|body\\.writer-focus|\\.app-pane-frame|\\.app-live-pane|\\.app-pane-tabbar|\\.app-main-tabbar|\\.app-tabs|#appTabs|\\.app-tab(?:-open|-close|-add)?\\b)/.test(legacyShellCss), 'Legacy shell, pane, or focus CSS remains outside the canonical rule set.');
 
 const scripts = [...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gi)];
 for (const [index, match] of scripts.entries()) {
