@@ -68,7 +68,7 @@ check(primaryCss.includes('.split-panel.is-open{display:block}'), 'Scene referen
 check(!/body\.app-pane-mode[^{}]*#main[^{}]*\{[^}]*margin-top:\s*-14px\s*!important/i.test(html), 'Conflicting negative right-pane offset remains.');
 
 check(primaryCss.includes('[data-theme="light"]'), 'Light theme styling is missing after the UI redesign.');
-check(primaryCss.includes('--shell:#f0f1ed'), 'Light theme does not override shell surfaces.');
+check(primaryCss.includes('--shell:#ffffff'), 'Light theme does not use the white shell surface.');
 check(html.includes('Never fall through to writing a stale full-project'), 'Split-pane save does not fail closed when shared state is missing.');
 check(html.includes("if(!latestWork||!Array.isArray(latestWork.chapters))"), 'Split-pane save does not validate the shared work before writing.');
 check(html.includes("if(!baseSnap&&remoteSnap!==localSnap)"), 'Split-pane save can overwrite remote edits without a baseline.');
