@@ -58,7 +58,7 @@ check(primaryCss.includes('.workspace-split.has-multiple{display:grid;grid-templ
 check(primaryCss.includes('.workspace-split.has-multiple>#main #ed{display:block;width:100%;max-width:none!important;margin:0;'), 'Left split-pane editor is still constrained by the narrow single-pane width.');
 check(!html.includes('storylab-pane-header-fix') && primaryCss.includes('body.app-pane-mode>#appTabs') && primaryCss.includes('body.app-pane-mode #appMainTabbar') && primaryCss.includes('body.app-pane-mode .app-main-tabbar'), 'Embedded right pane does not hide only the duplicate application tab headers.');
 check(primaryCss.includes('body.app-pane-mode>.workspace-split{display:flex!important;flex:1 1 auto!important;') && primaryCss.includes('body.app-pane-mode #main{display:block!important;flex:1 1 auto!important;'), 'Embedded pane does not explicitly keep the workspace and main content visible.');
-check(html.includes('if(!saved)showSaveStatus(\'error\',\'저장 충돌 또는 실패 · 원고 목록으로 이동했어요. 원고 내용을 확인하세요.\');'), 'Return-to-manuscript-list navigation is blocked by a save conflict.');
+check(html.includes('try{saved=save()!==false;}catch(error){saveError=error;}'), 'Return-to-manuscript-list navigation is blocked by a save exception.');
 check(primaryCss.includes('.workspace-split.has-multiple>#appSplitPane{grid-column:2;display:flex!important;flex:none;width:auto;'), 'Right split pane does not occupy the second equal-width column.');
 check(primaryCss.includes('.work-tool-nav{display:flex;align-items:center;gap:6px;flex-wrap:wrap;'), 'Work-scoped navigation styles are missing.');
 check(html.includes('Reorder existing pane elements instead of rebuilding their iframes'), 'Split-tab reordering still recreates live editor iframes.');
@@ -133,9 +133,9 @@ check(html.includes('#main .tr{justify-content:flex-end!important}'), 'App-wide 
 check(html.includes("count.textContent=cnt(current).toLocaleString()+'자'"), 'Manuscript character count is not updated while typing.');
 check(/#main>\.writer-toolbar\{[^}]*justify-content:flex-end!important/.test(html), 'Writer tools are not aligned to the side.');
 check(/\.work-tool-nav\{[^}]*flex-wrap:nowrap!important/.test(html), 'Work tool navigation can wrap into an unintended second row.');
-check(html.includes('html:fullscreen body{grid-template-rows:minmax(0,1fr)!important}'), 'Fullscreen layout does not use a viewport-filling single row.');
+check(html.includes('html:fullscreen body.app-pane-mode{grid-template-rows:minmax(0,1fr)!important}'), 'Fullscreen embedded pane does not use a viewport-filling single row.');
 
-check(html.includes('var saved=save();') && html.indexOf('var saved=save();') < html.indexOf('EDIT=false;TRASH=false;FOCUS_MODE=false;DUAL_VIEW=false;SPLIT_MODE=false;', html.indexOf('function returnToManuscriptList()')), 'Return-to-list changes edit state before saving the active chapter.');
+check(html.includes('try{saved=save()!==false;}catch(error){saveError=error;}') && html.indexOf('try{saved=save()!==false;}') < html.indexOf('EDIT=false;TRASH=false;FOCUS_MODE=false;DUAL_VIEW=false;SPLIT_MODE=false;', html.indexOf('function returnToManuscriptList()')), 'Return-to-list changes edit state before attempting to save the active chapter.');
 check(!/function render\(\)\{\s*DUAL_VIEW=false;SPLIT_MODE=false/.test(html), 'render() still clears editor modes on every redraw.');
 check(!/body\\\.app-pane-mode[^{}]*#main[^{}]*\\\{[^}]*margin-top:\\s*-14px\\s*!important/i.test(html), 'Conflicting negative right-pane offset remains.');
 check(!html.includes('background:rgba(0,0,0,.18)'), 'Scene memo dialog still dims the whole background.');
