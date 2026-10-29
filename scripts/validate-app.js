@@ -79,7 +79,7 @@ check((html.match(/--rail:108px/g) || []).length === 1, 'Expected one consolidat
 check(!html.includes('split-pane-top-alignment-canonical'), 'Separate legacy alignment style block remains.');
 check(!/body\.app-pane-mode[^{}]*#main[^{}]*\{[^}]*margin-top:\s*-14px\s*!important/i.test(html), 'Conflicting negative right-pane offset remains.');
 check(!html.includes('chapterLockToggle') && !html.includes('c.locked'), 'Unrequested manuscript-lock logic remains.');
-check(html.includes('id="manuscriptFindDialog"') && html.includes('id="findNext"') && html.includes('id="findPrev"'), 'Find-only dialog controls are missing.');
+check(/id=["\']manuscriptFindDialog["\']/.test(html) && /id=["\']findNext["\']/.test(html) && /id=["\']findPrev["\']/.test(html), 'Find-only dialog controls are missing.');
 check(html.includes("e.key.toLowerCase()==='f'&&R.tab==='write'&&EDIT"), 'Ctrl+F manuscript search shortcut is missing.');
 check(!html.includes('id="replaceOpen"') && !html.includes('원고 찾기'), 'Unrequested manuscript-find button remains.');
 check(html.includes("findDialog.hidden=false;findInput.value='';"), 'Ctrl+F does not open the search dialog directly.');
@@ -89,7 +89,7 @@ check(html.includes('body.app-split-active:not(.writer-focus)>#appTabs{display:n
 check(html.includes("if(topTabs)topTabs.style.setProperty('display',isSplit?'none':'flex','important');"), 'Global tab strip visibility is not synchronized with split-pane state.');
 check(html.includes("mainBar.style.setProperty('display',isSplit?'flex':'none','important');"), 'Main pane title bar can remain visible when no split is active.');
 check(html.includes("pane.style.setProperty('display',isSplit?'flex':'none','important');"), 'Secondary pane visibility can drift from the active tab count.');
-check(html.includes("if(!APP_TABS.some(function(t){return t.id===APP_ACTIVE_TAB;}))APP_ACTIVE_TAB=APP_TABS[0].id;"), 'Missing active tab is not recovered before rendering.');
+check(html.includes("if(!APP_TABS.some(function(t){return String(t.id)===String(APP_ACTIVE_TAB);}))APP_ACTIVE_TAB=APP_TABS[0].id;"), 'Missing active tab is not recovered before rendering.');
 check(html.includes('body.writer-focus #workspaceSplit>#main{flex:1 1 100%;width:100%;max-width:none;padding:14px 24px 32px!important;border:0!important}'), 'Focus mode does not expand the active editor pane.');
 check(html.includes('function mountWorkTools()') && html.includes("['write','chars','world','plot','wideas'].indexOf(R.tab)<0"), 'Work tools are not mounted only inside a work context.');
 check(html.includes("[['write','원고'],['chars','인물'],['world','세계관'],['plot','플롯'],['wideas','아이디어']]"), 'Work-scoped navigation does not include all requested tools.');
