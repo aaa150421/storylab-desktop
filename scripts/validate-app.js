@@ -53,7 +53,7 @@ check(primaryCss.includes('body.app-split-active:not(.writer-focus){grid-templat
 check(primaryCss.includes('body.writer-focus #workspaceSplit>#appSplitPane,body.writer-focus #workspaceSplit>.app-main-tabbar{display:none!important}'), 'Focus mode leaves the sibling pane or pane title visible.');
 check(primaryCss.includes('.workspace-split.has-multiple>#appSplitPane{display:flex!important;flex:1 1 0;width:0;min-width:0;min-height:0;position:relative;box-sizing:border-box;padding:0!important;overflow:hidden;border-left:1px solid var(--line)}'), 'Right split pane has a duplicate top offset.');
 check(primaryCss.includes('.work-tool-nav{display:flex;align-items:center;gap:6px;flex-wrap:wrap;'), 'Work-scoped navigation styles are missing.');
-check(s.includes('Reorder existing pane elements instead of rebuilding their iframes'), 'Split-tab reordering still recreates live editor iframes.');
+check(html.includes('Reorder existing pane elements instead of rebuilding their iframes'), 'Split-tab reordering still recreates live editor iframes.');
 check(s.includes('id="contextPanelToggle"') && s.includes('id="contextPanelClose"'), 'Scene reference tools are missing their compact sidebar controls.');
 check(primaryCss.includes('.split-panel.is-open{display:block}'), 'Scene reference tools are not hidden in a compact sidebar by default.');
 check(!/body\.app-pane-mode[^{}]*#main[^{}]*\{[^}]*margin-top:\s*-14px\s*!important/i.test(html), 'Conflicting negative right-pane offset remains.');
