@@ -342,15 +342,9 @@ function renderSplitPreview(){
  // A split is two workspaces, not one column per open tab. Tabs that point
  // to the exact same screen (a common result of repeated split clicks) must not
  // create duplicate live panes. Keep the other tabs in APP_TABS for later use.
- var activeScreenKey=JSON.stringify(active&&active.screen||{tab:'home',workId:R.w,cur:S&&S.cur,edit:false});
- var seenPaneScreens={};seenPaneScreens[activeScreenKey]=true;
- var others=APP_TABS.filter(function(t){
-   if(String(t.id)===String(APP_ACTIVE_TAB))return false;
-   var screenKey=JSON.stringify(t.screen||{tab:'home',workId:R.w,cur:S&&S.cur,edit:false});
-   if(seenPaneScreens[screenKey])return false;
-   seenPaneScreens[screenKey]=true;
-   return true;
- });
+ // Every open application tab owns a pane, even when two tabs initially show
+ // the same screen. Screen equality must not silently cancel splitting.
+ var others=APP_TABS.filter(function(t){return String(t.id)!==String(APP_ACTIVE_TAB);});
  var isSplit=others.length>0;
 
  // Reset stale inline styles before applying the canonical layout state.
@@ -378,7 +372,7 @@ function renderSplitPreview(){
  var closeMain=mainBar.querySelector('[data-main-pane-close]');if(closeMain)closeMain.onclick=function(){closeAppTab(closeMain.dataset.mainPaneClose);};
  mainBar.ondragover=function(e){if(Array.from(e.dataTransfer.types||[]).indexOf('text/story-chapter')>=0){e.preventDefault();e.dataTransfer.dropEffect='copy';}};
  mainBar.ondrop=function(e){var raw=e.dataTransfer.getData('text/story-chapter');if(!raw)return;e.preventDefault();e.stopPropagation();var parts=raw.split('|');if(parts.length>1)openAppTabForChapter(parts[1],parts[0]);};
- if(!others.length){pane.innerHTML='';return;}
+ if(!others.length){document.body.classList.remove('app-right-pane-focus');pane.innerHTML='';return;}
  // Each additional tab is a full live copy of the app (including its writing editor and navigation),
  // not a preview. Keep iframes alive during normal re-renders to avoid losing in-progress typing.
  var existingIds=Array.prototype.map.call(pane.querySelectorAll('[data-live-pane]'),function(el){return el.getAttribute('data-live-pane');});
