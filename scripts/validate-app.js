@@ -68,7 +68,7 @@ check(!/padding-top:\s*(?:14|44)px\s*!important/.test(canonical), 'Canonical pan
 check(html.includes('body.writer-focus #appMainTabbar { display:none!important; }'), 'Focus mode does not hide the active pane tab bar.');
 check(/\.writer-toolbar\{display:flex;justify-content:flex-start!important/.test(html), 'Focus button and scene memo are not grouped at the start of the toolbar.');
 check(html.includes('APP_PANE_SCREEN={tab:screen.tab,workId:work.id,cur:screen.cur,edit:!!screen.edit};'), 'Pane navigation state is not synchronized when the host changes screen.');
-check(html.includes("data.type==='storylab-pane-screen-change'"), 'Embedded pane return-to-list message handler is missing.');
+check(html.includes("data.type!=='storylab-pane-screen-change'"), 'Embedded pane return-to-list message handler is missing.');
 
 if (failures.length) {
   console.error('이야기공방 정적 검사 실패:');
