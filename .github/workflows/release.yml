@@ -2,8 +2,8 @@ name: Build and publish Windows release
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - 'v*'
   workflow_dispatch:
 
 permissions:
@@ -11,7 +11,7 @@ permissions:
 
 concurrency:
   group: storylab-release-electron-updater
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   release:
