@@ -302,27 +302,44 @@ function renderSplitPreview(){
  if(!pane||!wrap||!mainBar)return;
  // An iframe pane is already hosted inside the outer split layout. Never create a
  // second split inside it: that duplicates the tab-bar offset and pushes content down.
+ var topTabs=document.getElementById('appTabs');
  if(APP_PANE_MODE){
+   // Embedded panes never own the outer tab strip or a second pane header.
    wrap.classList.remove('has-multiple');
    document.body.classList.remove('app-split-active');
    wrap.style.removeProperty('--pane-count');
+   if(topTabs)topTabs.style.setProperty('display','none','important');
+   mainBar.style.setProperty('display','none','important');
    var embeddedMain=document.getElementById('main');
    if(embeddedMain){
      ['flex','width','max-width','padding-top','margin-top'].forEach(function(prop){embeddedMain.style.removeProperty(prop);});
    }
    pane.innerHTML='';
    pane.hidden=true;
+   pane.style.setProperty('display','none','important');
    mainBar.innerHTML='';
    return;
  }
+ // Keep the tab strip and split-pane headers mutually exclusive even if an earlier
+ // render or a stale CSS state left the layout classes out of sync.
+ if(!Array.isArray(APP_TABS))APP_TABS=[];
+ if(!APP_TABS.length){
+   APP_TABS.push({id:APP_ACTIVE_TAB,title:'메인',screen:{tab:'home',workId:R.w,cur:S&&S.cur,edit:false}});
+ }
+ if(!APP_TABS.some(function(t){return t.id===APP_ACTIVE_TAB;}))APP_ACTIVE_TAB=APP_TABS[0].id;
+ var isSplit=APP_TABS.length>1;
  var others=APP_TABS.filter(function(t){return t.id!==APP_ACTIVE_TAB;});
- wrap.classList.toggle('has-multiple',APP_TABS.length>1);
- document.body.classList.toggle('app-split-active',APP_TABS.length>1);
+ wrap.classList.toggle('has-multiple',isSplit);
+ document.body.classList.toggle('app-split-active',isSplit);
  wrap.style.setProperty('--pane-count',String(APP_TABS.length));
+ if(topTabs)topTabs.style.setProperty('display',isSplit?'none':'flex','important');
+ mainBar.style.setProperty('display',isSplit?'flex':'none','important');
+ mainBar.style.setProperty('width',isSplit?'50%':'100%','important');
  var mainPane=document.getElementById('main');
  if(mainPane){['flex','width','max-width','padding-top','margin-top'].forEach(function(prop){mainPane.style.removeProperty(prop);});}
  pane.style.flex='1 1 0';pane.style.width='auto';pane.style.maxWidth='none';
- pane.hidden=!others.length;
+ pane.style.setProperty('display',isSplit?'flex':'none','important');
+ pane.hidden=!isSplit;
  var nav=document.querySelector('body > nav');if(nav)nav.hidden=APP_TABS.length>1;
  var active=APP_TABS.find(function(t){return t.id===APP_ACTIVE_TAB;});
  var main=document.getElementById('main');
