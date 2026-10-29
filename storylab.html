@@ -965,6 +965,10 @@ body.app-pane-mode.writer-focus #main:has(>.writer-heading) #ed{min-height:68vh!
 body.app-split-active .app-pane-frame.is-writer-focus>.app-pane-tabbar{display:none!important}
 .scene-memo-head{user-select:none;-webkit-user-select:none}
 .scene-memo-head strong{cursor:inherit}
+
+/* v1.5.3: override legacy centered-editor rules in focus mode. */
+body.writer-focus #main:has(>.writer-heading) .editor,body.writer-focus #main:has(>.writer-heading) .writer-preview,body.app-pane-mode.writer-focus #main:has(>.writer-heading) .editor,body.app-pane-mode.writer-focus #main:has(>.writer-heading) .writer-preview{margin-left:0!important;margin-right:auto!important;max-width:min(58em,100%)!important;}
+body.writer-focus #main:has(>.writer-heading) .writer-toolbar,body.app-pane-mode.writer-focus #main:has(>.writer-heading) .writer-toolbar{justify-content:flex-start!important;margin-left:0!important;}
 </style>
 </head>
 <body>
@@ -1137,6 +1141,8 @@ function render(){
 var EDIT=false,RN=null;
 var SCENE_MEMO_WORK_ID=null;
 var APP_TAB_LIMIT=8,APP_ACTIVE_TAB='app-tab-1',APP_TAB_SEQ=1,APP_SPLIT=false,APP_SPLIT_TAB=null,APP_PANE_MODE=false,APP_PANE_SCREEN=null;
+window.addEventListener('message',function(event){var data=event&&event.data;if(!data||event.source!==window.parent||data.type!=='storylab-pane-force-screen'||!data.screen||!APP_PANE_MODE)return;var screen=data.screen;if(typeof screen.tab!=='string'||screen.workId==null)return;var work=R.works.find(function(item){return String(item.id)===String(screen.workId);});if(!work)return;R.w=work.id;pick();R.tab=screen.tab;EDIT=!!screen.edit;if(screen.cur!=null){var chapter=S.chapters.find(function(ch){return String(ch.id)===String(screen.cur);});if(chapter)S.cur=chapter.id;}FOCUS_MODE=false;document.body.classList.remove('writer-focus');render();});
+
 /* Embedded panes report navigation to the host tab model. Without this,
    the iframe can show the list while the host still remembers edit:true. */
 window.addEventListener('message',function(event){
@@ -1170,7 +1176,8 @@ window.addEventListener('message',function(event){
   tab.screen={tab:screen.tab,workId:screen.workId,cur:screen.cur,edit:!!screen.edit};
   tab.title=appScreenTitle(tab.screen);
   holder.classList.remove('is-writer-focus');
-  var paneBar=holder.querySelector('.app-pane-tabbar');if(paneBar)paneBar.style.removeProperty('display');
+  var paneBar=holder.querySelector('.app-pane-tabbar');if(paneBar){paneBar.style.removeProperty('display');var label=paneBar.querySelector('.app-pane-tab');if(label)label.textContent=tab.title;}
+  try{frame.contentWindow.postMessage({type:'storylab-pane-force-screen',screen:tab.screen},'*');}catch(ignore){}
   renderSplitPreview();
 });
 var APP_TABS=[{id:APP_ACTIVE_TAB,title:'이야기공방',screen:{tab:'home',workId:R.w,cur:S.cur,edit:false}}];
@@ -1550,14 +1557,7 @@ function rEdit(){
    editor.oninput=function(e){c.body=e.target.value;resizeWriterEditor();updateStats();updTotal();save();scheduleChapterRevision(c);if(EDITOR_VIEW==='preview'||DUAL_VIEW)paintPreview();};
   $('#editView').onclick=function(){DUAL_VIEW=false;document.body.classList.remove('writer-dual-view');if(EDITOR_VIEW==='edit'){render();return;}EDITOR_VIEW='edit';render();var ed=$('#ed');ed.focus();var pos=Math.min(WRITER_CURSOR,ed.value.length);ed.setSelectionRange(pos,pos);};
   $('#previewView').onclick=function(){DUAL_VIEW=false;document.body.classList.remove('writer-dual-view');if(EDITOR_VIEW==='preview'){render();return;}var ed=$('#ed');if(ed)WRITER_CURSOR=ed.selectionStart||0;EDITOR_VIEW='preview';render();};
-  $('#focusToggle').onclick=function(){
-     FOCUS_MODE=!FOCUS_MODE;
-     document.body.classList.toggle('writer-focus',FOCUS_MODE);
-     this.setAttribute('aria-pressed',String(FOCUS_MODE));
-     this.textContent=FOCUS_MODE?'집중 모드 끄기':'⛶ 집중 모드';
-     if(APP_PANE_MODE){try{window.parent.postMessage({type:'storylab-pane-focus-change',enabled:FOCUS_MODE},'*');}catch(ignore){}}
-     render();
-   };
+  $('#focusToggle').onclick=function(e){if(e){e.preventDefault();e.stopPropagation();}FOCUS_MODE=!FOCUS_MODE;document.body.classList.toggle('writer-focus',FOCUS_MODE);this.setAttribute('aria-pressed',String(FOCUS_MODE));this.textContent=FOCUS_MODE?'집중 모드 끄기':'⛶ 집중 모드';if(APP_PANE_MODE){try{window.parent.postMessage({type:'storylab-pane-focus-change',enabled:FOCUS_MODE},'*');}catch(ignore){}}render();var nodes=[document.querySelector('body > nav'),document.querySelector('body > header'),document.getElementById('appTabs')];nodes.forEach(function(node){if(!node)return;if(FOCUS_MODE)node.style.setProperty('display','none','important');else node.style.removeProperty('display');});};
   m.querySelectorAll('[data-scene-char]').forEach(function(cb){cb.onchange=function(){if(!Array.isArray(c.charIds))c.charIds=[];var raw=cb.dataset.sceneChar,id=Number(raw);if(!Number.isFinite(id))id=raw;if(cb.checked&&c.charIds.indexOf(id)<0)c.charIds.push(id);if(!cb.checked)c.charIds=c.charIds.filter(function(x){return String(x)!==String(id);});save();var row=cb.closest('.split-char-item');if(row){row.classList.toggle('is-linked',cb.checked);var status=row.querySelector('.ms');if(status)status.textContent=cb.checked?'연결됨':'추가';}var list=$('#splitCharList');if(list&&$('#splitCharSearch').value)$('#splitCharSearch').dispatchEvent(new Event('input'));};});
   var splitSearch=$('#splitCharSearch');if(splitSearch)splitSearch.oninput=function(){var q=this.value.trim().toLowerCase();m.querySelectorAll('[data-char-row]').forEach(function(row){row.hidden=!!q&&row.textContent.toLowerCase().indexOf(q)<0;});};
   var splitChapterSelect=$('#splitChapterSelect');if(splitChapterSelect){splitChapterSelect.onchange=function(){SPLIT_REFERENCE_ID=this.value||null;paintSplitChapterReference();};paintSplitChapterReference();}
