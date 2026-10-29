@@ -489,7 +489,7 @@ var APP_TABS=[{id:APP_ACTIVE_TAB,title:'이야기공방',screen:{tab:'home',work
 function appScreenTitle(snapshot){
   if(!snapshot)return '새 탭';
   if(snapshot.tab==='write'&&snapshot.edit){var w=R.works.find(function(x){return x.id===snapshot.workId;}),ch=w&&(w.chapters||[]).find(function(x){return String(x.id)===String(snapshot.cur);});return ch?(ch.title||'제목 없는 원고'):'원고';}
-  var labels={home:'메인',shelf:'작품 목록',ideas:'아이디어 노트',write:'원고',chars:'인물',world:'세계관',plot:'플롯',wideas:'아이디어',settings:'설정',versions:'버전 기록',audit:'설정 검사',write:'원고 목록'};
+  var labels={home:'메인',shelf:'작품 목록',ideas:'아이디어 노트',write:'원고 목록',chars:'인물',world:'세계관',plot:'플롯',wideas:'아이디어',settings:'설정',versions:'버전 기록',audit:'설정 검사'};
   return labels[snapshot.tab]||'이야기공방';
 }
 function captureAppWorkspace(){var t=APP_TABS.find(function(x){return x.id===APP_ACTIVE_TAB;});if(!t)return;t.screen={tab:R.tab||'home',workId:R.w,cur:S&&S.cur,edit:!!EDIT};t.title=appScreenTitle(t.screen);}

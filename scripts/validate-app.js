@@ -69,7 +69,7 @@ check(!html.includes('chapterLockToggle') && !html.includes('c.locked'), 'Unrequ
 check(html.includes('id="findReplaceDialog"') && html.includes('id="replaceAllButton"'), 'Find-and-replace dialog is missing.');
 check(html.includes("e.key.toLowerCase()==='h'"), 'Ctrl+H find-and-replace shortcut is missing.');
 check(html.includes('function setWriterFocus(enabled,notifyParent)'), 'Focus mode does not use the centralized state transition.');
-check(!/$('#focusToggle')\\.onclick[^;]*render\\(\\)/.test(html), 'Focus mode still redraws the entire editor when toggled.');
+check(!html.includes("FOCUS_MODE=!FOCUS_MODE;document.body.classList.toggle('writer-focus',FOCUS_MODE);render();"), 'Focus mode still redraws the entire editor when toggled.');
 check(html.includes('function returnToManuscriptList()'), 'Manuscript-list navigation does not use the centralized transition.');
 check(html.includes('var saved=save();') && html.indexOf('var saved=save();') < html.indexOf('EDIT=false;TRASH=false;FOCUS_MODE=false;DUAL_VIEW=false;SPLIT_MODE=false;', html.indexOf('function returnToManuscriptList()')), 'Return-to-list changes edit state before saving the active chapter.');
 check(!/function render\(\)\{\s*DUAL_VIEW=false;SPLIT_MODE=false/.test(html), 'render() still clears editor modes on every redraw.');
