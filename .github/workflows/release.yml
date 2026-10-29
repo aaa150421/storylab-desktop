@@ -28,6 +28,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Validate app source
+        run: npm run test:static
+
       - name: Build and publish installer with electron-updater metadata
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

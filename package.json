@@ -1,6 +1,6 @@
 {
   "name": "storylab-desktop",
-  "version": "1.5.9",
+  "version": "1.6.0",
   "description": "이야기공방 데스크톱 앱",
   "main": "main.js",
   "author": "StoryLab",
@@ -9,7 +9,8 @@
     "start": "electron .",
     "dist:win": "electron-builder --win nsis --x64",
     "publish:win": "electron-builder --win nsis --x64 --publish always",
-    "release": "node release.js"
+    "release": "node release.js",
+    "test:static": "node scripts/validate-app.js"
   },
   "devDependencies": {
     "electron": "^34.0.0",
