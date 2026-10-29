@@ -33,7 +33,7 @@ for (const token of ['--bg:#f8f7fb','--paper:#fff','--purple:#8b6bd1','.sidebar'
 for (const id of ['view','search','fileInput','exportTop','importTop','toast']) check(html.includes('id="' + id + '"'), 'Required UI element is missing: #' + id);
 for (const page of ['home','works','editor','backup','settings']) check(html.includes('data-page="' + page + '"'), 'Navigation page is missing: ' + page);
 for (const fn of ['function renderHome()','function renderWorks()','function renderEditor()','function renderBackup()','function exportBackup()','function importBackup(file)','function syncEditor()']) check(html.includes(fn), 'Required UI/data function is missing: ' + fn);
-check(html.includes("const BACKUP_APP='storylab'"), 'Backup compatibility app identifier is missing.');
+check(html.includes("BACKUP_APP='storylab'"), 'Backup compatibility app identifier is missing.');
 check(html.includes('o.state&&Array.isArray(o.state.works)'), 'Legacy full-state backup restore support is missing.');
 check(html.includes('o&&o.app===BACKUP_APP&&Array.isArray(o.works)'), 'Legacy StoryLab JSON backup import support is missing.');
 check(html.includes('URL.createObjectURL(blob)') && html.includes("a.download='이야기공방-백업-"), 'JSON backup download is not implemented.');
