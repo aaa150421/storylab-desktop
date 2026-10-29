@@ -54,22 +54,9 @@ for (const [index, match] of scripts.entries()) {
 }
 
 
-const canonical = html.match(/\/\* Canonical workspace layout[\s\S]*?(?=<\/style>)/)?.[0] || '';
-check((html.match(/Canonical workspace layout/g) || []).length === 1, 'Expected one consolidated workspace layout rule set.');
-check(!html.includes('split-pane-top-alignment-canonical'), 'Separate legacy alignment style block remains.');
-check(canonical.includes('padding-top:58px!important'), 'Split main pane does not reserve the 44px tab strip plus the normal 14px content inset.');
-check(canonical.includes('body.app-split-active.writer-focus #workspaceSplit>#main{padding-top:14px!important}'), 'Focus mode does not release the hidden left tab strip offset.');
-check(!/body\.app-pane-mode[^{}]*#main[^{}]*\{[^}]*margin-top:\s*-14px\s*!important/i.test(html), 'Conflicting negative right-pane offset remains.');
-check(!html.includes('chapterLockToggle') && !html.includes('c.locked'), 'Unrequested manuscript-lock logic remains.');
-check(html.includes('id="findReplaceDialog"') && html.includes('id="replaceAllButton"'), 'Find-and-replace dialog is missing.');
-check(html.includes("e.key.toLowerCase()==='h'"), 'Ctrl+H find-and-replace shortcut is missing.');
-check(!html.includes('background:rgba(0,0,0,.18)'), 'Scene memo dialog still dims the whole background.');
-check(/\.scene-memo-dialog\{[^}]*background:transparent/.test(html), 'Scene memo overlay is not transparent.');
-check(html.indexOf('id="sceneMemoOpen"') < html.indexOf('id="focusToggle"'), 'Focus mode button is no longer beside the scene memo button.');
-check(!html.includes("postMessage({type:'storylab-pane-force-screen',screen:tab.screen}"), 'Parent echoes pane screen changes back to the iframe.');
-check(html.includes("data.type!=='storylab-pane-screen-change'"), 'Embedded pane return-to-list message handler is missing.');
 
-
+check(pkg.version === lock.version, 'package.json and package-lock.json versions differ.');
+check(pkg.version === lock.packages?.['']?.version, 'Root package-lock version differs from package.json.');
 const canonical = html.match(/\/\* Canonical workspace layout[\s\S]*?(?=<\/style>)/)?.[0] || '';
 check((html.match(/Canonical workspace layout/g) || []).length === 1, 'Expected one consolidated workspace layout rule set.');
 check(!html.includes('split-pane-top-alignment-canonical'), 'Separate legacy alignment style block remains.');
