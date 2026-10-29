@@ -75,8 +75,13 @@ check((html.match(/--rail:108px/g) || []).length === 1, 'Expected one consolidat
 check(!html.includes('split-pane-top-alignment-canonical'), 'Separate legacy alignment style block remains.');
 check(!/body\.app-pane-mode[^{}]*#main[^{}]*\{[^}]*margin-top:\s*-14px\s*!important/i.test(html), 'Conflicting negative right-pane offset remains.');
 check(!html.includes('chapterLockToggle') && !html.includes('c.locked'), 'Unrequested manuscript-lock logic remains.');
-check(html.includes('id="findReplaceDialog"') && html.includes('id="replaceAllButton"'), 'Find-and-replace dialog is missing.');
-check(html.includes("e.key.toLowerCase()==='h'"), 'Ctrl+H find-and-replace shortcut is missing.');
+check(html.includes('id="findReplaceDialog"') && html.includes('id="findNext"') && html.includes('id="findPrev"'), 'Find-only dialog controls are missing.');
+check(html.includes("e.key.toLowerCase()==='f'"), 'Ctrl+F manuscript search shortcut is missing.');
+check(!html.includes('id="replaceAllButton"') && !html.includes('id="replaceWith"'), 'Unrequested find-and-replace controls remain.');
+check(html.includes('.scene-memo-dialog[hidden]{display:none!important}'), 'Hidden dialogs can still be shown by the dialog display rule.');
+check(html.includes('class="workspace-context"') && html.includes('이 작품에만 저장되는 설정입니다.'), 'Manuscript-scoped tools do not identify the active work.');
+check(html.includes("localStorage.setItem(KEY+'-recovery'"), 'Deleted chapter recovery copy is not preserved.');
+check(!/if\(chapter\)\{var ix=work\.chapters\.indexOf\(chapter\);work\.chapters\[ix\]=preserved;\}else work\.chapters\.push\(preserved\);/.test(html), 'Remote deletion is still silently undone by chapter resurrection.');
 check(html.includes('function setWriterFocus(enabled,notifyParent)'), 'Focus mode does not use the centralized state transition.');
 check(!html.includes("FOCUS_MODE=!FOCUS_MODE;document.body.classList.toggle('writer-focus',FOCUS_MODE);render();"), 'Focus mode still redraws the entire editor when toggled.');
 check(html.includes('function returnToManuscriptList()'), 'Manuscript-list navigation does not use the centralized transition.');
