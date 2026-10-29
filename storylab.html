@@ -188,7 +188,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 
 
 /* Writing workspace: goals, stats, preview and distraction-free mode. */
-.writer-goal{padding:8px 11px;margin:7px 0;border-radius:9px}.writer-goal-top label{font-size:11px}.writer-goal-top>div{gap:5px}#wordGoal{width:78px;padding:3px 6px;font-size:11px}.writer-progress{height:4px;margin:7px 0 5px}.writer-goal-bottom{font-size:10px;gap:6px}.writer-goal-top .ms{font-size:10px}.writer-stats{gap:6px;margin:7px 0 4px}.writer-stats>div{padding:7px 9px;gap:2px}.writer-stats strong{font-size:13px}.writer-stats span{font-size:10px}.scene-memo-dialog{position:fixed;z-index:200;inset:0;display:flex;align-items:center;justify-content:center;padding:20px;background:transparent;pointer-events:none}.scene-memo-card{pointer-events:auto}.scene-memo-dialog[hidden]{display:none!important}.scene-memo-card{width:min(620px,100%);max-height:85vh;overflow:auto;padding:18px;border:1px solid var(--line);border-radius:14px;background:var(--surface);box-shadow:0 18px 60px #0009}.scene-memo-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}.scene-memo-head strong{font-size:16px}.scene-memo-card .memo{width:100%;min-height:180px;resize:vertical;line-height:1.8;margin-top:10px}
+.writer-goal{padding:8px 11px;margin:7px 0;border-radius:9px}.writer-goal-top label{font-size:11px}.writer-goal-top>div{gap:5px}#wordGoal{width:78px;padding:3px 6px;font-size:11px}.writer-progress{height:4px;margin:7px 0 5px}.writer-goal-bottom{font-size:10px;gap:6px}.writer-goal-top .ms{font-size:10px}.writer-stats{gap:6px;margin:7px 0 4px}.writer-stats>div{padding:7px 9px;gap:2px}.writer-stats strong{font-size:13px}.writer-stats span{font-size:10px}.scene-memo-dialog{position:fixed;z-index:200;inset:0;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.18);pointer-events:auto}.scene-memo-card{pointer-events:auto}.scene-memo-dialog[hidden]{display:none!important}.scene-memo-card{width:min(620px,100%);max-height:85vh;overflow:auto;padding:18px;border:1px solid var(--line);border-radius:14px;background:var(--surface);box-shadow:0 18px 60px #0009}.scene-memo-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}.scene-memo-head strong{font-size:16px}.scene-memo-card .memo{width:100%;min-height:180px;resize:vertical;line-height:1.8;margin-top:10px}
 .writer-toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0 14px}
 .writer-view-switch{display:flex;gap:6px;flex-wrap:wrap}
 .writer-view-switch .btn[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);background:rgba(130,217,173,.08)}
@@ -923,21 +923,52 @@ body.app-pane-mode .workspace-split main#main {
 :root[data-theme="dark"] .settings-page kbd { color:#f7f9fb!important; background:#22262b!important; border-color:#68717b!important; }
 @media(max-width:760px){}
 
-/* Focus mode: one explicit layout path; no :has() dependency. */
-body.writer-focus header,body.writer-focus nav,body.writer-focus #appTabs,body.app-pane-mode.writer-focus>nav{display:none!important}
-body.writer-focus #back{position:fixed!important;left:16px!important;top:14px!important;z-index:120!important;font-size:13px!important;background:var(--surface)!important;border:1px solid var(--line)!important;box-shadow:0 4px 18px #0005!important;padding:9px 12px!important;border-radius:9px!important}
-body.writer-focus #main{display:flex!important;flex-direction:column!important;align-items:stretch!important;box-sizing:border-box!important;width:100%!important;max-width:none!important;margin:0!important;padding:14px clamp(14px,2vw,28px)!important}
-body.writer-focus #main>.writer-top,body.writer-focus #main>.writer-heading,body.writer-focus #main>.writer-toolbar,body.writer-focus #main>.dual-editors,body.writer-focus #main>.bar,body.writer-focus #main>.chapter-history{box-sizing:border-box!important;align-self:stretch!important;width:100%!important;max-width:none!important;margin-left:0!important;margin-right:0!important}
-body.writer-focus #main>.writer-top{padding-left:130px!important;min-height:38px!important;margin-bottom:12px!important}
-body.writer-focus #main>.writer-heading{max-width:58em!important;margin:0 0 8px!important}
-body.writer-focus #main>.writer-toolbar{justify-content:flex-start!important;margin:5px 0 8px!important}
-body.writer-focus #main>.dual-editors{display:block!important;width:100%!important}
-body.writer-focus #main #ed.editor{display:block!important;box-sizing:border-box!important;width:100%!important;max-width:58em!important;min-width:0!important;min-height:68vh!important;margin:0 auto 0 0!important;font-size:18px!important;line-height:2!important}
-body.writer-focus #main #writerPreview{box-sizing:border-box!important;width:100%!important;max-width:58em!important;margin:0 auto 0 0!important}
-body.writer-focus #main .work-progress{margin-left:0!important;margin-right:auto!important}
-body.writer-focus #main>.bar{margin:8px 0 14px!important}
-body.writer-focus #main>.chapter-history{margin:16px 0 24px!important}
-@media(max-width:760px){body.writer-focus #main{padding:12px!important}body.writer-focus #main #ed.editor{min-height:60vh!important;font-size:16px!important;padding:14px!important}} 
+/* Writer focus mode — one canonical rule set. */
+body.writer-focus header,
+body.writer-focus nav,
+body.writer-focus #appTabs { display:none!important; }
+body.writer-focus #main {
+  display:flex!important; flex:1 1 auto!important; flex-direction:column!important;
+  align-items:stretch!important; box-sizing:border-box!important; width:100%!important;
+  max-width:none!important; min-height:0!important; margin:0!important;
+  padding:14px clamp(14px,2vw,28px)!important; overflow-y:auto!important;
+}
+body.writer-focus #main > .writer-top {
+  display:flex!important; align-items:center!important; box-sizing:border-box!important;
+  width:100%!important; min-height:40px!important; margin:0 0 12px!important; padding:0!important;
+}
+body.writer-focus #back {
+  position:fixed!important; left:16px!important; top:14px!important; z-index:220!important;
+  font-size:13px!important; background:var(--surface)!important; border:1px solid var(--line)!important;
+  box-shadow:0 4px 18px #0005!important; padding:9px 12px!important; border-radius:9px!important;
+}
+body.writer-focus #main > .writer-heading,
+body.writer-focus #main > .writer-toolbar,
+body.writer-focus #main > .dual-editors,
+body.writer-focus #main > .bar,
+body.writer-focus #main > .chapter-history {
+  box-sizing:border-box!important; align-self:flex-start!important; width:100%!important;
+  max-width:58em!important; margin-left:0!important; margin-right:auto!important;
+}
+body.writer-focus #main > .writer-heading { margin-top:0!important; margin-bottom:8px!important; }
+body.writer-focus #main > .writer-toolbar {
+  display:flex!important; justify-content:flex-start!important; gap:8px!important;
+  margin-top:5px!important; margin-bottom:8px!important;
+}
+body.writer-focus #main > .dual-editors { display:block!important; margin-top:0!important; margin-bottom:0!important; }
+body.writer-focus #main #ed.editor {
+  display:block!important; box-sizing:border-box!important; width:100%!important; max-width:58em!important;
+  min-width:0!important; min-height:68vh!important; margin:0!important; font-size:18px!important; line-height:2!important;
+}
+body.writer-focus #main #writerPreview {
+  box-sizing:border-box!important; width:100%!important; max-width:58em!important; margin:0!important;
+}
+body.writer-focus #main .work-progress { max-width:58em!important; margin-left:0!important; margin-right:auto!important; }
+body.writer-focus #main > .bar { margin-top:8px!important; margin-bottom:14px!important; }
+body.writer-focus #main > .chapter-history { margin-top:16px!important; margin-bottom:24px!important; }
+@media(max-width:760px) {
+  body.writer-focus #main { padding:12px!important; }
+  body.writer-focus #main #ed.editor { min-height:60vh!important; font-size:16px!important; padding:14px!important; }
 }
 
 </style>
@@ -1504,32 +1535,49 @@ function rEdit(){
    $('#sceneMemoOpen').onclick=function(){memoDialog.hidden=false;$('#memo').value=c.memo||'';$('#memo').focus();};
    $('#sceneMemoClose').onclick=function(){memoDialog.hidden=true;};
    memoDialog.addEventListener('click',function(e){if(e.target===memoDialog)memoDialog.hidden=true;});
-   /* Minimal title-bar drag: use viewport coordinates and window-level pointer tracking. */
+   /* Reliable title-bar dragging: pointer capture keeps movement active across the card. */
    if(memoHead&&memoCard){
      memoHead.style.cursor='grab';
      memoHead.style.touchAction='none';
+     memoHead.style.userSelect='none';
      memoHead.addEventListener('pointerdown',function(e){
-       if(e.target.closest('button')||e.button!==0)return;
+       if(e.button!==0||e.target.closest('button'))return;
        var rect=memoCard.getBoundingClientRect();
        if(!memoCard.dataset.positioned){
-         memoCard.style.position='fixed';memoCard.style.margin='0';
-         memoCard.style.left=rect.left+'px';memoCard.style.top=rect.top+'px';
-         memoCard.style.transform='none';memoCard.dataset.positioned='1';
+         memoCard.style.position='fixed';
+         memoCard.style.margin='0';
+         memoCard.style.left=rect.left+'px';
+         memoCard.style.top=rect.top+'px';
+         memoCard.style.transform='none';
+         memoCard.dataset.positioned='1';
        }
-       var startX=e.clientX,startY=e.clientY;
-       var left=parseFloat(memoCard.style.left)||rect.left,top=parseFloat(memoCard.style.top)||rect.top;
-       memoHead.style.cursor='grabbing';
+       var startX=e.clientX,startY=e.clientY,startLeft=rect.left,startTop=rect.top,pointerId=e.pointerId;
+       function clampPosition(x,y){
+         var cardRect=memoCard.getBoundingClientRect();
+         var maxLeft=Math.max(0,window.innerWidth-cardRect.width);
+         var maxTop=Math.max(0,window.innerHeight-Math.min(48,cardRect.height));
+         memoCard.style.left=Math.max(0,Math.min(maxLeft,x))+'px';
+         memoCard.style.top=Math.max(0,Math.min(maxTop,y))+'px';
+       }
        function move(ev){
-         var maxLeft=Math.max(0,window.innerWidth-memoCard.offsetWidth);
-         var maxTop=Math.max(0,window.innerHeight-48);
-         memoCard.style.left=Math.max(0,Math.min(maxLeft,left+ev.clientX-startX))+'px';
-         memoCard.style.top=Math.max(0,Math.min(maxTop,top+ev.clientY-startY))+'px';
+         if(ev.pointerId!==pointerId)return;
+         clampPosition(startLeft+ev.clientX-startX,startTop+ev.clientY-startY);
        }
-       function end(){
+       function end(ev){
+         if(ev&&ev.pointerId!==pointerId)return;
          memoHead.style.cursor='grab';
-         window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',end);window.removeEventListener('pointercancel',end);
+         memoHead.removeEventListener('pointermove',move);
+         memoHead.removeEventListener('pointerup',end);
+         memoHead.removeEventListener('pointercancel',end);
+         memoHead.removeEventListener('lostpointercapture',end);
+         try{if(memoHead.hasPointerCapture(pointerId))memoHead.releasePointerCapture(pointerId);}catch(ignore){}
        }
-       window.addEventListener('pointermove',move);window.addEventListener('pointerup',end);window.addEventListener('pointercancel',end);
+       memoHead.addEventListener('pointermove',move);
+       memoHead.addEventListener('pointerup',end);
+       memoHead.addEventListener('pointercancel',end);
+       memoHead.addEventListener('lostpointercapture',end);
+       try{memoHead.setPointerCapture(pointerId);}catch(ignore){}
+       memoHead.style.cursor='grabbing';
        e.preventDefault();
      });
    }
@@ -1554,7 +1602,7 @@ function rEdit(){
    editor.oninput=function(e){c.body=e.target.value;resizeWriterEditor();updateStats();updTotal();save();scheduleChapterRevision(c);if(EDITOR_VIEW==='preview'||DUAL_VIEW)paintPreview();};
   $('#editView').onclick=function(){DUAL_VIEW=false;document.body.classList.remove('writer-dual-view');if(EDITOR_VIEW==='edit'){render();return;}EDITOR_VIEW='edit';render();var ed=$('#ed');ed.focus();var pos=Math.min(WRITER_CURSOR,ed.value.length);ed.setSelectionRange(pos,pos);};
   $('#previewView').onclick=function(){DUAL_VIEW=false;document.body.classList.remove('writer-dual-view');if(EDITOR_VIEW==='preview'){render();return;}var ed=$('#ed');if(ed)WRITER_CURSOR=ed.selectionStart||0;EDITOR_VIEW='preview';render();};
-  $('#focusToggle').onclick=function(e){if(e){e.preventDefault();e.stopPropagation();}FOCUS_MODE=!FOCUS_MODE;render();if(APP_PANE_MODE){try{window.parent.postMessage({type:'storylab-pane-focus-change',enabled:FOCUS_MODE},'*');}catch(ignore){}}};
+  $('#focusToggle').onclick=function(e){if(e){e.preventDefault();e.stopPropagation();}FOCUS_MODE=!FOCUS_MODE;document.body.classList.toggle('writer-focus',FOCUS_MODE);render();if(APP_PANE_MODE){try{window.parent.postMessage({type:'storylab-pane-focus-change',enabled:FOCUS_MODE},'*');}catch(ignore){}}};
   m.querySelectorAll('[data-scene-char]').forEach(function(cb){cb.onchange=function(){if(!Array.isArray(c.charIds))c.charIds=[];var raw=cb.dataset.sceneChar,id=Number(raw);if(!Number.isFinite(id))id=raw;if(cb.checked&&c.charIds.indexOf(id)<0)c.charIds.push(id);if(!cb.checked)c.charIds=c.charIds.filter(function(x){return String(x)!==String(id);});save();var row=cb.closest('.split-char-item');if(row){row.classList.toggle('is-linked',cb.checked);var status=row.querySelector('.ms');if(status)status.textContent=cb.checked?'연결됨':'추가';}var list=$('#splitCharList');if(list&&$('#splitCharSearch').value)$('#splitCharSearch').dispatchEvent(new Event('input'));};});
   var splitSearch=$('#splitCharSearch');if(splitSearch)splitSearch.oninput=function(){var q=this.value.trim().toLowerCase();m.querySelectorAll('[data-char-row]').forEach(function(row){row.hidden=!!q&&row.textContent.toLowerCase().indexOf(q)<0;});};
   var splitChapterSelect=$('#splitChapterSelect');if(splitChapterSelect){splitChapterSelect.onchange=function(){SPLIT_REFERENCE_ID=this.value||null;paintSplitChapterReference();};paintSplitChapterReference();}
@@ -1564,7 +1612,7 @@ function rEdit(){
   if(REV){var rv=REV;REV=null;EDITOR_VIEW='edit';revealIn($('#ed'),rv.pos,rv.len);}
   $('#ct').oninput=function(e){c.title=e.target.value;save();scheduleChapterRevision(c);var chip=m.querySelector('.chip[data-id="'+c.id+'"]');if(chip)chip.textContent=c.title||'제목 없음';var tab=m.querySelector('[data-open="'+c.id+'"]');if(tab)tab.textContent=c.title||'제목 없음';if(tab)tab.title=c.title||'제목 없음';};
   m.querySelectorAll('.chip[data-id]').forEach(function(b){b.onclick=function(){S.cur=+b.dataset.id;save();render();};});
-  $('#back').onclick=function(e){if(e){e.preventDefault();e.stopPropagation();}EDIT=false;TRASH=false;FOCUS_MODE=false;DUAL_VIEW=false;SPLIT_MODE=false;R.tab='write';document.body.classList.remove('writer-focus','writer-dual-view','split-mode');var screen={tab:'write',workId:R.w,cur:S.cur,edit:false};if(APP_PANE_MODE)APP_PANE_SCREEN=screen;var active=APP_TABS.find(function(t){return String(t.id)===String(APP_ACTIVE_TAB);});if(active){active.screen=screen;active.title=appScreenTitle(screen);}save();render();if(APP_PANE_MODE){try{window.parent.postMessage({type:'storylab-pane-focus-change',enabled:false},'*');window.parent.postMessage({type:'storylab-pane-screen-change',screen:screen},'*');}catch(ignore){}}};
+  $('#back').onclick=function(e){if(e){e.preventDefault();e.stopPropagation();}EDIT=false;TRASH=false;FOCUS_MODE=false;DUAL_VIEW=false;SPLIT_MODE=false;R.tab='write';document.body.classList.remove('writer-focus','writer-dual-view','split-mode');var screen={tab:'write',workId:R.w,cur:S.cur,edit:false};if(APP_PANE_MODE)APP_PANE_SCREEN=screen;var active=APP_TABS.find(function(t){return String(t.id)===String(APP_ACTIVE_TAB);});if(active){active.screen=screen;active.title=appScreenTitle(screen);}save();render();if(APP_PANE_MODE){try{window.parent.postMessage({type:'storylab-pane-screen-change',screen:screen},'*');}catch(ignore){}}};
    $('#delch').onclick=function(e){if(S.chapters.length<2){e.target.textContent='마지막 파일은 삭제할 수 없어요';return;}trashFile(c);EDIT=false;FOCUS_MODE=false;document.body.classList.remove('writer-focus');save();render();};
 }
 var Q='',REV=null,NOTE='';
