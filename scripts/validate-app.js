@@ -46,7 +46,7 @@ for (const [index, match] of styles.entries()) {
 const primaryCss = styles[0]?.[1] || '';
 check(primaryCss.includes('--rail:108px'), 'Compact writing-first navigation rail is missing.');
 check(primaryCss.includes('body.writer-focus>header,body.writer-focus>#appTabs,body.writer-focus>nav'), 'Focus mode does not hide application chrome.');
-check(primaryCss.includes('body.app-pane-mode>header,body.app-pane-mode>#appTabs,body.app-pane-mode>nav'), 'Embedded pane mode does not hide application chrome.');
+check(primaryCss.includes('body.app-pane-mode>header,body.app-pane-mode>#appTabs,body.app-pane-mode>nav,body.app-pane-mode #appMainTabbar,body.app-pane-mode #appSplitPane,body.app-pane-mode .app-tabs,body.app-pane-mode .app-main-tabbar{display:none!important}'), 'Embedded pane mode does not hide nested application tab bars.');
 check(primaryCss.includes('body.app-pane-mode #main{display:block!important;flex:none!important;width:100%!important;max-width:none!important;'), 'Embedded pane main content can inherit conflicting split flex sizing.');
 check(primaryCss.includes('body.app-pane-mode #main>input,body.app-pane-mode #main>textarea,body.app-pane-mode #main>select{display:block!important;width:100%!important;'), 'Embedded pane form controls can render side-by-side unexpectedly.');
 check(html.includes('var childWorkspace=child.getElementById(\'workspaceSplit\')') && html.includes('childMain.style.setProperty(\'display\',\'block\',\'important\')'), 'Embedded pane load does not clear stale parent split layout state.');
@@ -108,11 +108,11 @@ check(!/if\(chapter\)\{var ix=work\.chapters\.indexOf\(chapter\);work\.chapters\
 check(html.includes('function setWriterFocus(enabled,notifyParent)'), 'Focus mode does not use the centralized state transition.');
 check(html.includes("document.body.classList.toggle('app-right-pane-focus',!!data.enabled);"), 'Focus mode in the right pane does not notify the host layout.');
 check(primaryCss.includes('body.app-right-pane-focus #workspaceSplit>#appSplitPane{grid-column:1 / -1;width:100%;border:0}'), 'Right-pane focus mode does not expand across the workspace.');
-check(html.includes("status.textContent=hasMemo?'● 메모 있음':'○ 메모 없음';"), 'Scene memo button does not show an explicit populated/empty state.');
-check(primaryCss.includes('.scene-memo-trigger.has-scene-memo .scene-memo-status'), 'Scene memo populated state has no visible button styling.');
+check(html.includes("status.textContent=hasMemo?'●':'○';"), 'Scene memo button does not use a minimal memo indicator.');
+check(primaryCss.includes('.scene-memo-trigger.has-scene-memo .scene-memo-status') && primaryCss.includes('.scene-memo-trigger.has-scene-memo{'), 'Scene memo populated state has no minimal visible button styling.');
 check(html.includes("document.body.classList.toggle('app-right-pane-focus',!!data.enabled);"), 'Focus mode in the right pane does not notify the host layout.');
 check(primaryCss.includes('body.app-right-pane-focus #workspaceSplit>#appSplitPane{grid-column:1 / -1;width:100%;border:0}'), 'Right-pane focus mode does not expand across the workspace.');
-check(html.includes("status.textContent=hasMemo?'● 메모 있음':'○ 메모 없음';"), 'Scene memo button does not show an explicit populated/empty state.');
+check(html.includes("status.textContent=hasMemo?'●':'○';"), 'Scene memo button does not use a minimal memo indicator.');
 check(primaryCss.includes('.scene-memo-trigger.has-scene-memo .scene-memo-status'), 'Scene memo populated state has no visible button styling.');
 check(!html.includes("FOCUS_MODE=!FOCUS_MODE;document.body.classList.toggle('writer-focus',FOCUS_MODE);render();"), 'Focus mode still redraws the entire editor when toggled.');
 check(html.includes('function returnToManuscriptList()'), 'Manuscript-list navigation does not use the centralized transition.');
