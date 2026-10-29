@@ -209,13 +209,13 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 .writer-preview{font-family:var(--serif);font-size:18px;line-height:2;max-width:42em;min-height:54vh;margin:0 auto;padding:18px 0 28px;overflow-wrap:anywhere}
 .writer-preview p{margin:0 0 1.2em;text-indent:1em;white-space:normal}
 .writer-preview .writer-preview-empty{color:var(--mute);text-indent:0}
-.writer-heading{max-width:42em;margin:0 auto}
+.writer-heading{width:100%;max-width:58em;margin:0 0 8px}
 body.writer-focus header,body.writer-focus nav,body.writer-focus #appTabs{display:none!important}
 body.app-split-active .app-pane-frame.is-writer-focus>.app-pane-tabbar{display:none!important}
-body.writer-focus main{max-width:900px;padding:24px clamp(18px,5vw,56px);}
+body.writer-focus #main{align-self:stretch;min-width:0;max-width:none!important;margin-left:0!important;margin-right:0!important;padding:24px clamp(18px,5vw,56px)!important;}
 body.writer-focus .writer-top{margin-bottom:18px!important}
 body.writer-focus .doc-tabs{opacity:.72}
-body.writer-focus .editor,body.writer-focus .writer-preview{max-width:42em;margin-left:auto;margin-right:auto}
+body.writer-focus .editor,body.writer-focus .writer-preview{display:block;max-width:min(58em,100%)!important;margin-left:0!important;margin-right:auto!important}
 body.writer-focus #back{position:fixed;left:16px;top:14px;z-index:120;font-size:13px;background:var(--surface);border:1px solid var(--line);box-shadow:0 4px 18px #0005;padding:9px 12px;border-radius:9px} 
 body.writer-focus .writer-top{padding-left:130px;min-height:38px}
 body.writer-dual-view main{max-width:none!important;padding:16px 18px!important}
@@ -970,11 +970,6 @@ body.app-split-active .app-pane-frame.is-writer-focus>.app-pane-tabbar{display:n
 body.writer-focus #main:has(>.writer-heading) .editor,body.writer-focus #main:has(>.writer-heading) .writer-preview,body.app-pane-mode.writer-focus #main:has(>.writer-heading) .editor,body.app-pane-mode.writer-focus #main:has(>.writer-heading) .writer-preview{margin-left:0!important;margin-right:auto!important;max-width:min(58em,100%)!important;}
 body.writer-focus #main:has(>.writer-heading) .writer-toolbar,body.app-pane-mode.writer-focus #main:has(>.writer-heading) .writer-toolbar{justify-content:flex-start!important;margin-left:0!important;}
 
-/* v1.5.4: override legacy centered editor rules on the real wrapper and heading. */
-body.writer-focus #main .writer-heading,body.writer-focus #main .writer-toolbar,body.writer-focus #main .dual-editors,body.writer-focus #main .editor,body.writer-focus #main .writer-preview,body.app-pane-mode.writer-focus #main .writer-heading,body.app-pane-mode.writer-focus #main .writer-toolbar,body.app-pane-mode.writer-focus #main .dual-editors,body.app-pane-mode.writer-focus #main .editor,body.app-pane-mode.writer-focus #main .writer-preview{margin-left:0!important;margin-right:auto!important;}
-body.writer-focus #main .writer-heading,body.app-pane-mode.writer-focus #main .writer-heading{width:min(58em,100%)!important;max-width:min(58em,100%)!important;}
-body.writer-focus #main .dual-editors,body.app-pane-mode.writer-focus #main .dual-editors{width:min(58em,100%)!important;max-width:min(58em,100%)!important;justify-content:flex-start!important;}
-body.writer-focus #main #ed,body.writer-focus #main #writerPreview,body.app-pane-mode.writer-focus #main #ed,body.app-pane-mode.writer-focus #main #writerPreview{width:100%!important;max-width:100%!important;box-sizing:border-box!important;}
 </style>
 </head>
 <body>
@@ -1573,7 +1568,7 @@ function rEdit(){
   if(REV){var rv=REV;REV=null;EDITOR_VIEW='edit';revealIn($('#ed'),rv.pos,rv.len);}
   $('#ct').oninput=function(e){c.title=e.target.value;save();scheduleChapterRevision(c);var chip=m.querySelector('.chip[data-id="'+c.id+'"]');if(chip)chip.textContent=c.title||'제목 없음';var tab=m.querySelector('[data-open="'+c.id+'"]');if(tab)tab.textContent=c.title||'제목 없음';if(tab)tab.title=c.title||'제목 없음';};
   m.querySelectorAll('.chip[data-id]').forEach(function(b){b.onclick=function(){S.cur=+b.dataset.id;save();render();};});
-  $('#back').onclick=function(e){if(e){e.preventDefault();e.stopPropagation();}R.tab='write';EDIT=false;FOCUS_MODE=false;document.body.classList.remove('writer-focus');var screen={tab:'write',workId:R.w,cur:S.cur,edit:false};if(APP_PANE_MODE&&APP_PANE_SCREEN){APP_PANE_SCREEN=screen;try{window.parent.postMessage({type:'storylab-pane-focus-change',enabled:false},'*');window.parent.postMessage({type:'storylab-pane-screen-change',screen:screen},'*');}catch(ignore){}}save();render();if(EDIT){EDIT=false;R.tab='write';render();}if(APP_PANE_MODE){try{window.parent.postMessage({type:'storylab-pane-screen-change',screen:{tab:'write',workId:R.w,cur:S.cur,edit:false}},'*');}catch(ignore){}}};
+  $('#back').onclick=function(e){if(e){e.preventDefault();e.stopPropagation();}EDIT=false;TRASH=false;FOCUS_MODE=false;R.tab='write';document.body.classList.remove('writer-focus');var screen={tab:'write',workId:R.w,cur:S.cur,edit:false};if(APP_PANE_MODE&&APP_PANE_SCREEN)APP_PANE_SCREEN=screen;var active=typeof APP_TABS!=='undefined'?APP_TABS.find(function(t){return t.id===APP_ACTIVE_TAB;}):null;if(active){active.screen=screen;active.title=appScreenTitle(screen);}save();render();if(APP_PANE_MODE){try{window.parent.postMessage({type:'storylab-pane-focus-change',enabled:false},'*');window.parent.postMessage({type:'storylab-pane-screen-change',screen:screen},'*');}catch(ignore){}}};
    $('#delch').onclick=function(e){if(S.chapters.length<2){e.target.textContent='마지막 파일은 삭제할 수 없어요';return;}trashFile(c);EDIT=false;FOCUS_MODE=false;document.body.classList.remove('writer-focus');save();render();};
 }
 var Q='',REV=null,NOTE='';
