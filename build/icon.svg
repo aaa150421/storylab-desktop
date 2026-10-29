@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="tile" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fbf9ff"/><stop offset="1" stop-color="#e9e0ff"/></linearGradient>
+    <linearGradient id="frame" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#b5a0f3"/><stop offset="1" stop-color="#8063c9"/></linearGradient>
+    <linearGradient id="screen" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#f1ebff"/></linearGradient>
+  </defs>
+  <rect x="12" y="12" width="232" height="232" rx="54" fill="url(#tile)"/>
+  <rect x="46" y="55" width="164" height="126" rx="17" fill="url(#frame)"/>
+  <rect x="53" y="62" width="150" height="108" rx="10" fill="url(#screen)"/>
+  <path d="M54 128 Q81 96 108 121 T158 126 T202 121 V169 H54Z" fill="#e2d7fb"/>
+  <path d="M54 145 Q88 119 115 145 T166 143 T202 139 V169 H54Z" fill="#cbbaf5"/>
+  <path d="M158 83 l4 9 9 4 -9 4 -4 9 -4 -9 -9 -4 9 -4z" fill="#a68ce9"/>
+  <path d="M181 100 l2.5 5.5 5.5 2.5 -5.5 2.5 -2.5 5.5 -2.5 -5.5 -5.5 -2.5 5.5 -2.5z" fill="#c4b3f5"/>
+  <path d="M46 157 H210 V164 Q210 181 193 181 H63 Q46 181 46 164Z" fill="#fff"/>
+  <circle cx="128" cy="171" r="4.5" fill="#9278dc"/>
+  <path d="M105 181 H151 L158 201 H98Z" fill="#a18be5"/>
+  <rect x="84" y="199" width="88" height="12" rx="6" fill="url(#frame)"/>
+</svg>
