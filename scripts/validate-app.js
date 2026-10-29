@@ -61,7 +61,14 @@ check(!/mainPane\.style\.setProperty\(['"]padding-top['"]/.test(html), 'Runtime 
 check(!/mainPane\.style\.(?:flex|width|maxWidth)\s*=/.test(html), 'Runtime inline pane sizing override remains.');
 check(!/\.workspace-split\.has-multiple\s*>\s*#main\s*\{[^}]*flex:\s*0\s+0\s+50%/i.test(html), 'Legacy hard-coded 50% main-pane sizing remains.');
 check(!/body\.app-split-active[^{}]*#workspaceSplit\s*>\s*#main\s*\{[^}]*padding-top:\s*(?:50|52|58)px\s*!important/i.test(html), 'Conflicting legacy left-pane top offset remains.');
-check(!/body\.app-pane-mode[^{}]*#main[^{}]*\{[^}]*margin-top:\s*-14px\s*!important/i.test(html), 'Conflicting negative right-pane offset remains.');
+check(!/body\\.app-pane-mode[^{}]*#main[^{}]*\\{[^}]*margin-top:\\s*-14px\\s*!important/i.test(html), 'Conflicting negative right-pane offset remains.');
+const canonical = html.match(/<style id="split-pane-top-alignment-canonical">([\\s\\S]*?)<\\/style>/)?.[1] || '';
+check((canonical.match(/padding-top:\\s*0\\s*!important/g) || []).length === 1, 'Canonical pane alignment must define one zero top offset.');
+check(!/padding-top:\\s*(?:14|44)px\\s*!important/.test(canonical), 'Canonical pane alignment contains an extra top offset.');
+check(html.includes('body.writer-focus #appMainTabbar { display:none!important; }'), 'Focus mode does not hide the active pane tab bar.');
+check(/\.writer-toolbar\\{display:flex;justify-content:flex-start!important/.test(html), 'Focus button and scene memo are not grouped at the start of the toolbar.');
+check(html.includes('APP_PANE_SCREEN={tab:screen.tab,workId:work.id,cur:screen.cur,edit:!!screen.edit};'), 'Pane navigation state is not synchronized when the host changes screen.');
+check(html.includes("data.type==='storylab-pane-screen-change'"), 'Embedded pane return-to-list message handler is missing.');
 
 if (failures.length) {
   console.error('이야기공방 정적 검사 실패:');

@@ -189,7 +189,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 
 /* Writing workspace: goals, stats, preview and distraction-free mode. */
 .writer-goal{padding:8px 11px;margin:7px 0;border-radius:9px}.writer-goal-top label{font-size:11px}.writer-goal-top>div{gap:5px}#wordGoal{width:78px;padding:3px 6px;font-size:11px}.writer-progress{height:4px;margin:7px 0 5px}.writer-goal-bottom{font-size:10px;gap:6px}.writer-goal-top .ms{font-size:10px}.writer-stats{gap:6px;margin:7px 0 4px}.writer-stats>div{padding:7px 9px;gap:2px}.writer-stats strong{font-size:13px}.writer-stats span{font-size:10px}.scene-memo-dialog{position:fixed;z-index:200;inset:0;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.18);pointer-events:auto}.scene-memo-card{pointer-events:auto}.scene-memo-dialog[hidden]{display:none!important}.scene-memo-card{width:min(620px,100%);max-height:85vh;overflow:auto;padding:18px;border:1px solid var(--line);border-radius:14px;background:var(--surface);box-shadow:0 18px 60px #0009}.scene-memo-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}.scene-memo-head strong{font-size:16px}.scene-memo-card .memo{width:100%;min-height:180px;resize:vertical;line-height:1.8;margin-top:10px}
-.writer-toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0 14px}
+.writer-toolbar{display:flex;justify-content:flex-start!important;align-items:center;gap:8px;flex-wrap:wrap;margin:10px 0 14px}
 .writer-view-switch{display:flex;gap:6px;flex-wrap:wrap}
 .writer-view-switch .btn[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);background:rgba(130,217,173,.08)}
 #focusToggle[aria-pressed="true"]{border-color:var(--accent);color:var(--accent)}
@@ -876,6 +876,7 @@ body.app-split-active #workspaceSplit #appSplitPane .app-pane-frame > iframe.app
 body.writer-focus header,
 body.writer-focus nav,
 body.writer-focus #appTabs { display:none!important; }
+body.writer-focus #appMainTabbar { display:none!important; }
 body.writer-focus #main {
   display:flex!important; flex:1 1 auto!important; flex-direction:column!important;
   align-items:stretch!important; box-sizing:border-box!important; width:100%!important;
@@ -923,7 +924,8 @@ body.writer-focus #main > .chapter-history { margin-top:16px!important; margin-b
 </style>
 
 <style id="split-pane-top-alignment-canonical">
-/* One canonical rule set for pane sizing and top alignment. */
+/* Both panes have a 44px tab bar in normal document flow.
+   Never add another top offset to either pane's #main. */
 .workspace-split.has-multiple > #main {
   box-sizing: border-box !important;
   flex: 0 0 calc(100% / var(--pane-count, 2)) !important;
@@ -935,15 +937,10 @@ body.writer-focus #main > .chapter-history { margin-top:16px!important; margin-b
   margin: 0 !important;
   overflow-x: hidden !important;
 }
-body.app-split-active:not(.writer-focus) #workspaceSplit > #main {
+body.app-split-active #workspaceSplit > #main,
+body.app-pane-mode #workspaceSplit > #main {
   box-sizing: border-box !important;
-  padding-top: 44px !important;
-  margin-top: 0 !important;
-}
-body.app-pane-mode > #workspaceSplit > #main,
-body.app-pane-mode.writer-focus > #workspaceSplit > #main {
-  box-sizing: border-box !important;
-  padding-top: 14px !important;
+  padding-top: 0 !important;
   margin-top: 0 !important;
 }
 @media (max-width: 760px) {
@@ -951,13 +948,6 @@ body.app-pane-mode.writer-focus > #workspaceSplit > #main {
     flex: 0 0 80vw !important;
     width: 80vw !important;
     max-width: 80vw !important;
-  }
-  body.app-split-active:not(.writer-focus) #workspaceSplit > #main {
-    padding-top: 44px !important;
-  }
-  body.app-pane-mode > #workspaceSplit > #main,
-  body.app-pane-mode.writer-focus > #workspaceSplit > #main {
-    padding-top: 14px !important;
   }
 }
 </style>
@@ -1132,7 +1122,7 @@ function render(){
 var EDIT=false,RN=null;
 var SCENE_MEMO_WORK_ID=null;
 var APP_TAB_LIMIT=8,APP_ACTIVE_TAB='app-tab-1',APP_TAB_SEQ=1,APP_SPLIT=false,APP_SPLIT_TAB=null,APP_PANE_MODE=false,APP_PANE_SCREEN=null;
-window.addEventListener('message',function(event){var data=event&&event.data;if(!data||event.source!==window.parent||data.type!=='storylab-pane-force-screen'||!data.screen||!APP_PANE_MODE)return;var screen=data.screen;if(typeof screen.tab!=='string'||screen.workId==null)return;var work=R.works.find(function(item){return String(item.id)===String(screen.workId);});if(!work)return;R.w=work.id;pick();R.tab=screen.tab;EDIT=!!screen.edit;if(screen.cur!=null){var chapter=S.chapters.find(function(ch){return String(ch.id)===String(screen.cur);});if(chapter)S.cur=chapter.id;}FOCUS_MODE=false;document.body.classList.remove('writer-focus');render();});
+window.addEventListener('message',function(event){var data=event&&event.data;if(!data||event.source!==window.parent||data.type!=='storylab-pane-force-screen'||!data.screen||!APP_PANE_MODE)return;var screen=data.screen;if(typeof screen.tab!=='string'||screen.workId==null)return;var work=R.works.find(function(item){return String(item.id)===String(screen.workId);});if(!work)return;R.w=work.id;pick();R.tab=screen.tab;EDIT=!!screen.edit;TRASH=false;DUAL_VIEW=false;SPLIT_MODE=false;FOCUS_MODE=false;APP_PANE_SCREEN={tab:screen.tab,workId:work.id,cur:screen.cur,edit:!!screen.edit};if(screen.cur!=null){var chapter=S.chapters.find(function(ch){return String(ch.id)===String(screen.cur);});if(chapter)S.cur=chapter.id;}document.body.classList.remove('writer-focus','writer-dual-view','split-mode');render();});
 
 /* Embedded panes report navigation to the host tab model. Without this,
    the iframe can show the list while the host still remembers edit:true. */
