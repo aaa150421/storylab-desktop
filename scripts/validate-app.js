@@ -54,10 +54,11 @@ check(primaryCss.includes('padding-top:58px!important'), 'Split main pane does n
 check(primaryCss.includes('body.app-split-active.writer-focus #workspaceSplit>#main{padding-top:14px!important}'), 'Focus mode does not release the split-tab offset.');
 check(primaryCss.includes('body.app-split-active:not(.writer-focus){grid-template-rows:var(--header) 0 minmax(0,1fr)}'), 'Split layout is overriding the focus-mode grid.');
 check(primaryCss.includes('body.writer-focus #workspaceSplit>#appSplitPane,body.writer-focus #workspaceSplit>.app-main-tabbar{display:none!important}'), 'Focus mode leaves the sibling pane or pane title visible.');
-check(primaryCss.includes('.workspace-split.has-multiple>#appSplitPane{display:flex!important;flex:1 1 0;width:0;min-width:0;min-height:0;position:relative;box-sizing:border-box;padding:0!important;overflow:hidden;border-left:1px solid var(--line)}'), 'Right split pane has a duplicate top offset.');
+check(primaryCss.includes('.workspace-split.has-multiple{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;'), 'Split panes are not laid out in equal-width columns.');
+check(primaryCss.includes('.workspace-split.has-multiple>#appSplitPane{grid-column:2;display:flex!important;flex:none;width:auto;'), 'Right split pane does not occupy the second equal-width column.');
 check(primaryCss.includes('.work-tool-nav{display:flex;align-items:center;gap:6px;flex-wrap:wrap;'), 'Work-scoped navigation styles are missing.');
 check(html.includes('Reorder existing pane elements instead of rebuilding their iframes'), 'Split-tab reordering still recreates live editor iframes.');
-check(html.includes('var activeScreenKey=JSON.stringify(active&&active.screen') && html.includes('seenPaneScreens[screenKey]=true;'), 'Split view must render one secondary pane and suppress duplicate screens.');
+check(html.includes("var others=APP_TABS.filter(function(t){return String(t.id)!==String(APP_ACTIVE_TAB);});"), 'Split view incorrectly suppresses tabs that initially share the same screen.');
 check(html.includes('id="contextPanelToggle"') && html.includes('id="contextPanelClose"'), 'Scene reference tools are missing their compact sidebar controls.');
 check(primaryCss.includes('.split-panel.is-open{display:block}'), 'Scene reference tools are not hidden in a compact sidebar by default.');
 check(!/body\.app-pane-mode[^{}]*#main[^{}]*\{[^}]*margin-top:\s*-14px\s*!important/i.test(html), 'Conflicting negative right-pane offset remains.');
@@ -105,6 +106,10 @@ check(!html.includes('data-tab="chars"') && !html.includes('data-tab="world"') &
 check(html.includes("localStorage.setItem(KEY+'-recovery'"), 'Deleted chapter recovery copy is not preserved.');
 check(!/if\(chapter\)\{var ix=work\.chapters\.indexOf\(chapter\);work\.chapters\[ix\]=preserved;\}else work\.chapters\.push\(preserved\);/.test(html), 'Remote deletion is still silently undone by chapter resurrection.');
 check(html.includes('function setWriterFocus(enabled,notifyParent)'), 'Focus mode does not use the centralized state transition.');
+check(html.includes("document.body.classList.toggle('app-right-pane-focus',!!data.enabled);"), 'Focus mode in the right pane does not notify the host layout.');
+check(primaryCss.includes('body.app-right-pane-focus #workspaceSplit>#appSplitPane{grid-column:1 / -1;width:100%;border:0}'), 'Right-pane focus mode does not expand across the workspace.');
+check(html.includes("status.textContent=hasMemo?'● 메모 있음':'○ 메모 없음';"), 'Scene memo button does not show an explicit populated/empty state.');
+check(primaryCss.includes('.scene-memo-trigger.has-scene-memo .scene-memo-status'), 'Scene memo populated state has no visible button styling.');
 check(!html.includes("FOCUS_MODE=!FOCUS_MODE;document.body.classList.toggle('writer-focus',FOCUS_MODE);render();"), 'Focus mode still redraws the entire editor when toggled.');
 check(html.includes('function returnToManuscriptList()'), 'Manuscript-list navigation does not use the centralized transition.');
 check(html.includes('var saved=save();') && html.indexOf('var saved=save();') < html.indexOf('EDIT=false;TRASH=false;FOCUS_MODE=false;DUAL_VIEW=false;SPLIT_MODE=false;', html.indexOf('function returnToManuscriptList()')), 'Return-to-list changes edit state before saving the active chapter.');
