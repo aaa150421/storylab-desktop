@@ -75,7 +75,7 @@ check(html.includes('var saved=save();') && html.indexOf('var saved=save();') < 
 check(!/function render\(\)\{\s*DUAL_VIEW=false;SPLIT_MODE=false/.test(html), 'render() still clears editor modes on every redraw.');
 check(!/body\\\.app-pane-mode[^{}]*#main[^{}]*\\\{[^}]*margin-top:\\s*-14px\\s*!important/i.test(html), 'Conflicting negative right-pane offset remains.');
 check(!html.includes('background:rgba(0,0,0,.18)'), 'Scene memo dialog still dims the whole background.');
-check(/\\.scene-memo-dialog\\s*\\{[^}]*background:transparent/.test(html), 'Scene memo overlay is not transparent.');
+check(/\.scene-memo-dialog\s*\{[^}]*background:transparent/.test(html), 'Scene memo overlay is not transparent.');
 check(html.indexOf('id="sceneMemoOpen"') < html.indexOf('id="focusToggle"'), 'Focus mode button is no longer beside the scene memo button.');
 check(!html.includes("postMessage({type:'storylab-pane-force-screen',screen:tab.screen}"), 'Parent echoes pane screen changes back to the iframe.');
 check(html.includes("data.type!=='storylab-pane-screen-change'"), 'Embedded pane return-to-list message handler is missing.');
