@@ -424,17 +424,13 @@ body.split-mode .split-panel .split-section h3{margin:0}
 .app-tab-add{width:34px;height:34px;flex:none;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);font-size:20px;cursor:pointer}
 .app-tab-add:disabled{opacity:.35;cursor:not-allowed}
 @media(max-width:600px){.app-tabs{padding:7px 8px}.app-tab{min-width:112px;max-width:180px;flex-basis:145px}}
-.app-tab{position:relative}.app-tab[draggable="true"]{cursor:grab}.app-tab.dragging{opacity:.45}.app-tab.drop-target{outline:2px solid var(--accent);outline-offset:-2px}.app-tab-split{width:26px;flex:none;border:0;background:transparent;color:var(--mute);cursor:pointer;font-size:14px;padding:0}.app-tab-split:hover{color:var(--accent)}.workspace-split #appSplitPane[hidden]{display:none!important}.workspace-split.has-multiple #appSplitPane .app-pane-frame{box-sizing:border-box;flex:1 1 0;width:0;min-width:0;max-width:none;height:100%;min-height:0;overflow:hidden}.workspace-split.has-multiple .app-live-pane{display:block;flex:1 1 0;width:100%;max-width:100%;min-width:0;height:0;min-height:0;border:0}
+.app-tab{position:relative}.app-tab[draggable="true"]{cursor:grab}.app-tab.dragging{opacity:.45}.app-tab.drop-target{outline:2px solid var(--accent);outline-offset:-2px}.app-tab-split{width:26px;flex:none;border:0;background:transparent;color:var(--mute);cursor:pointer;font-size:14px;padding:0}.app-tab-split:hover{color:var(--accent)}.workspace-split.has-multiple .app-live-pane{display:block;flex:1 1 0;width:100%;max-width:100%;min-width:0;height:0;min-height:0;border:0}
 .workspace-split.has-multiple>#main>*{box-sizing:border-box;min-width:0;max-width:100%}
 .workspace-split.has-multiple #main img,.workspace-split.has-multiple #main canvas,.workspace-split.has-multiple #main table,.workspace-split.has-multiple #main .table-wrap,.workspace-split.has-multiple #main .split-panel{max-width:100%}
-.workspace-split.has-multiple #main table{table-layout:fixed;overflow-wrap:anywhere}.app-pane-frame:last-child{border-right:0}.app-pane-tab{display:flex;align-items:center;min-width:0;max-width:100%;height:36px;padding:0 12px;border:1px solid var(--line);border-bottom:2px solid var(--accent);border-radius:8px 8px 0 0;background:var(--surface);font-size:12px;font-weight:700;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;cursor:pointer;text-align:left}.app-pane-focus{height:30px;min-width:30px;flex:none;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--mute);cursor:pointer}.app-pane-focus:hover{color:var(--ink);border-color:var(--accent)}.app-preview-pane{flex:1 1 0;min-width:0;overflow:auto;padding:14px;border-right:1px solid var(--line);background:var(--bg)}.app-preview-pane:last-child{border-right:0}.app-preview-head{position:sticky;top:-14px;z-index:2;display:flex;align-items:center;gap:8px;margin:-14px -14px 12px;padding:10px 12px;background:var(--surface);border-bottom:1px solid var(--line)}.app-preview-open{flex:1;min-width:0;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border:0;background:transparent;color:var(--ink);font:600 13px var(--sans);cursor:pointer}.split-preview-title{font-family:var(--serif);font-size:17px;font-weight:600;margin:0 0 12px;overflow-wrap:anywhere}.split-preview-body{white-space:pre-wrap;overflow-wrap:anywhere;font-family:var(--serif);font-size:14px;line-height:1.8}.split-preview-editor{display:block;width:100%;height:calc(100vh - 230px);min-height:180px;resize:vertical;white-space:pre-wrap;overflow-wrap:anywhere;font-family:var(--serif);font-size:14px;line-height:1.8;padding:12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}.split-preview-item{padding:9px 0;border-bottom:1px solid var(--line);overflow-wrap:anywhere}.app-tab-split,.app-split-toggle,.doc-tabs{display:none!important}@media(max-width:760px){.app-preview-pane{flex:0 0 80vw;width:80vw}}
-.app-pane-tab{min-width:0;flex:1;line-height:1.2;outline-offset:-2px}
+.workspace-split.has-multiple #main table{table-layout:fixed;overflow-wrap:anywhere}.app-pane-focus:hover{color:var(--ink);border-color:var(--accent)}.app-preview-pane{flex:1 1 0;min-width:0;overflow:auto;padding:14px;border-right:1px solid var(--line);background:var(--bg)}.app-preview-pane:last-child{border-right:0}.app-preview-head{position:sticky;top:-14px;z-index:2;display:flex;align-items:center;gap:8px;margin:-14px -14px 12px;padding:10px 12px;background:var(--surface);border-bottom:1px solid var(--line)}.app-preview-open{flex:1;min-width:0;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border:0;background:transparent;color:var(--ink);font:600 13px var(--sans);cursor:pointer}.split-preview-title{font-family:var(--serif);font-size:17px;font-weight:600;margin:0 0 12px;overflow-wrap:anywhere}.split-preview-body{white-space:pre-wrap;overflow-wrap:anywhere;font-family:var(--serif);font-size:14px;line-height:1.8}.split-preview-editor{display:block;width:100%;height:calc(100vh - 230px);min-height:180px;resize:vertical;white-space:pre-wrap;overflow-wrap:anywhere;font-family:var(--serif);font-size:14px;line-height:1.8;padding:12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}.split-preview-item{padding:9px 0;border-bottom:1px solid var(--line);overflow-wrap:anywhere}.app-tab-split,.app-split-toggle,.doc-tabs{display:none!important}@media(max-width:760px){.app-preview-pane{flex:0 0 80vw;width:80vw}}
 .app-pane-tab:focus-visible,.app-pane-focus:focus-visible,.app-tab-open:focus-visible,.app-tab-close:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .save-status[data-state="conflict"]{white-space:normal;max-width:210px}
-@media(max-width:760px){.app-pane-tab{padding:0 7px;font-size:11px}}
 
-
-body.app-pane-mode #appMainTabbar,body.app-pane-mode .app-main-tabbar{display:none!important}
 body.app-pane-mode #main .hi{margin:6px 0 14px!important;line-height:1.35}
 body.app-pane-mode #main .sec{margin:16px 0 8px!important}
 body.app-pane-mode #main .card{margin:0 0 10px!important;gap:8px}
@@ -474,7 +470,6 @@ body.app-split-active #workspaceSplit>#main .writer-top{
 body.app-split-active #workspaceSplit>#main .writer-heading:first-child{
   margin-top:0!important;
 }
-.workspace-split.has-multiple>#appSplitPane>.app-pane-frame{flex:1 1 0!important;width:0!important;min-width:0!important;max-width:none!important;box-sizing:border-box!important}
 .writer-goal{padding:7px 10px!important;margin:6px 0!important;border-radius:8px!important}
 .writer-goal-top label{font-size:11px!important}
 .writer-goal-top>div{gap:4px!important}
@@ -526,9 +521,7 @@ input,textarea,select{border-color:var(--line);background:var(--surface);color:v
 .writer-toolbar .btn{min-height:28px;padding:5px 8px;font-size:11px}
 .writer-goal{padding:8px 10px!important;margin:6px 0!important;border-radius:7px!important}
 .writer-stats>div{padding:6px 8px!important;border-radius:6px!important}
-.workspace-split.has-multiple>#appSplitPane>.app-pane-frame{box-sizing:border-box!important;flex:0 0 calc(100% / (var(--pane-count, 2) - 1))!important;width:calc(100% / (var(--pane-count, 2) - 1))!important;min-width:0!important;max-width:none!important}
 .app-tabs button{padding:6px 10px;font-size:12px}
-#appMainTabbar{height:40px}
 .settings-accordion{border:1px solid var(--line);border-radius:8px;background:var(--surface);box-shadow:none}
 .settings-accordion>summary{min-height:54px;padding:10px 12px}
 .settings-icon{width:28px;height:28px;border-radius:7px;background:var(--surface-2);border:0;font-size:15px}
@@ -563,7 +556,6 @@ button{box-shadow:none}
 :root[data-theme="light"] input,:root[data-theme="light"] textarea,:root[data-theme="light"] select{background:var(--surface);color:var(--ink);border-color:var(--line)}
 :root[data-theme="light"] ::placeholder{color:#737d75;opacity:1}
 :root[data-theme="light"] .empty,:root[data-theme="light"] .ms,:root[data-theme="light"] .note,:root[data-theme="light"] .setting-help,:root[data-theme="light"] .sec{color:var(--mute)}
-.workspace-split.has-multiple>#appSplitPane>.app-pane-frame{flex:1 1 0!important;width:0!important;min-width:0!important;max-width:none!important;box-sizing:border-box!important;display:flex!important;flex-direction:column!important}
 .btn,.gear,.theme-toggle,.seg button{font-size:12px}
 .btn,.gear{min-height:30px;padding:5px 9px}
 .tool-strip{justify-content:flex-start;gap:6px}
@@ -572,17 +564,13 @@ button{box-shadow:none}
 .writer-toolbar .btn{flex:0 0 auto;min-height:29px;padding:5px 8px;font-size:11px}
 .home-tiles{grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:8px}
 .menu.mini.home-tile{min-height:104px;padding:12px;border-radius:8px}
-.home-continue{padding:13px 15px}
-.app-pane-tab,.app-main-tabbar .app-pane-tab{max-width:calc(100% - 34px);font-size:12px}
+.home-continue{padding:13px 15px}.app-main-tabbar .app-pane-tab{max-width:calc(100% - 34px);font-size:12px}
 @media(min-width:1200px){#main{max-width:none}.btn,.gear{padding-left:10px;padding-right:10px}}
 @media(max-width:760px){.home-tiles{grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr))}.writer-toolbar .btn{font-size:11px;padding:5px 7px}}
 :root[data-theme="light"] .scene-memo-entry,:root[data-theme="light"] .settings-accordion,:root[data-theme="light"] .card{background:var(--surface);border-color:var(--line);color:var(--ink)}
 :root[data-theme="light"] .scene-memo-entry span,:root[data-theme="light"] .scene-memo-entry .ms,:root[data-theme="light"] .settings-page .setting-help,:root[data-theme="light"] .settings-page .shortcut-desc{color:var(--mute)}
 :root[data-theme="light"] button:not(.primary):not([aria-pressed="true"]){color:var(--ink)}
 :root[data-theme="light"] input,:root[data-theme="light"] textarea,:root[data-theme="light"] select{color:var(--ink);background:var(--surface);border-color:var(--line)}
-.workspace-split.has-multiple>#appSplitPane>.app-pane-frame{box-sizing:border-box!important;display:flex!important;flex:1 1 0!important;width:0!important;max-width:none!important;min-width:0!important}
-.workspace-split.has-multiple>#appSplitPane .app-live-pane{box-sizing:border-box!important;display:block!important;flex:1 1 0!important;width:100%!important;max-width:100%!important;min-width:0!important;height:100%!important;min-height:0!important}
-body.app-pane-mode #workspaceSplit>#main{box-sizing:border-box!important;flex:1 1 100%!important;width:100%!important;max-width:none!important}
 :root[data-theme="light"] #main,
 :root[data-theme="light"] #main h1,
 :root[data-theme="light"] #main h2,
@@ -616,7 +604,6 @@ body.app-pane-mode #workspaceSplit>#main{box-sizing:border-box!important;flex:1 
 @media(max-width:760px){
  body.app-pane-mode .home-tiles{grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr))}
 }
-.workspace-split.has-multiple>#appSplitPane>.app-pane-frame{flex:1 1 0!important;width:0!important;min-width:0!important;max-width:none!important;margin:0!important;padding:0!important;box-sizing:border-box!important;display:flex!important;flex-direction:column!important}
 .workspace-split.has-multiple>#main .tool-strip .btn,.workspace-split.has-multiple #appSplitPane .tool-strip .btn{min-height:28px!important;padding:4px 8px!important;font-size:11px!important}
 .workspace-split.has-multiple #main .card,.workspace-split.has-multiple #appSplitPane .card{padding:12px!important}
 .workspace-split.has-multiple #main .tr,.workspace-split.has-multiple #appSplitPane .tr{gap:6px!important;flex-wrap:wrap}
@@ -630,8 +617,7 @@ body.app-pane-mode #workspaceSplit>#main{box-sizing:border-box!important;flex:1 
 @media(min-width:1100px){.btn,.gear,.theme-toggle{font-size:12px}.btn,.gear{min-height:29px;padding:5px 9px}.home-tiles{gap:8px}.menu.mini.home-tile{min-height:94px;padding:10px}.writer-goal{padding:10px 12px}}
 
 .workspace-split.has-multiple>#main>.tr:first-child,
-.workspace-split.has-multiple>#main>.writer-top:first-child{margin-top:0!important;padding-top:0!important}.workspace-split.has-multiple>#appSplitPane>.app-pane-frame{padding-top:0!important;margin-top:0!important}
-.workspace-split.has-multiple #appSplitPane iframe{display:block!important;margin:0!important;vertical-align:top!important}
+.workspace-split.has-multiple>#main>.writer-top:first-child{margin-top:0!important;padding-top:0!important}
 .workspace-split.has-multiple>#main>*{max-width:min(100%,1100px)}.workspace-split.has-multiple>#main>.writer-heading,.workspace-split.has-multiple>#main>.writer-goal,.workspace-split.has-multiple>#main>.writer-stats,.workspace-split.has-multiple>#main>.dual-editors,.workspace-split.has-multiple>#main>.bar{max-width:100%!important}
 #main:not(.wide-layout)>*:not(.chapter-history){max-width:min(100%,1100px)}
 .writer-heading{max-width:min(100%,42em)!important}
@@ -676,9 +662,6 @@ body.app-pane-mode #workspaceSplit>#main{box-sizing:border-box!important;flex:1 
 :root[data-theme="light"] input::placeholder,:root[data-theme="light"] textarea::placeholder{color:#65766b!important;opacity:1}
 :root[data-theme="dark"] input::placeholder,:root[data-theme="dark"] textarea::placeholder{color:#b2bac5!important;opacity:1}
 @media(max-width:760px){.chapter-history{width:100%!important;max-width:100%!important}.revision-compare-grid{grid-template-columns:1fr}}
-.workspace-split.has-multiple #appSplitPane>.app-pane-frame>.app-pane-tabbar{height:44px!important;min-height:44px!important}
-.workspace-split.has-multiple #appSplitPane>.app-pane-frame>.app-live-pane{padding-top:0!important;margin-top:0!important}
-.workspace-split.has-multiple #appSplitPane .app-live-pane body{padding-top:0!important}
 .workspace-split.has-multiple>#main>.tr:first-child{margin-top:0!important}
 .workspace-split.has-multiple>#main .fh,
 .workspace-split.has-multiple>#main .fb,
@@ -736,7 +719,7 @@ body.app-pane-mode #workspaceSplit>#main{box-sizing:border-box!important;flex:1 
 :root[data-theme="dark"] input,:root[data-theme="dark"] textarea,:root[data-theme="dark"] select,:root[data-theme="dark"] option{background:#1b1f23!important;color:#f7f9fb!important;border-color:#68737f!important}
 :root[data-theme="light"] input::placeholder,:root[data-theme="light"] textarea::placeholder{color:#586b5e!important;opacity:1}:root[data-theme="dark"] input::placeholder,:root[data-theme="dark"] textarea::placeholder{color:#b8c2cd!important;opacity:1}
 :root[data-theme="light"] .fh,:root[data-theme="light"] .fb,:root[data-theme="light"] .fr{background:#fff!important;border-color:#aabbb0!important}:root[data-theme="dark"] .fh,:root[data-theme="dark"] .fb,:root[data-theme="dark"] .fr{background:#1b1f23!important;border-color:#58616c!important}
-:root[data-theme="light"] .btn:not(.primary),:root[data-theme="light"] button:not(.primary):not([aria-pressed="true"]){color:#14231a}:root[data-theme="dark"] .btn:not(.primary),:root[data-theme="dark"] button:not(.primary):not([aria-pressed="true"]){color:#f7f9fb}body.app-pane-mode #main:has(>.writer-heading)>.writer-top{margin-top:0!important;padding-top:0!important}body.app-split-active #workspaceSplit>#appSplitPane>.app-pane-frame{padding-top:0!important;margin-top:0!important}body.app-split-active #workspaceSplit>#appSplitPane .app-live-pane{display:block!important;height:100%!important;min-height:0!important}
+:root[data-theme="light"] .btn:not(.primary),:root[data-theme="light"] button:not(.primary):not([aria-pressed="true"]){color:#14231a}:root[data-theme="dark"] .btn:not(.primary),:root[data-theme="dark"] button:not(.primary):not([aria-pressed="true"]){color:#f7f9fb}body.app-pane-mode #main:has(>.writer-heading)>.writer-top{margin-top:0!important;padding-top:0!important}
 /* Keep goal tracking available without competing with the manuscript. */
 #main:has(>.writer-heading)>.writer-goal{padding:7px 10px!important;margin:5px 0!important;border-radius:7px!important}#main:has(>.writer-heading) .writer-goal-top label{font-size:11px!important;font-weight:600}#main:has(>.writer-heading) #wordGoal{width:72px!important;padding:3px 5px!important;font-size:12px!important}#main:has(>.writer-heading) .writer-progress{height:3px!important;margin:5px 0 4px!important}#main:has(>.writer-heading) .writer-goal-bottom{font-size:10px!important;gap:4px 10px!important}
 #main:has(>.writer-heading) .writer-stats{display:flex!important;align-items:center!important;flex-wrap:wrap!important;gap:5px 14px!important;margin:4px 0 6px!important;padding:0!important;border:0!important;background:transparent!important}#main:has(>.writer-heading) .writer-stats>div{display:inline-flex!important;flex-direction:row!important;align-items:baseline!important;gap:5px!important;min-width:0!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important}#main:has(>.writer-heading) .writer-stats strong{font-size:12px!important;font-weight:700!important}#main:has(>.writer-heading) .writer-stats span{font-size:10px!important;color:var(--mute)!important}
@@ -748,18 +731,6 @@ body.app-pane-mode #main:has(> .writer-heading) > .writer-top {
   padding-top: 0 !important;
 }
 
-body.app-split-active #workspaceSplit #appSplitPane .app-pane-frame > iframe.app-live-pane {
-  position: static !important;
-  top: auto !important;
-  height: 100% !important;
-  flex: 1 1 0 !important;
-  align-self: stretch !important;
-}
-@media (max-width: 760px) {
-  body.app-split-active #workspaceSplit #appSplitPane .app-pane-frame > iframe.app-live-pane {
-    height: 100% !important;
-  }
-}
 
 
 /* v1.3.5: readable keyboard shortcut keys in light mode */
@@ -818,6 +789,7 @@ body.writer-focus #main > .chapter-history { margin-top:16px!important; margin-b
   body.writer-focus #main { padding:12px!important; }
   body.writer-focus #main #ed.editor { min-height:60vh!important; font-size:16px!important; padding:14px!important; }
 }
+
 
 
 /* Canonical workspace layout: the left tab strip overlays #main, so reserve exactly 44px there; the right tab strip is already in normal flow. */
@@ -1179,8 +1151,7 @@ function renderSplitPreview(){
      return '<nav'+attrs+' hidden style="display:none!important;flex:none!important;height:0!important;min-height:0!important;margin:0!important;padding:0!important;border:0!important">';
    });
    // Critical: the parent split renderer writes flex/width/max-width and
-   // padding-top:58px!important directly on its #main element. outerHTML copies
-   // that inline style into srcdoc. APP_PANE_MODE skips renderAppTabs(), so the
+      // that inline style into srcdoc. APP_PANE_MODE skips renderAppTabs(), so the
    // child never runs renderSplitPreview() to clear it; inline !important then
    // outranks all pane-mode CSS. #main's inline style is parent-only state.
    html=html.replace(/<main\b([^>]*\bid=["']main["'][^>]*)>/i,function(full,attrs){
