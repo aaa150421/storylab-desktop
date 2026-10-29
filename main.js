@@ -13,7 +13,8 @@ function createWindow() {
     minWidth: 760,
     minHeight: 600,
     title: '이야기공방',
-    backgroundColor: '#0a0a0b',
+    icon: path.join(__dirname, 'build', 'icon.ico'),
+    backgroundColor: '#ffffff',
     autoHideMenuBar: true,
     webPreferences: {
       contextIsolation: true,

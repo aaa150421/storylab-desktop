@@ -1,16 +1,17 @@
 {
   "name": "storylab-desktop",
-  "version": "1.8.6",
+  "version": "1.8.7",
   "description": "이야기공방 데스크톱 앱",
   "main": "main.js",
   "author": "StoryLab",
   "license": "UNLICENSED",
   "scripts": {
     "start": "electron .",
-    "dist:win": "electron-builder --win nsis --x64",
-    "publish:win": "electron-builder --win nsis --x64 --publish always",
+    "dist:win": "npm run prepare:icon && electron-builder --win nsis --x64",
+    "publish:win": "npm run prepare:icon && electron-builder --win nsis --x64 --publish always",
     "release": "node release.js",
-    "test:static": "node scripts/validate-app.js"
+    "test:static": "node scripts/validate-app.js",
+    "prepare:icon": "python scripts/generate-icon.py"
   },
   "devDependencies": {
     "electron": "^34.0.0",
@@ -23,7 +24,8 @@
       "main.js",
       "storylab.html",
       "package.json",
-      "preload.js"
+      "preload.js",
+      "build/icon.ico"
     ],
     "directories": {
       "output": "dist"
@@ -36,7 +38,8 @@
             "x64"
           ]
         }
-      ]
+      ],
+      "icon": "build/icon.ico"
     },
     "nsis": {
       "oneClick": false,
