@@ -1,9 +1,10 @@
-const { app, BrowserWindow, Menu, dialog } = require('electron');
+const { app, BrowserWindow, Menu, dialog, ipcMain } = require('electron');
 const path = require('path');
 const { autoUpdater } = require('electron-updater');
 
 let mainWindow = null;
 let updateDialogOpen = false;
+let manualUpdateCheckPromise = null;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -16,7 +17,8 @@ function createWindow() {
     autoHideMenuBar: true,
     webPreferences: {
       contextIsolation: true,
-      nodeIntegration: false
+      nodeIntegration: false,
+      preload: path.join(__dirname, 'preload.js')
     }
   });
 
@@ -33,6 +35,34 @@ function showUpdateDialog(options) {
     : dialog.showMessageBox(options);
   return dialogPromise.finally(() => { updateDialogOpen = false; });
 }
+
+ipcMain.handle('storylab:check-for-updates', async () => {
+  if (!app.isPackaged) {
+    return { status: 'unsupported', currentVersion: app.getVersion(), message: '설치된 데스크톱 앱에서 이용할 수 있습니다.' };
+  }
+  if (process.platform !== 'win32') {
+    return { status: 'unsupported', currentVersion: app.getVersion(), message: '현재 Windows 버전에서 업데이트 확인을 지원합니다.' };
+  }
+  if (manualUpdateCheckPromise) return { status: 'checking', currentVersion: app.getVersion() };
+
+  manualUpdateCheckPromise = autoUpdater.checkForUpdates()
+    .then(result => {
+      const info = result && result.updateInfo;
+      return {
+        status: result && result.isUpdateAvailable ? 'available' : 'current',
+        currentVersion: app.getVersion(),
+        latestVersion: info && info.version ? info.version : app.getVersion()
+      };
+    })
+    .catch(error => ({
+      status: 'error',
+      currentVersion: app.getVersion(),
+      message: error && error.message ? error.message : '업데이트 서버에 연결하지 못했습니다.'
+    }))
+    .finally(() => { manualUpdateCheckPromise = null; });
+
+  return manualUpdateCheckPromise;
+});
 
 function configureAutoUpdates() {
   if (!app.isPackaged || process.platform !== 'win32') return;
