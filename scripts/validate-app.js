@@ -86,6 +86,10 @@ check(html.includes("findDialog.hidden=false;findInput.value='';"), 'Ctrl+F does
 check(!html.includes('id="replaceAllButton"') && !html.includes('id="replaceWith"') && !html.includes('replaceAllButton'), 'Unrequested find-and-replace controls remain.');
 check(html.includes('.scene-memo-dialog[hidden]{display:none!important}'), 'Hidden dialogs can still be shown by the dialog display rule.');
 check(html.includes('body.app-split-active:not(.writer-focus)>#appTabs{display:none!important}'), 'Global tabs remain duplicated above split-pane title bars.');
+check(html.includes("if(topTabs)topTabs.style.setProperty('display',isSplit?'none':'flex','important');"), 'Global tab strip visibility is not synchronized with split-pane state.');
+check(html.includes("mainBar.style.setProperty('display',isSplit?'flex':'none','important');"), 'Main pane title bar can remain visible when no split is active.');
+check(html.includes("pane.style.setProperty('display',isSplit?'flex':'none','important');"), 'Secondary pane visibility can drift from the active tab count.');
+check(html.includes("if(!APP_TABS.some(function(t){return t.id===APP_ACTIVE_TAB;}))APP_ACTIVE_TAB=APP_TABS[0].id;"), 'Missing active tab is not recovered before rendering.');
 check(html.includes('body.writer-focus #workspaceSplit>#main{flex:1 1 100%;width:100%;max-width:none;padding:14px 24px 32px!important;border:0!important}'), 'Focus mode does not expand the active editor pane.');
 check(html.includes('function mountWorkTools()') && html.includes("['write','chars','world','plot','wideas'].indexOf(R.tab)<0"), 'Work tools are not mounted only inside a work context.');
 check(html.includes("[['write','원고'],['chars','인물'],['world','세계관'],['plot','플롯'],['wideas','아이디어']]"), 'Work-scoped navigation does not include all requested tools.');
