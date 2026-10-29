@@ -69,7 +69,7 @@ check(!/body\.app-pane-mode[^{}]*#main[^{}]*\{[^}]*margin-top:\s*-14px\s*!import
 
 check(primaryCss.includes('[data-theme="light"]'), 'Light theme styling is missing after the UI redesign.');
 check(primaryCss.includes('--shell:#ffffff'), 'Light theme does not use the white shell surface.');
-check(html.includes("icon: path.join(__dirname, 'build', 'icon.ico')"), 'Electron window does not use the StoryLab icon.');
+check(fs.readFileSync(path.join(root, 'main.js'), 'utf8').includes("icon: path.join(__dirname, 'build', 'icon.ico')"), 'Electron window does not use the StoryLab icon.');
 check(JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8')).build.win.icon === 'build/icon.ico', 'Windows installer icon is not configured.');
 check(fs.existsSync(path.join(root, 'build', 'icon.svg')), 'Source icon artwork is missing.');
 check(fs.existsSync(path.join(root, 'scripts', 'generate-icon.py')), 'Windows icon generation script is missing.');
