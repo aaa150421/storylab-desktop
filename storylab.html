@@ -339,14 +339,25 @@ function renderSplitPreview(){
  }
  if(!APP_TABS.some(function(t){return String(t.id)===String(APP_ACTIVE_TAB);}))APP_ACTIVE_TAB=APP_TABS[0].id;
  var active=APP_TABS.find(function(t){return String(t.id)===String(APP_ACTIVE_TAB);});
- var isSplit=APP_TABS.length>1;
- var others=APP_TABS.filter(function(t){return String(t.id)!==String(APP_ACTIVE_TAB);});
+ // A split is two workspaces, not one column per open tab. Tabs that point
+ // to the exact same screen (a common result of repeated split clicks) must not
+ // create duplicate live panes. Keep the other tabs in APP_TABS for later use.
+ var activeScreenKey=JSON.stringify(active&&active.screen||{tab:'home',workId:R.w,cur:S&&S.cur,edit:false});
+ var seenPaneScreens={};seenPaneScreens[activeScreenKey]=true;
+ var others=APP_TABS.filter(function(t){
+   if(String(t.id)===String(APP_ACTIVE_TAB))return false;
+   var screenKey=JSON.stringify(t.screen||{tab:'home',workId:R.w,cur:S&&S.cur,edit:false});
+   if(seenPaneScreens[screenKey])return false;
+   seenPaneScreens[screenKey]=true;
+   return true;
+ }).slice(0,1);
+ var isSplit=others.length>0;
 
  // Reset stale inline styles before applying the canonical layout state.
  // Embedded panes must not leak their inline layout into the main view.
  wrap.classList.toggle('has-multiple',isSplit);
  document.body.classList.toggle('app-split-active',isSplit);
- wrap.style.setProperty('--pane-count',String(APP_TABS.length));
+ wrap.style.setProperty('--pane-count',isSplit?'2':'1');
  if(topTabs){
    if(isSplit)topTabs.style.setProperty('display','none','important');
    else topTabs.style.removeProperty('display');
