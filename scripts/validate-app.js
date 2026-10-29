@@ -86,7 +86,7 @@ check(html.includes("findDialog.hidden=false;findInput.value='';"), 'Ctrl+F does
 check(!html.includes('id="replaceAllButton"') && !html.includes('id="replaceWith"') && !html.includes('replaceAllButton'), 'Unrequested find-and-replace controls remain.');
 check(html.includes('.scene-memo-dialog[hidden]{display:none!important}'), 'Hidden dialogs can still be shown by the dialog display rule.');
 check(html.includes('body.app-split-active:not(.writer-focus)>#appTabs{display:none!important}'), 'Global tabs remain duplicated above split-pane title bars.');
-check(html.includes("if(topTabs)topTabs.style.setProperty('display',isSplit?'none':'flex','important');"), 'Global tab strip visibility is not synchronized with split-pane state.');
+check(html.includes("if(isSplit)topTabs.style.setProperty('display','none','important');") && html.includes("else topTabs.style.removeProperty('display');"), 'Global tab strip visibility is not synchronized with split-pane state.');
 check(html.includes("mainBar.style.setProperty('display',isSplit?'flex':'none','important');"), 'Main pane title bar can remain visible when no split is active.');
 check(html.includes("pane.style.setProperty('display',isSplit?'flex':'none','important');"), 'Secondary pane visibility can drift from the active tab count.');
 check(html.includes("if(!APP_TABS.some(function(t){return String(t.id)===String(APP_ACTIVE_TAB);}))APP_ACTIVE_TAB=APP_TABS[0].id;"), 'Missing active tab is not recovered before rendering.');
