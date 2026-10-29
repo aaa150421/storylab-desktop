@@ -57,15 +57,22 @@ for (const [index, match] of scripts.entries()) {
 
 check(pkg.version === lock.version, 'package.json and package-lock.json versions differ.');
 check(pkg.version === lock.packages?.['']?.version, 'Root package-lock version differs from package.json.');
-const canonical = html.match(/\/\* Canonical workspace layout[\s\S]*?(?=<\/style>)/)?.[0] || '';
-check((html.match(/Canonical workspace layout/g) || []).length === 1, 'Expected one consolidated workspace layout rule set.');
+const canonical = html.match(/\/\* Canonical application shell, workspace panes, and writer focus mode\.[\s\S]*?(?=<\/style>)/)?.[0] || '';
+check((html.match(/Canonical application shell, workspace panes, and writer focus mode\./g) || []).length === 1, 'Expected one consolidated shell, pane, and focus rule set.');
+check(canonical.includes('grid-template-columns:216px minmax(0,1fr)'), 'The redesigned left navigation shell is missing.');
+check(canonical.includes('body.writer-focus>header,body.writer-focus>#appTabs,body.writer-focus>nav'), 'Focus mode does not hide the full application chrome.');
+check(canonical.includes('body.app-split-active.writer-focus #workspaceSplit>#main {padding-top:14px!important}'), 'Focus mode does not release the split-tab offset.');
 check(!html.includes('split-pane-top-alignment-canonical'), 'Separate legacy alignment style block remains.');
 check(canonical.includes('padding-top:58px!important'), 'Split main pane does not reserve the 44px tab strip plus the normal 14px content inset.');
-check(canonical.includes('body.app-split-active.writer-focus #workspaceSplit>#main{padding-top:14px!important}'), 'Focus mode does not release the hidden left tab strip offset.');
 check(!/body\.app-pane-mode[^{}]*#main[^{}]*\{[^}]*margin-top:\s*-14px\s*!important/i.test(html), 'Conflicting negative right-pane offset remains.');
 check(!html.includes('chapterLockToggle') && !html.includes('c.locked'), 'Unrequested manuscript-lock logic remains.');
 check(html.includes('id="findReplaceDialog"') && html.includes('id="replaceAllButton"'), 'Find-and-replace dialog is missing.');
 check(html.includes("e.key.toLowerCase()==='h'"), 'Ctrl+H find-and-replace shortcut is missing.');
+check(html.includes('function setWriterFocus(enabled,notifyParent)'), 'Focus mode does not use the centralized state transition.');
+check(html.includes('function returnToManuscriptList()'), 'Manuscript-list navigation does not use the centralized transition.');
+check(html.includes('var saved=save();') && html.indexOf('var saved=save();') < html.indexOf('EDIT=false;TRASH=false;FOCUS_MODE=false;DUAL_VIEW=false;SPLIT_MODE=false;', html.indexOf('function returnToManuscriptList()')), 'Return-to-list changes edit state before saving the active chapter.');
+check(!/function render\(\)\{\s*DUAL_VIEW=false;SPLIT_MODE=false/.test(html), 'render() still clears editor modes on every redraw.');
+check(!/body\\\.app-pane-mode[^{}]*#main[^{}]*\\\{[^}]*margin-top:\\s*-14px\\s*!important/i.test(html), 'Conflicting negative right-pane offset remains.');
 check(!html.includes('background:rgba(0,0,0,.18)'), 'Scene memo dialog still dims the whole background.');
 check(/\.scene-memo-dialog\{[^}]*background:transparent/.test(html), 'Scene memo overlay is not transparent.');
 check(html.indexOf('id="sceneMemoOpen"') < html.indexOf('id="focusToggle"'), 'Focus mode button is no longer beside the scene memo button.');
