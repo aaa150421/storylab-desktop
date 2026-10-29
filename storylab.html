@@ -35,6 +35,17 @@ body.app-split-active #appSplitPane{display:flex!important}
 @media(max-width:760px){:root{--rail:78px}body>nav{padding:8px 5px}body>nav button{padding:7px 5px;font-size:11px;text-align:center}#main{padding:14px 12px 32px}.workspace-split.has-multiple>#main{padding-top:58px!important}.workspace-split.has-multiple>#appSplitPane{padding-top:0!important}.dual-editors{grid-template-columns:1fr}.dual-editors #ed,.dual-editors #writerPreview{height:45vh;min-height:220px}.idea-board{grid-template-columns:repeat(2,minmax(0,1fr))}.timeline-group{grid-template-columns:72px minmax(0,1fr)}}
 @media(max-width:520px){:root{--rail:62px;--header:40px;--tabs:32px}body>header{padding:0 8px;gap:6px}.save-status{font-size:10px}.gear{padding:4px 6px}body>nav button{font-size:10px;padding:7px 2px}#main{padding:12px 10px 28px}.mgrid,.home-tiles,.relation-manager-inner,.relationship-form,.revision-compare-grid{grid-template-columns:1fr}.app-tab{min-width:60px}.app-tab-open{padding:0 6px;font-size:11px}.writer-heading .title{font-size:18px}.writer-toolbar{gap:4px}.writer-toolbar .btn{padding:4px 7px}.workspace-split.has-multiple>#main{padding-top:58px!important}.workspace-split.has-multiple>#appSplitPane{padding-top:0!important}.scene-memo-card{padding:12px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+/* Compact contextual tools: keep the manuscript as the primary workspace. */
+.writer-toolbar{gap:6px;margin:4px auto 8px}
+.split-panel{display:none;position:fixed;z-index:45;top:calc(var(--header) + 10px);right:12px;bottom:12px;width:min(340px,calc(100vw - 24px));margin:0;padding:12px;overflow:auto;overscroll-behavior:contain;box-shadow:0 14px 42px #0007;border-radius:10px}
+.split-panel.is-open{display:block}
+.split-panel-head{position:sticky;top:-12px;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:8px;margin:-12px -12px 10px;padding:10px 12px;background:var(--surface);border-bottom:1px solid var(--line)}
+.split-panel .split-section:first-of-type{margin-top:0}
+.split-panel .split-detail-section{padding:9px 0}
+.split-panel .split-char-list{max-height:34vh;overflow:auto}
+.split-panel .split-manuscript-preview{max-height:36vh;overflow:auto}
+body.writer-focus .split-panel{display:none!important}
+@media(max-width:520px){.split-panel{right:6px;bottom:6px;width:calc(100vw - 12px);max-height:calc(100vh - 12px)}}
 </style>
 
 </head>
@@ -361,8 +372,15 @@ function renderSplitPreview(){
  // not a preview. Keep iframes alive during normal re-renders to avoid losing in-progress typing.
  var existingIds=Array.prototype.map.call(pane.querySelectorAll('[data-live-pane]'),function(el){return el.getAttribute('data-live-pane');});
  var targetIds=others.map(function(t){return String(t.id);});
- if(existingIds.length===targetIds.length&&existingIds.every(function(id,i){return id===targetIds[i];})){
-   pane.querySelectorAll('[data-live-pane]').forEach(function(frame){var t=others.find(function(x){return String(x.id)===frame.getAttribute('data-live-pane');});var h=frame.querySelector('.app-pane-tab');if(h&&t)h.textContent=t.title||appScreenTitle(t.screen);});
+ if(existingIds.length===targetIds.length&&targetIds.every(function(id){return existingIds.indexOf(id)>=0;})){
+   // Reorder existing pane elements instead of rebuilding their iframes. Recreating an
+   // iframe resets editor focus/state and can race with autosave while tabs are dragged.
+   others.forEach(function(t){
+     var frame=Array.prototype.find.call(pane.querySelectorAll('[data-live-pane]'),function(el){return el.getAttribute('data-live-pane')===String(t.id);});
+     if(!frame)return;
+     var h=frame.querySelector('.app-pane-tab');if(h){h.textContent=t.title||appScreenTitle(t.screen);h.title=t.title||appScreenTitle(t.screen);}
+     pane.appendChild(frame);
+   });
    return;
  }
  pane.innerHTML=others.map(function(t){
@@ -629,8 +647,8 @@ function rEdit(){
   m.innerHTML='<div class="tr writer-top" style="margin-bottom:12px"><button type="button" class="btn" id="back">← 원고 목록</button></div>'
   +'<div class="writer-heading"><label class="ml" for="ct" style="margin:0 0 4px">장면 / 장 제목</label><input class="title" id="ct" placeholder="예: 1장 — 낯선 편지" value="'+esc(c.title)+'"></div>'
   +(linkedPlot?'<section class="work-progress" style="margin:10px auto;max-width:42em"><div class="work-progress-title">연결된 플롯 사건</div><p style="margin:7px 0 4px">'+esc(linkedPlot.title||'제목 없음')+'</p>'+(linkedPlot.storyTime?'<div class="ms">'+esc(linkedPlot.storyTime)+'</div>':'')+(linkedPlot.note?'<p class="setting-help" style="white-space:pre-wrap;margin:6px 0 0">'+esc(linkedPlot.note)+'</p>':'<p class="setting-help" style="margin:6px 0 0">플롯 탭에서 사건 메모를 작성하면 여기에 표시됩니다.</p>')+'</section>':'')
-  +'<div class="writer-toolbar"><button class="btn scene-memo-trigger" id="sceneMemoOpen" type="button" aria-label="장면 메모">✎ 장면 메모 <span class="scene-memo-status" id="sceneMemoStatus" aria-label="메모 없음"></span></button><button class="btn" id="focusToggle" aria-pressed="'+FOCUS_MODE+'">'+(FOCUS_MODE?'집중 모드 끄기':'⛶ 집중 모드')+'</button></div>'
-  +'<aside class="split-panel" id="splitPanel">'
+  +'<div class="writer-toolbar"><button class="btn scene-memo-trigger" id="sceneMemoOpen" type="button" aria-label="장면 메모">✎ 장면 메모 <span class="scene-memo-status" id="sceneMemoStatus" aria-label="메모 없음"></span></button><button class="btn" id="contextPanelToggle" type="button" aria-expanded="false" aria-controls="splitPanel">☷ 장면 자료</button><button class="btn" id="focusToggle" aria-pressed="'+FOCUS_MODE+'">'+(FOCUS_MODE?'집중 모드 끄기':'⛶ 집중 모드')+'</button></div>'
+  +'<aside class="split-panel" id="splitPanel" aria-label="장면 자료"><div class="split-panel-head"><strong>장면 자료</strong><button class="btn" id="contextPanelClose" type="button">닫기</button></div>'
   +'<details class="split-section split-detail-section" id="splitPeople"><summary><strong>이 장면의 인물</strong><span class="ms">'+(c.charIds||[]).length+'명 연결 · 눌러서 관리</span></summary><div class="split-detail"><p class="ms">인물을 선택하면 장면에 연결됩니다.</p><input class="split-select" id="splitCharSearch" type="search" placeholder="인물 이름 검색"><div class="split-char-list" id="splitCharList">'+S.chars.map(function(ch){var ids=c.charIds||[],linked=ids.some(function(id){return String(id)===String(ch.id);});return '<label class="split-char-item '+(linked?'is-linked':'')+'" data-char-row="'+ch.id+'"><input type="checkbox" data-scene-char="'+ch.id+'" '+(linked?'checked':'')+'><span class="split-char-copy"><span class="split-char-name">'+esc(ch.name||'이름 없음')+'</span><span class="split-char-meta">'+esc(ch.role||(ch.tags&&ch.tags.join(' · '))||'인물')+'</span></span><span class="ms">'+(linked?'연결됨':'추가')+'</span></label>';}).join('')+(S.chars.length?'':'<span class="ms">인물 탭에서 인물을 추가하세요.</span>')+'</div></div></details>'
   +'<details class="split-section split-detail-section" id="splitReference"><summary><strong>다른 원고 참고</strong><span class="ms">원고를 선택해 읽기</span></summary><div class="split-detail"><label class="ms" for="splitChapterSelect">참고할 원고</label><select class="split-select" id="splitChapterSelect"><option value="">원고 선택…</option>'+orderFiles().filter(function(ch){return ch.id!==c.id;}).map(function(ch){return '<option value="'+ch.id+'" '+(String(ch.id)===String(SPLIT_REFERENCE_ID)?'selected':'')+'>'+esc(ch.title||'제목 없음')+'</option>';}).join('')+'</select><div id="splitChapterPreview" class="split-manuscript-preview">다른 원고를 선택하면 내용이 여기에 표시됩니다.</div></div></details>'
   +'<details class="split-section split-detail-section" id="splitRelated"><summary><strong>관련 사건</strong><span class="ms">'+S.plots.filter(function(p){return p.chapterId===c.id||p.id===c.plotId||(p.chars||[]).some(function(id){return (c.charIds||[]).some(function(cid){return String(cid)===String(id);});});}).length+'개 · 눌러서 보기</span></summary><div class="split-detail">'+S.plots.filter(function(p){return p.chapterId===c.id||p.id===c.plotId||(p.chars||[]).some(function(id){return (c.charIds||[]).some(function(cid){return String(cid)===String(id);});});}).map(function(p){return '<button class="split-link" data-split-plot="'+p.id+'">'+esc(p.title||'제목 없는 사건')+' <span class="ms">'+esc(p.storyTime||'날짜 미입력')+'</span></button>';}).join('')+(S.plots.length?'':'<span class="ms">아직 등록된 사건이 없어요.</span>')+'</div></details>'
@@ -646,6 +664,10 @@ function rEdit(){
   if(REVISION_PANEL_OPEN)paintChapterHistory(c);
   function updateSceneMemoStatus(){var hasMemo=!!String(c.memo||'').trim(),status=$('#sceneMemoStatus'),trigger=$('#sceneMemoOpen');if(status){status.textContent=hasMemo?'●':'○';status.setAttribute('aria-label',hasMemo?'메모 있음':'메모 없음');status.title=hasMemo?'장면 메모가 저장되어 있어요':'장면 메모가 비어 있어요';}if(trigger)trigger.classList.toggle('has-scene-memo',hasMemo);} $('#memo').oninput=function(e){c.memo=e.target.value;updateSceneMemoStatus();save();scheduleChapterRevision(c);};
   var memoDialog=$('#sceneMemoDialog'),memoCard=memoDialog.querySelector('.scene-memo-card'),memoHead=memoDialog.querySelector('.scene-memo-head');$('#memo').value=c.memo||'';updateSceneMemoStatus();
+   var contextPanel=$('#splitPanel'),contextToggle=$('#contextPanelToggle');
+   function setContextPanel(open){if(!contextPanel||!contextToggle)return;contextPanel.classList.toggle('is-open',!!open);contextToggle.setAttribute('aria-expanded',String(!!open));contextToggle.textContent=open?'☷ 장면 자료 닫기':'☷ 장면 자료';}
+   if(contextToggle)contextToggle.onclick=function(){setContextPanel(!contextPanel.classList.contains('is-open'));};
+   var contextClose=$('#contextPanelClose');if(contextClose)contextClose.onclick=function(){setContextPanel(false);};
    $('#sceneMemoOpen').onclick=function(){memoDialog.hidden=false;$('#memo').value=c.memo||'';$('#memo').focus();};
    $('#sceneMemoClose').onclick=function(){memoDialog.hidden=true;};
    memoDialog.addEventListener('click',function(e){if(e.target===memoDialog)memoDialog.hidden=true;});
