@@ -350,7 +350,7 @@ function renderSplitPreview(){
    if(seenPaneScreens[screenKey])return false;
    seenPaneScreens[screenKey]=true;
    return true;
- }).slice(0,1);
+ });
  var isSplit=others.length>0;
 
  // Reset stale inline styles before applying the canonical layout state.
