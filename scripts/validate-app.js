@@ -46,7 +46,7 @@ for (const [index, match] of styles.entries()) {
 const primaryCss = styles[0]?.[1] || '';
 check(primaryCss.includes('--rail:108px'), 'Compact writing-first navigation rail is missing.');
 check(primaryCss.includes('body.writer-focus>header,body.writer-focus>#appTabs,body.writer-focus>nav'), 'Focus mode does not hide application chrome.');
-check(primaryCss.includes('body.app-pane-mode>header,body.app-pane-mode>#appTabs,body.app-pane-mode>nav,body.app-pane-mode #appMainTabbar,body.app-pane-mode #appSplitPane,body.app-pane-mode .app-tabs,body.app-pane-mode .app-main-tabbar{display:none!important}'), 'Embedded pane mode does not hide nested application tab bars.');
+check(primaryCss.includes('body.app-pane-mode>header,body.app-pane-mode>#appTabs,body.app-pane-mode>nav,body.app-pane-mode #appMainTabbar,body.app-pane-mode #appSplitPane,body.app-pane-mode .app-tabs,body.app-pane-mode .app-main-tabbar,body.app-pane-mode .app-pane-tabbar{display:none!important}'), 'Embedded pane mode does not hide nested application tab bars.');
 check(primaryCss.includes('body.app-pane-mode #main{display:block!important;flex:none!important;width:100%!important;max-width:none!important;'), 'Embedded pane main content can inherit conflicting split flex sizing.');
 check(primaryCss.includes('body.app-pane-mode #main>input,body.app-pane-mode #main>textarea,body.app-pane-mode #main>select{display:block!important;width:100%!important;'), 'Embedded pane form controls can render side-by-side unexpectedly.');
 check(html.includes('var childWorkspace=child.getElementById(\'workspaceSplit\')') && html.includes('childMain.style.setProperty(\'display\',\'block\',\'important\')'), 'Embedded pane load does not clear stale parent split layout state.');
