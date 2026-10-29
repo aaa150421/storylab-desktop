@@ -320,28 +320,36 @@ function renderSplitPreview(){
    mainBar.innerHTML='';
    return;
  }
- // Keep the tab strip and split-pane headers mutually exclusive even if an earlier
- // render or a stale CSS state left the layout classes out of sync.
+ // Normalize tab state first; rendering below is the only place that decides
+ // which tab strip and pane headers are visible.
  if(!Array.isArray(APP_TABS))APP_TABS=[];
  if(!APP_TABS.length){
    APP_TABS.push({id:APP_ACTIVE_TAB,title:'메인',screen:{tab:'home',workId:R.w,cur:S&&S.cur,edit:false}});
  }
- if(!APP_TABS.some(function(t){return t.id===APP_ACTIVE_TAB;}))APP_ACTIVE_TAB=APP_TABS[0].id;
+ if(!APP_TABS.some(function(t){return String(t.id)===String(APP_ACTIVE_TAB);}))APP_ACTIVE_TAB=APP_TABS[0].id;
+ var active=APP_TABS.find(function(t){return String(t.id)===String(APP_ACTIVE_TAB);});
  var isSplit=APP_TABS.length>1;
- var others=APP_TABS.filter(function(t){return t.id!==APP_ACTIVE_TAB;});
+ var others=APP_TABS.filter(function(t){return String(t.id)!==String(APP_ACTIVE_TAB);});
+
+ // Reset stale inline styles before applying the canonical layout state.
+ // Embedded panes must not leak their inline layout into the main view.
  wrap.classList.toggle('has-multiple',isSplit);
  document.body.classList.toggle('app-split-active',isSplit);
  wrap.style.setProperty('--pane-count',String(APP_TABS.length));
- if(topTabs)topTabs.style.setProperty('display',isSplit?'none':'flex','important');
+ if(topTabs){
+   if(isSplit)topTabs.style.setProperty('display','none','important');
+   else topTabs.style.removeProperty('display');
+ }
  mainBar.style.setProperty('display',isSplit?'flex':'none','important');
  mainBar.style.setProperty('width',isSplit?'50%':'100%','important');
  var mainPane=document.getElementById('main');
  if(mainPane){['flex','width','max-width','padding-top','margin-top'].forEach(function(prop){mainPane.style.removeProperty(prop);});}
- pane.style.flex='1 1 0';pane.style.width='auto';pane.style.maxWidth='none';
+ pane.style.removeProperty('flex');
+ pane.style.removeProperty('width');
+ pane.style.removeProperty('max-width');
  pane.style.setProperty('display',isSplit?'flex':'none','important');
  pane.hidden=!isSplit;
- var nav=document.querySelector('body > nav');if(nav)nav.hidden=APP_TABS.length>1;
- var active=APP_TABS.find(function(t){return t.id===APP_ACTIVE_TAB;});
+ var nav=document.querySelector('body > nav');if(nav)nav.hidden=isSplit;
  var main=document.getElementById('main');
  mainBar.innerHTML=active?'<button type="button" class="app-pane-tab" data-main-pane-focus="'+esc(active.id)+'" title="현재 작업 탭">'+esc(active.title||appScreenTitle(active.screen))+'</button><button type="button" class="app-pane-focus" data-main-pane-close="'+esc(active.id)+'" title="이 탭 닫기">×</button>':'';
  mainBar.querySelector('[data-main-pane-focus]')?.addEventListener('click',function(){var t=APP_TABS.find(function(x){return x.id===this.dataset.mainPaneFocus;},this);if(t){restoreAppWorkspace(t);}});
