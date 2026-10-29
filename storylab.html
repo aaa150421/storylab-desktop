@@ -1214,8 +1214,8 @@ function renderSplitPreview(){
    // The srcdoc is cloned from the parent document. Remove parent-only split state
    // before the embedded app boots, otherwise left-pane padding rules leak into it.
    html=html.replace(/<body([^>]*)>/i,function(tag,attrs){
-     return '<body'+attrs.replace(/\\sclass=(["'])(.*?)\\1/i,function(full,quote,value){
-       return ' class='+quote+value.split(/\\s+/).filter(function(name){return name!=='app-split-active';}).join(' ')+quote;
+     return '<body'+attrs.replace(/\sclass=(["'])(.*?)\\1/i,function(full,quote,value){
+       return ' class='+quote+value.split(/\s+/).filter(function(name){return name!=='app-split-active';}).join(' ')+quote;
      })+'>';
    });
    var bootstrap='<script>window.__STORY_PANE_SCREEN='+screenJson+';<\/script>';
