@@ -1131,6 +1131,21 @@ function openAppTabForChapter(chapterId,workId){
 function renderSplitPreview(){
  var pane=document.getElementById('appSplitPane'),wrap=document.getElementById('workspaceSplit'),mainBar=document.getElementById('appMainTabbar');
  if(!pane||!wrap||!mainBar)return;
+ // An iframe pane is already hosted inside the outer split layout. Never create a
+ // second split inside it: that duplicates the tab-bar offset and pushes content down.
+ if(APP_PANE_MODE){
+   wrap.classList.remove('has-multiple');
+   document.body.classList.remove('app-split-active');
+   wrap.style.removeProperty('--pane-count');
+   var embeddedMain=document.getElementById('main');
+   if(embeddedMain){
+     ['flex','width','max-width','padding-top','margin-top'].forEach(function(prop){embeddedMain.style.removeProperty(prop);});
+   }
+   pane.innerHTML='';
+   pane.hidden=true;
+   mainBar.innerHTML='';
+   return;
+ }
  var others=APP_TABS.filter(function(t){return t.id!==APP_ACTIVE_TAB;});
  wrap.classList.toggle('has-multiple',APP_TABS.length>1);
  document.body.classList.toggle('app-split-active',APP_TABS.length>1);
