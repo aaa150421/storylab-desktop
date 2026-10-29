@@ -956,6 +956,24 @@ body.app-pane-mode.app-split-active #workspaceSplit > #main {
   margin-top: 0 !important;
 }
 </style>
+<style id="split-pane-top-alignment-fix-1-4-7">
+/* Final 1.4.7 adjustment: the embedded right pane is now 10px above the
+   original left pane. Increase only its content top inset by 10px. */
+body.app-pane-mode>.workspace-split>#main,
+body.app-pane-mode main#main,
+body.app-pane-mode .workspace-split main#main {
+  padding-top: 24px !important;
+  margin-top: 0 !important;
+}
+@media (max-width: 760px) {
+  body.app-pane-mode>.workspace-split>#main,
+  body.app-pane-mode main#main,
+  body.app-pane-mode .workspace-split main#main {
+    padding-top: 20px !important;
+    margin-top: 0 !important;
+  }
+}
+</style>
 </head>
 <body>
 <header><button class="wn" id="wn" aria-label="작품 목록 열기"></button><span id="total"></span><span id="saveStatus" class="save-status" role="status" aria-live="polite">자동 저장 켜짐</span><button class="theme-toggle" id="themeToggle" type="button" aria-label="라이트 테마로 전환" title="테마 전환">☼</button><button class="gear" id="gear">설정</button></header>
