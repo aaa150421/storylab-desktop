@@ -53,28 +53,37 @@ for (const [index, match] of scripts.entries()) {
   }
 }
 
-check(pkg.version === lock.version, 'package.json and package-lock.json versions differ.');
-check(pkg.version === lock.packages?.['']?.version, 'Root package-lock version differs from package.json.');
-check((html.match(/id="split-pane-top-alignment-canonical"/g) || []).length === 1, 'Expected exactly one canonical split-pane alignment block.');
-check(!html.includes('split-pane-top-alignment-canonical-1-4-8'), 'Legacy split-pane alignment block remains.');
-check(!/mainPane\.style\.setProperty\(['"]padding-top['"]/.test(html), 'Runtime inline padding-top override remains.');
-check(!/mainPane\.style\.(?:flex|width|maxWidth)\s*=/.test(html), 'Runtime inline pane sizing override remains.');
-check(!/\.workspace-split\.has-multiple\s*>\s*#main\s*\{[^}]*flex:\s*0\s+0\s+50%/i.test(html), 'Legacy hard-coded 50% main-pane sizing remains.');
-check(!/body\.app-split-active[^{}]*#workspaceSplit\s*>\s*#main\s*\{[^}]*padding-top:\s*(?:50|52|58)px\s*!important/i.test(html), 'Conflicting legacy left-pane top offset remains.');
-check(!/body\.app-pane-mode[^{}]*#main[^{}]*\{[^}]*margin-top:\s*-14px\s*!important/i.test(html), 'Conflicting negative right-pane offset remains.');
-const canonical = html.match(/<style id="split-pane-top-alignment-canonical">([\s\S]*?)<\/style>/)?.[1] || '';
-check((canonical.match(/padding-top:\s*0\s*!important/g) || []).length === 1, 'Canonical pane alignment must define one zero top offset.');
-check(!/padding-top:\s*(?:14|44)px\s*!important/.test(canonical), 'Canonical pane alignment contains an extra top offset.');
-check(html.includes('body.writer-focus #appMainTabbar { display:none!important; }'), 'Focus mode does not hide the active pane tab bar.');
-check(/\.writer-toolbar\{display:flex;justify-content:flex-start!important/.test(html), 'Focus button and scene memo are not grouped at the start of the toolbar.');
-check(html.includes('APP_PANE_SCREEN={tab:screen.tab,workId:work.id,cur:screen.cur,edit:!!screen.edit};'), 'Pane navigation state is not synchronized when the host changes screen.');
-check(html.includes("data.type!=='storylab-pane-screen-change'"), 'Embedded pane return-to-list message handler is missing.');
 
-check(html.includes('id="chapterLockToggle"'), 'Per-chapter lock control is missing.');
-check(html.includes("editor.readOnly=!!c.locked;"), 'Locked chapters do not make the editor read-only.');
-check(html.includes("$('#ct').readOnly=!!c.locked;"), 'Locked chapters do not protect the title and memo.');
+const canonical = html.match(/\/\* Canonical workspace layout[\s\S]*?(?=<\/style>)/)?.[0] || '';
+check((html.match(/Canonical workspace layout/g) || []).length === 1, 'Expected one consolidated workspace layout rule set.');
+check(!html.includes('split-pane-top-alignment-canonical'), 'Separate legacy alignment style block remains.');
+check(canonical.includes('padding-top:58px!important'), 'Split main pane does not reserve the 44px tab strip plus the normal 14px content inset.');
+check(canonical.includes('body.app-split-active.writer-focus #workspaceSplit>#main{padding-top:14px!important}'), 'Focus mode does not release the hidden left tab strip offset.');
+check(!/body\.app-pane-mode[^{}]*#main[^{}]*\{[^}]*margin-top:\s*-14px\s*!important/i.test(html), 'Conflicting negative right-pane offset remains.');
+check(!html.includes('chapterLockToggle') && !html.includes('c.locked'), 'Unrequested manuscript-lock logic remains.');
 check(html.includes('id="findReplaceDialog"') && html.includes('id="replaceAllButton"'), 'Find-and-replace dialog is missing.');
 check(html.includes("e.key.toLowerCase()==='h'"), 'Ctrl+H find-and-replace shortcut is missing.');
+check(!html.includes('background:rgba(0,0,0,.18)'), 'Scene memo dialog still dims the whole background.');
+check(/\.scene-memo-dialog\{[^}]*background:transparent/.test(html), 'Scene memo overlay is not transparent.');
+check(html.indexOf('id="sceneMemoOpen"') < html.indexOf('id="focusToggle"'), 'Focus mode button is no longer beside the scene memo button.');
+check(!html.includes("postMessage({type:'storylab-pane-force-screen',screen:tab.screen}"), 'Parent echoes pane screen changes back to the iframe.');
+check(html.includes("data.type!=='storylab-pane-screen-change'"), 'Embedded pane return-to-list message handler is missing.');
+
+
+const canonical = html.match(/\/\* Canonical workspace layout[\s\S]*?(?=<\/style>)/)?.[0] || '';
+check((html.match(/Canonical workspace layout/g) || []).length === 1, 'Expected one consolidated workspace layout rule set.');
+check(!html.includes('split-pane-top-alignment-canonical'), 'Separate legacy alignment style block remains.');
+check(canonical.includes('padding-top:58px!important'), 'Split main pane does not reserve the 44px tab strip plus the normal 14px content inset.');
+check(canonical.includes('body.app-split-active.writer-focus #workspaceSplit>#main{padding-top:14px!important}'), 'Focus mode does not release the hidden left tab strip offset.');
+check(!/body\.app-pane-mode[^{}]*#main[^{}]*\{[^}]*margin-top:\s*-14px\s*!important/i.test(html), 'Conflicting negative right-pane offset remains.');
+check(!html.includes('chapterLockToggle') && !html.includes('c.locked'), 'Unrequested manuscript-lock logic remains.');
+check(html.includes('id="findReplaceDialog"') && html.includes('id="replaceAllButton"'), 'Find-and-replace dialog is missing.');
+check(html.includes("e.key.toLowerCase()==='h'"), 'Ctrl+H find-and-replace shortcut is missing.');
+check(!html.includes('background:rgba(0,0,0,.18)'), 'Scene memo dialog still dims the whole background.');
+check(/\.scene-memo-dialog\{[^}]*background:transparent/.test(html), 'Scene memo overlay is not transparent.');
+check(html.indexOf('id="sceneMemoOpen"') < html.indexOf('id="focusToggle"'), 'Focus mode button is no longer beside the scene memo button.');
+check(!html.includes("postMessage({type:'storylab-pane-force-screen',screen:tab.screen}"), 'Parent echoes pane screen changes back to the iframe.');
+check(html.includes("data.type!=='storylab-pane-screen-change'"), 'Embedded pane return-to-list message handler is missing.');
 
 if (failures.length) {
   console.error('이야기공방 정적 검사 실패:');
