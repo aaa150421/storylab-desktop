@@ -932,6 +932,23 @@ body.app-pane-mode .workspace-split main#main {
 :root[data-theme="light"] .settings-page kbd { color:#17231c!important; background:#f0f4f1!important; border-color:#788b7e!important; box-shadow:inset 0 1px 0 #fff; }
 :root[data-theme="dark"] .settings-page kbd { color:#f7f9fb!important; background:#22262b!important; border-color:#68717b!important; }
 </style>
+
+<style id="split-pane-top-alignment-fix-1-3-9">
+/* v1.3.9: use the iframe's outer tabbar as the right pane's top spacer.
+   The left pane reserves 44px for its overlay tabbar; the iframe already
+   starts below its 44px tabbar, so its inner #main must add no top offset.
+   Two IDs deliberately outrank the legacy negative-margin overrides above. */
+body.app-pane-mode > #workspaceSplit > #main {
+  box-sizing: border-box !important;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+body.app-pane-mode > #workspaceSplit > #main:has(> .writer-heading) {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+</style>
+
 </head>
 <body>
 <header><button class="wn" id="wn" aria-label="작품 목록 열기"></button><span id="total"></span><span id="saveStatus" class="save-status" role="status" aria-live="polite">자동 저장 켜짐</span><button class="theme-toggle" id="themeToggle" type="button" aria-label="라이트 테마로 전환" title="테마 전환">☼</button><button class="gear" id="gear">설정</button></header>
