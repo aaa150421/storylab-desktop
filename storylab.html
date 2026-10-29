@@ -1125,6 +1125,28 @@ function render(){
 var EDIT=false,RN=null;
 var SCENE_MEMO_WORK_ID=null;
 var APP_TAB_LIMIT=8,APP_ACTIVE_TAB='app-tab-1',APP_TAB_SEQ=1,APP_SPLIT=false,APP_SPLIT_TAB=null,APP_PANE_MODE=false,APP_PANE_SCREEN=null;
+/* Embedded panes report navigation to the host tab model. Without this,
+   the iframe can show the list while the host still remembers edit:true. */
+window.addEventListener('message',function(event){
+  var data=event&&event.data;
+  if(!data||data.type!=='storylab-pane-screen-change'||!data.screen||APP_PANE_MODE)return;
+  var pane=document.getElementById('appSplitPane');
+  if(!pane)return;
+  var frame=null;
+  pane.querySelectorAll('iframe.app-live-pane').forEach(function(candidate){
+    if(candidate.contentWindow===event.source)frame=candidate;
+  });
+  if(!frame)return;
+  var holder=frame.closest('[data-live-pane]');
+  var id=holder&&holder.getAttribute('data-live-pane');
+  var tab=APP_TABS.find(function(item){return String(item.id)===String(id);});
+  if(!tab)return;
+  var screen=data.screen;
+  if(typeof screen.tab!=='string'||screen.workId==null)return;
+  tab.screen={tab:screen.tab,workId:screen.workId,cur:screen.cur,edit:!!screen.edit};
+  tab.title=appScreenTitle(tab.screen);
+  renderSplitPreview();
+});
 var APP_TABS=[{id:APP_ACTIVE_TAB,title:'이야기공방',screen:{tab:'home',workId:R.w,cur:S.cur,edit:false}}];
 function appScreenTitle(snapshot){
   if(!snapshot)return '새 탭';
@@ -1432,7 +1454,7 @@ function rEdit(){
   document.body.classList.toggle('writer-focus',FOCUS_MODE);document.body.classList.toggle('split-mode',SPLIT_MODE);document.body.classList.toggle('writer-dual-view',DUAL_VIEW);
   var body=c.body||'',words=cnt(body),linkedPlot=S.plots.find(function(p){return p.id===c.plotId;});
   var preview=body.trim()?body.split(/\n\s*\n/).map(function(p){return '<p>'+esc(p).replace(/\n/g,'<br>')+'</p>';}).join(''):'<p class="writer-preview-empty">아직 작성한 원고가 없어요. 편집 화면에서 첫 문장을 시작해 보세요.</p>';
-  m.innerHTML='<div class="tr writer-top" style="margin-bottom:12px"><button class="btn" id="back">← 원고 목록</button></div>'
+  m.innerHTML='<div class="tr writer-top" style="margin-bottom:12px"><button type="button" class="btn" id="back">← 원고 목록</button></div>'
   +'<div class="writer-heading"><label class="ml" for="ct" style="margin:0 0 4px">장면 / 장 제목</label><input class="title" id="ct" placeholder="예: 1장 — 낯선 편지" value="'+esc(c.title)+'"></div>'
   +(linkedPlot?'<section class="work-progress" style="margin:10px auto;max-width:42em"><div class="work-progress-title">연결된 플롯 사건</div><p style="margin:7px 0 4px">'+esc(linkedPlot.title||'제목 없음')+'</p>'+(linkedPlot.storyTime?'<div class="ms">'+esc(linkedPlot.storyTime)+'</div>':'')+(linkedPlot.note?'<p class="setting-help" style="white-space:pre-wrap;margin:6px 0 0">'+esc(linkedPlot.note)+'</p>':'<p class="setting-help" style="margin:6px 0 0">플롯 탭에서 사건 메모를 작성하면 여기에 표시됩니다.</p>')+'</section>':'')
   +'<div class="writer-toolbar"><button class="btn scene-memo-trigger" id="sceneMemoOpen" type="button" aria-label="장면 메모">✎ 장면 메모 <span class="scene-memo-status" id="sceneMemoStatus" aria-label="메모 없음"></span></button><button class="btn" id="focusToggle" aria-pressed="'+FOCUS_MODE+'">'+(FOCUS_MODE?'집중 모드 끄기':'⛶ 집중 모드')+'</button></div>'
@@ -1496,6 +1518,13 @@ function rEdit(){
        APP_PANE_SCREEN.workId=R.w;
        APP_PANE_SCREEN.cur=S.cur;
        APP_PANE_SCREEN.edit=false;
+       /* Keep the host tab's saved screen in sync with this iframe. */
+       try{
+         window.parent.postMessage({
+           type:'storylab-pane-screen-change',
+           screen:{tab:'write',workId:R.w,cur:S.cur,edit:false}
+         },'*');
+       }catch(ignore){}
      }
      render();
    };
