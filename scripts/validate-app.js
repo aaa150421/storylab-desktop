@@ -110,6 +110,10 @@ check(html.includes("document.body.classList.toggle('app-right-pane-focus',!!dat
 check(primaryCss.includes('body.app-right-pane-focus #workspaceSplit>#appSplitPane{grid-column:1 / -1;width:100%;border:0}'), 'Right-pane focus mode does not expand across the workspace.');
 check(html.includes("status.textContent=hasMemo?'● 메모 있음':'○ 메모 없음';"), 'Scene memo button does not show an explicit populated/empty state.');
 check(primaryCss.includes('.scene-memo-trigger.has-scene-memo .scene-memo-status'), 'Scene memo populated state has no visible button styling.');
+check(html.includes("document.body.classList.toggle('app-right-pane-focus',!!data.enabled);"), 'Focus mode in the right pane does not notify the host layout.');
+check(primaryCss.includes('body.app-right-pane-focus #workspaceSplit>#appSplitPane{grid-column:1 / -1;width:100%;border:0}'), 'Right-pane focus mode does not expand across the workspace.');
+check(html.includes("status.textContent=hasMemo?'● 메모 있음':'○ 메모 없음';"), 'Scene memo button does not show an explicit populated/empty state.');
+check(primaryCss.includes('.scene-memo-trigger.has-scene-memo .scene-memo-status'), 'Scene memo populated state has no visible button styling.');
 check(!html.includes("FOCUS_MODE=!FOCUS_MODE;document.body.classList.toggle('writer-focus',FOCUS_MODE);render();"), 'Focus mode still redraws the entire editor when toggled.');
 check(html.includes('function returnToManuscriptList()'), 'Manuscript-list navigation does not use the centralized transition.');
 check(html.includes('var saved=save();') && html.indexOf('var saved=save();') < html.indexOf('EDIT=false;TRASH=false;FOCUS_MODE=false;DUAL_VIEW=false;SPLIT_MODE=false;', html.indexOf('function returnToManuscriptList()')), 'Return-to-list changes edit state before saving the active chapter.');
