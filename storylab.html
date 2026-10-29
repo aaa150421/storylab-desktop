@@ -1233,6 +1233,14 @@ function renderSplitPreview(){
      attrs=attrs.replace(/\shidden(?:="[^"]*")?/i,'');
      return '<nav'+attrs+' hidden style="display:none!important;flex:none!important;height:0!important;min-height:0!important;margin:0!important;padding:0!important;border:0!important">';
    });
+   // Critical: the parent split renderer writes flex/width/max-width and
+   // padding-top:58px!important directly on its #main element. outerHTML copies
+   // that inline style into srcdoc. APP_PANE_MODE skips renderAppTabs(), so the
+   // child never runs renderSplitPreview() to clear it; inline !important then
+   // outranks all pane-mode CSS. #main's inline style is parent-only state.
+   html=html.replace(/<main\b([^>]*\bid=["']main["'][^>]*)>/i,function(full,attrs){
+     return '<main'+attrs.replace(/\sstyle=(["'])[\s\S]*?\1/i,'')+'>';
+   });
    var bootstrap='<script>window.__STORY_PANE_SCREEN='+screenJson+';<\/script>';
    html=html.replace('</head>',bootstrap+'</head>');
    iframe.onload=function(){
