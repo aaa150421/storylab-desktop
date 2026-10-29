@@ -954,6 +954,17 @@ body.app-pane-mode > #workspaceSplit > #main:has(> .writer-heading) {
     margin-top: 0 !important;
   }
 }
+
+/* v1.5.2: final overrides for legacy pane/focus selectors. Keep these last to
+   prevent older !important declarations from taking precedence in srcdoc panes. */
+body.writer-focus header,body.writer-focus nav,body.writer-focus #appTabs{display:none!important}
+body.app-pane-mode.writer-focus>nav{display:none!important}
+body.app-pane-mode.writer-focus #main{padding-top:14px!important}
+body.app-pane-mode.writer-focus #main:has(>.writer-heading){padding:14px clamp(14px,2vw,28px)!important;max-width:none!important}
+body.app-pane-mode.writer-focus #main:has(>.writer-heading) #ed{min-height:68vh!important;font-size:18px!important;line-height:2!important}
+body.app-split-active .app-pane-frame.is-writer-focus>.app-pane-tabbar{display:none!important}
+.scene-memo-head{user-select:none;-webkit-user-select:none}
+.scene-memo-head strong{cursor:inherit}
 </style>
 </head>
 <body>
@@ -1141,7 +1152,13 @@ window.addEventListener('message',function(event){
   var holder=frame.closest('[data-live-pane]');
   if(!holder)return;
   if(data.type==='storylab-pane-focus-change'){
+    var paneBar=holder.querySelector('.app-pane-tabbar');
     holder.classList.toggle('is-writer-focus',!!data.enabled);
+    /* Inline important styling deliberately outranks older split-pane CSS rules. */
+    if(paneBar){
+      if(data.enabled)paneBar.style.setProperty('display','none','important');
+      else paneBar.style.removeProperty('display');
+    }
     return;
   }
   if(data.type!=='storylab-pane-screen-change'||!data.screen)return;
@@ -1153,6 +1170,7 @@ window.addEventListener('message',function(event){
   tab.screen={tab:screen.tab,workId:screen.workId,cur:screen.cur,edit:!!screen.edit};
   tab.title=appScreenTitle(tab.screen);
   holder.classList.remove('is-writer-focus');
+  var paneBar=holder.querySelector('.app-pane-tabbar');if(paneBar)paneBar.style.removeProperty('display');
   renderSplitPreview();
 });
 var APP_TABS=[{id:APP_ACTIVE_TAB,title:'이야기공방',screen:{tab:'home',workId:R.w,cur:S.cur,edit:false}}];
@@ -1481,7 +1499,37 @@ function rEdit(){
   $('#toggleChapterHistory').onclick=function(){REVISION_PANEL_OPEN=!REVISION_PANEL_OPEN;$('#chapterHistoryPanel').hidden=!REVISION_PANEL_OPEN;this.textContent=REVISION_PANEL_OPEN?'기록 닫기':'기록·비교';if(REVISION_PANEL_OPEN)paintChapterHistory(c);};
   if(REVISION_PANEL_OPEN)paintChapterHistory(c);
   function updateSceneMemoStatus(){var hasMemo=!!String(c.memo||'').trim(),status=$('#sceneMemoStatus'),trigger=$('#sceneMemoOpen');if(status){status.textContent=hasMemo?'●':'○';status.setAttribute('aria-label',hasMemo?'메모 있음':'메모 없음');status.title=hasMemo?'장면 메모가 저장되어 있어요':'장면 메모가 비어 있어요';}if(trigger)trigger.classList.toggle('has-scene-memo',hasMemo);} $('#memo').oninput=function(e){c.memo=e.target.value;updateSceneMemoStatus();save();scheduleChapterRevision(c);};
-  var memoDialog=$('#sceneMemoDialog');$('#memo').value=c.memo||'';updateSceneMemoStatus();$('#sceneMemoOpen').onclick=function(){memoDialog.hidden=false;$('#memo').value=c.memo||'';$('#memo').focus();};$('#sceneMemoClose').onclick=function(){memoDialog.hidden=true;};memoDialog.addEventListener('click',function(e){if(e.target===memoDialog)memoDialog.hidden=true;});  var editor=$('#ed');
+  var memoDialog=$('#sceneMemoDialog'),memoCard=memoDialog.querySelector('.scene-memo-card'),memoHead=memoDialog.querySelector('.scene-memo-head');$('#memo').value=c.memo||'';updateSceneMemoStatus();
+   $('#sceneMemoOpen').onclick=function(){memoDialog.hidden=false;$('#memo').value=c.memo||'';$('#memo').focus();};
+   $('#sceneMemoClose').onclick=function(){memoDialog.hidden=true;};
+   memoDialog.addEventListener('click',function(e){if(e.target===memoDialog)memoDialog.hidden=true;});
+   /* Drag by the title bar; convert the centered card to explicit viewport coordinates on first drag. */
+   if(memoHead&&memoCard){
+     memoHead.style.cursor='grab';memoHead.style.touchAction='none';
+     memoHead.addEventListener('pointerdown',function(e){
+       if(e.target.closest('button')||e.button!==0)return;
+       var rect=memoCard.getBoundingClientRect();
+       if(!memoCard.dataset.positioned){
+         memoCard.style.position='fixed';memoCard.style.margin='0';
+         memoCard.style.left=rect.left+'px';memoCard.style.top=rect.top+'px';
+         memoCard.style.transform='none';memoCard.dataset.positioned='1';
+       }
+       var startX=e.clientX,startY=e.clientY,left=parseFloat(memoCard.style.left)||rect.left,top=parseFloat(memoCard.style.top)||rect.top;
+       memoHead.setPointerCapture(e.pointerId);memoHead.style.cursor='grabbing';
+       function move(ev){
+         var maxLeft=Math.max(0,window.innerWidth-memoCard.offsetWidth),maxTop=Math.max(0,window.innerHeight-48);
+         memoCard.style.left=Math.max(0,Math.min(maxLeft,left+ev.clientX-startX))+'px';
+         memoCard.style.top=Math.max(0,Math.min(maxTop,top+ev.clientY-startY))+'px';
+       }
+       function end(ev){
+         try{memoHead.releasePointerCapture(ev.pointerId);}catch(ignore){}
+         memoHead.style.cursor='grab';memoHead.removeEventListener('pointermove',move);
+         memoHead.removeEventListener('pointerup',end);memoHead.removeEventListener('pointercancel',end);
+       }
+       memoHead.addEventListener('pointermove',move);memoHead.addEventListener('pointerup',end);memoHead.addEventListener('pointercancel',end);e.preventDefault();
+     });
+   }
+   var editor=$('#ed');
    function writerViewportHeight(){
      var h=window.innerHeight||document.documentElement.clientHeight||0;
      /* The embedded pane's viewport excludes its own 40px tab strip.
