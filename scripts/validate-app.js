@@ -51,6 +51,13 @@ check(primaryCss.includes('padding-top:58px!important'), 'Split main pane does n
 check(primaryCss.includes('body.app-split-active.writer-focus #workspaceSplit>#main{padding-top:14px!important}'), 'Focus mode does not release the split-tab offset.');
 check(!/body\.app-pane-mode[^{}]*#main[^{}]*\{[^}]*margin-top:\s*-14px\s*!important/i.test(html), 'Conflicting negative right-pane offset remains.');
 
+check(primaryCss.includes('[data-theme="light"]'), 'Light theme styling is missing after the UI redesign.');
+check(primaryCss.includes('--shell:#f0f1ed'), 'Light theme does not override shell surfaces.');
+check(html.includes('Never fall through to writing a stale full-project'), 'Split-pane save does not fail closed when shared state is missing.');
+check(html.includes("if(!latestWork||!Array.isArray(latestWork.chapters))"), 'Split-pane save does not validate the shared work before writing.');
+check(html.includes("if(!baseSnap&&remoteSnap!==localSnap)"), 'Split-pane save can overwrite remote edits without a baseline.');
+check(html.includes("if(!remoteChapter)"), 'Split-pane save does not detect a missing remote chapter.');
+
 const scripts = [...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gi)];
 for (const [index, match] of scripts.entries()) {
   try {
@@ -81,6 +88,68 @@ check(/\.scene-memo-dialog\s*\{[^}]*background:transparent/.test(html), 'Scene m
 check(html.indexOf('id="sceneMemoOpen"') < html.indexOf('id="focusToggle"'), 'Focus mode button is no longer beside the scene memo button.');
 check(!html.includes("postMessage({type:'storylab-pane-force-screen',screen:tab.screen}"), 'Parent echoes pane screen changes back to the iframe.');
 check(html.includes("data.type!=='storylab-pane-screen-change'"), 'Embedded pane return-to-list message handler is missing.');
+
+function extractFunction(name) {
+  const match = html.match(new RegExp('function ' + name + '\\([^\\n]*\\)\\{[\\s\\S]*?^\\}', 'm'));
+  return match ? match[0] : null;
+}
+const chapterSnapshotSource = extractFunction('chapterSnapshot');
+const findStoredChapterSource = extractFunction('findStoredChapter');
+const saveSource = extractFunction('save');
+check(!!chapterSnapshotSource && !!findStoredChapterSource && !!saveSource, 'Could not extract save functions for behavioral tests.');
+if (chapterSnapshotSource && findStoredChapterSource && saveSource) {
+  function exerciseSave({ shared, localBody, baseBody, remoteBody }) {
+    const localChapter = { id: 'chapter-1', title: 'Chapter', body: localBody, memo: '' };
+    const localRoot = { works: [{ id: 'work-1', chapters: [localChapter], cur: 'chapter-1' }], w: 'work-1', tab: 'write' };
+    const stored = shared === null ? null : JSON.stringify(shared || {
+      works: [{ id: 'work-1', chapters: [{ id: 'chapter-1', title: 'Chapter', body: remoteBody, memo: '' }], cur: 'chapter-1' }]
+    });
+    let writes = 0;
+    let savedValue = null;
+    const context = {
+      KEY: 'storylab-test',
+      R: { w: 'work-1', tab: 'write' },
+      EDIT: true,
+      APP_PANE_MODE: true,
+      S: {},
+      LAST_SAVED_CHAPTER_SNAP: baseBody === null ? null : JSON.stringify({ title: 'Chapter', body: baseBody, memo: '' }),
+      PANE_CONFLICT_PENDING: false,
+      HISTORY_BASELINE: '',
+      HISTORY_CHECKPOINT: '',
+      HISTORY_LAST_AT: 0,
+      HISTORY_APPLYING: false,
+      HISTORY_LIMIT: 40,
+      UNDO_STACK: [],
+      REDO_STACK: [],
+      stateString: () => JSON.stringify(localRoot),
+      cur: () => localChapter,
+      localStorage: {
+        getItem: () => stored,
+        setItem: (key, value) => { writes += 1; savedValue = value; }
+      },
+      showSaveStatus: () => {},
+      clearTimeout: () => {},
+      setTimeout: () => 1,
+      console
+    };
+    vm.runInNewContext(chapterSnapshotSource + '\n' + findStoredChapterSource + '\n' + saveSource, context);
+    return { ok: context.save(), writes, savedValue, localChapter };
+  }
+  const missingShared = exerciseSave({ shared: null, localBody: 'local', baseBody: 'old', remoteBody: 'old' });
+  check(missingShared.ok === false && missingShared.writes === 0, 'Save must not overwrite the full project if shared storage is missing.');
+  const cleanMerge = exerciseSave({ localBody: 'edited', baseBody: 'old', remoteBody: 'old' });
+  const mergedRoot = cleanMerge.savedValue ? JSON.parse(cleanMerge.savedValue) : null;
+  check(cleanMerge.ok === true && cleanMerge.writes === 1 && mergedRoot?.works?.[0]?.chapters?.[0]?.body === 'edited', 'A non-conflicting chapter edit should merge and save.');
+  const conflict = exerciseSave({ localBody: 'local edit', baseBody: 'old', remoteBody: 'remote edit' });
+  check(conflict.ok === false && conflict.writes === 0, 'Concurrent local and remote edits must be rejected instead of overwriting either copy.');
+  const noBaseline = exerciseSave({ localBody: 'local', baseBody: null, remoteBody: 'remote' });
+  check(noBaseline.ok === false && noBaseline.writes === 0, 'Missing save baseline must not overwrite a different remote chapter.');
+  const missingChapter = exerciseSave({
+    shared: { works: [{ id: 'work-1', chapters: [], cur: 'chapter-1' }] },
+    localBody: 'local', baseBody: 'old', remoteBody: 'old'
+  });
+  check(missingChapter.ok === false && missingChapter.writes === 0, 'A chapter removed in another pane must not be silently recreated.');
+}
 
 if (failures.length) {
   console.error('이야기공방 정적 검사 실패:');
