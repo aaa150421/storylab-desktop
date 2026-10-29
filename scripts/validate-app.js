@@ -126,7 +126,7 @@ check(html.includes("body.app-pane-mode>.workspace-split{display:flex!important;
 check(html.includes('id="chapterCharCount"'), 'Manuscript character count is missing above the editor.');
 check(html.includes('try{saved=save()!==false;}catch(error){saveError=error;}'), 'Manuscript-list navigation can still be aborted by a save exception.');
 check(html.includes('if(typeof child.defaultView.render===\'function\')child.defaultView.render();'), 'Split-pane iframe is not re-rendered after pane-mode layout normalization.');
-check(html.includes('html:fullscreen body{grid-template-rows:var(--header) var(--tabs) minmax(0,1fr)!important}'), 'Fullscreen mode does not preserve the application shell rows.');
+check(/html:fullscreen body\\{grid-template-rows:var\\(--header\\) var\\(--tabs\\) minmax\\(0,1fr\\)!important\\}/.test(html), 'Fullscreen mode does not preserve the application shell rows.');
 check(html.includes('body.writer-focus #workspaceSplit>#main{height:100%!important;min-height:0!important;overflow:auto!important}'), 'Focus mode does not expand and scroll the writing workspace.');
 check(html.includes('#main .tr{justify-content:flex-end!important}'), 'App-wide action rows are not aligned to the side.');
 
