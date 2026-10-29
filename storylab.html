@@ -63,9 +63,11 @@ body.writer-focus .split-panel{display:none!important}
 .workspace-split.has-multiple>#main{min-width:0!important;min-height:0!important;overflow:auto!important}
 body.writer-focus #main>.writer-top{max-width:var(--content)!important}
 body.writer-focus #main>.writer-toolbar{max-width:var(--content)!important}
-html:fullscreen,html:fullscreen body{width:100%!important;height:100%!important;min-height:0!important;overflow:hidden!important}
-html:fullscreen body{grid-template-rows:minmax(0,1fr)!important}
+html:fullscreen,html:fullscreen body{width:100%!important;height:100%!important;min-height:0!important}
+html:fullscreen body{grid-template-rows:var(--header) var(--tabs) minmax(0,1fr)!important;overflow:hidden!important}
 html:fullscreen body>#main,html:fullscreen .workspace-split,html:fullscreen .workspace-split.has-multiple>#main,html:fullscreen .workspace-split.has-multiple>#appSplitPane{min-width:0!important;min-height:0!important}
+html:fullscreen body.app-split-active{grid-template-rows:var(--header) 0 minmax(0,1fr)!important}
+html:fullscreen body.app-pane-mode{grid-template-rows:minmax(0,1fr)!important}
 @media(max-width:760px){
  #main>.writer-top{gap:7px!important}
  #main>.writer-top .writer-heading{gap:6px!important}
@@ -81,6 +83,19 @@ html:fullscreen body>#main,html:fullscreen .workspace-split,html:fullscreen .wor
  #main>.writer-top .writer-heading #ct{min-width:40px!important}
  .writer-char-count{font-size:10px}
 }
+
+/* App-wide control alignment: action groups stay at the edges instead of the center. */
+#main .tr{justify-content:flex-end!important}
+#main .tr>.ms:first-child,#main .tr>span:first-child:not(.btn){margin-right:auto!important}
+#main .row:has(>button.btn){justify-content:flex-end}
+#main .idea-view-tools{justify-content:flex-end!important}
+#main .relation-top>.row{justify-content:flex-end!important}
+#main .home-tiles .row,#main .idea-card .row{justify-content:space-between!important}
+body.writer-focus #workspaceSplit{height:100%!important;min-height:0!important}
+body.writer-focus #workspaceSplit>#main{height:100%!important;min-height:0!important;overflow:auto!important}
+body.writer-focus #ed{height:auto!important;min-height:calc(100vh - 145px)!important}
+body.app-pane-mode.writer-focus>.workspace-split{height:100vh!important;min-height:0!important}
+body.app-pane-mode.writer-focus #main{height:100vh!important;min-height:0!important;overflow:auto!important}
 </style>
 
 </head>
@@ -495,6 +510,19 @@ function renderSplitPreview(){
        var currentTheme=document.documentElement.getAttribute('data-theme')||'dark';
        child.documentElement.setAttribute('data-theme',currentTheme);
        child.documentElement.style.colorScheme=currentTheme;
+       // The cloned document can finish its first render before the host has
+       // applied pane-mode sizing. Re-render once after normalizing the iframe.
+       if(child.defaultView){
+         child.defaultView.APP_PANE_MODE=true;
+         child.defaultView.document.body.classList.add('app-pane-mode');
+         if(child.defaultView.APP_PANE_SCREEN==null)child.defaultView.APP_PANE_SCREEN=screen;
+         child.defaultView.R.w=screen.workId;
+         child.defaultView.pick();
+         child.defaultView.R.tab=screen.tab||'home';
+         child.defaultView.EDIT=!!screen.edit;
+         if(screen.cur!=null&&child.defaultView.S.chapters.some(function(ch){return String(ch.id)===String(screen.cur);}))child.defaultView.S.cur=screen.cur;
+         if(typeof child.defaultView.render==='function')child.defaultView.render();
+       }
      }catch(loadError){console.warn('작업 창 로드 확인 실패:',loadError);}
    };
    iframe.srcdoc=html;
@@ -671,24 +699,34 @@ var FOCUS_MODE=false,DUAL_VIEW=false,EDITOR_VIEW='edit',WRITER_CURSOR=0;
 function setWriterFocus(enabled,notifyParent){
   FOCUS_MODE=!!enabled;
   document.body.classList.toggle('writer-focus',FOCUS_MODE);
+  document.body.classList.toggle('writer-dual-view',FOCUS_MODE&&DUAL_VIEW);
   var button=document.getElementById('focusToggle');
   if(button){button.setAttribute('aria-pressed',String(FOCUS_MODE));button.textContent=FOCUS_MODE?'집중 모드 끄기':'⛶ 집중 모드';}
-  var editor=document.getElementById('ed');if(editor&&FOCUS_MODE){try{editor.focus({preventScroll:true});}catch(ignore){editor.focus();}}
+  // Re-apply the layout after toggling so both the normal window and an iframe
+  // pane recalculate their grid/scroll geometry from the new mode.
+  if(R.tab==='write'&&EDIT){var main=document.getElementById('main');if(main){main.style.removeProperty('display');main.style.removeProperty('width');main.style.removeProperty('max-width');}}
   if(notifyParent!==false&&APP_PANE_MODE){try{window.parent.postMessage({type:'storylab-pane-focus-change',enabled:FOCUS_MODE},'*');}catch(ignore){}}
+  if(FOCUS_MODE){var editor=document.getElementById('ed');if(editor){try{editor.focus({preventScroll:true});}catch(ignore){editor.focus();}}}
 }
 function returnToManuscriptList(){
-  // Always leave the editor when requested. A save conflict should warn the user,
-  // but must not trap the pane on the editor or leave it visually blank.
-  var saved=save();
+  // Navigation must never depend on save success. Save is best-effort; transition
+  // the local pane and notify the host in a finally-safe path regardless.
+  var saved=false,saveError=null;
+  try{saved=save()!==false;}catch(error){saveError=error;}
   EDIT=false;TRASH=false;FOCUS_MODE=false;DUAL_VIEW=false;SPLIT_MODE=false;
   document.body.classList.remove('writer-focus','writer-dual-view','split-mode');
   R.tab='write';
-  var screen={tab:'write',workId:R.w,cur:S.cur,edit:false};
+  var screen={tab:'write',workId:R.w,cur:S&&S.cur,edit:false};
   if(APP_PANE_MODE)APP_PANE_SCREEN=screen;
-  var active=APP_TABS.find(function(t){return String(t.id)===String(APP_ACTIVE_TAB);});
-  if(active){active.screen=screen;active.title=appScreenTitle(screen);}
-  render();
-  if(!saved)showSaveStatus('error','저장 충돌 또는 실패 · 원고 목록으로 이동했어요. 원고 내용을 확인하세요.');
+  try{
+    var active=typeof APP_TABS!=='undefined'&&APP_TABS.find(function(t){return String(t.id)===String(APP_ACTIVE_TAB);});
+    if(active){active.screen=screen;active.title=appScreenTitle(screen);}
+  }catch(ignore){}
+  try{render();}catch(renderError){
+    // Last-resort render of the manuscript list if an unrelated render hook fails.
+    try{R.tab='write';EDIT=false;document.body.classList.remove('writer-focus','writer-dual-view','split-mode');rWrite();mountWorkTools();}catch(fallbackError){console.error('원고 목록 표시 실패',fallbackError);}
+  }
+  if(!saved||saveError)showSaveStatus('error','저장에 실패했을 수 있어요. 원고 목록으로 이동했으니 내용과 저장 상태를 확인하세요.');
   if(APP_PANE_MODE){try{window.parent.postMessage({type:'storylab-pane-screen-change',screen:screen},'*');}catch(ignore){}}
   return true;
 }
