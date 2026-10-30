@@ -23,7 +23,7 @@ check(!html.includes('normalizeWork')&&!html.includes('activeChapterId')&&!html.
 check(html.includes("type==='folder'")&&html.includes("type:'file'"),'Folder and file trash types are missing.');
 check(pkg.build?.files?.includes('storylab.html')&&pkg.build?.files?.includes('main.js')&&pkg.build?.files?.includes('preload.js'),'Electron package is missing application files.');
 check(!/(?<!\\$)\\$\\((['"][^'"]+['"])\\)\\.forEach/.test(html),'A multi-element selector incorrectly uses the single-element query helper.');
-check(/draggable="'\\+\\(!q\\)\\+'"/.test(html)&&html.includes('data-folder='),'Folder drag-and-drop support is missing.');
+check(html.includes("draggable=\"'+(!q)+'\"")&&html.includes('data-folder='),'Folder drag-and-drop support is missing.');
 check(pkg.version===lock.version&&pkg.version===lock.packages?.['']?.version,'package and lockfile versions differ.');
 const scriptStart=html.indexOf('<script>'),scriptEnd=html.indexOf('</script>');
 check(scriptStart>=0&&scriptEnd>scriptStart,'Inline application script is missing.');
