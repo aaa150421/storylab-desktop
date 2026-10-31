@@ -79,14 +79,13 @@ async function main() {
 
   runGit(["add", "package.json", "package-lock.json"]);
   runGit(["commit", "-m", `Prepare release ${next}`]);
-  runGit(["tag", tag]);
 
-  console.log(`\n${tag}를 로컬에서 준비했습니다.`);
-  console.log("GitHub에 main과 태그를 원자적으로 푸시합니다.");
+  console.log(`\n${tag} 릴리스 커밋을 준비했습니다.`);
+  console.log("main 브랜치에 버전을 푸시하면 GitHub Actions가 태그와 설치 파일을 게시합니다.");
 
-  runGit(["push", "--atomic", "origin", "main", tag]);
+  runGit(["push", "origin", "main"]);
 
-  console.log(`\n${tag} 태그를 올렸습니다. GitHub Actions에서 빌드 및 배포 상태를 확인해 주세요.`);
+  console.log(`\n${next} 버전 코드를 올렸습니다. GitHub Actions에서 빌드 및 배포 상태를 확인해 주세요.`);
 }
 
 main().catch(error => {
