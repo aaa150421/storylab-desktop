@@ -3,6 +3,8 @@ const path = require('path');
 const { autoUpdater } = require('electron-updater');
 
 let mainWindow = null;
+let allowWindowClose = false;
+let closeRequestPending = false;
 let updateDialogOpen = false;
 let manualUpdateCheckPromise = null;
 
@@ -24,8 +26,23 @@ function createWindow() {
   });
 
   mainWindow.loadFile(path.join(__dirname, 'storylab.html'), { query: { version: app.getVersion() } });
-  mainWindow.on('closed', () => { mainWindow = null; });
+  mainWindow.on('close', event => {
+    if (allowWindowClose) { allowWindowClose = false; return; }
+    event.preventDefault();
+    if (closeRequestPending) return;
+    closeRequestPending = true;
+    mainWindow.webContents.send('storylab:request-close');
+  });
+  mainWindow.on('closed', () => { mainWindow = null; closeRequestPending = false; });
 }
+
+ipcMain.on('storylab:close-response', (event, shouldClose) => {
+  if (!mainWindow || event.sender !== mainWindow.webContents || !closeRequestPending) return;
+  closeRequestPending = false;
+  if (!shouldClose || mainWindow.isDestroyed()) return;
+  allowWindowClose = true;
+  mainWindow.close();
+});
 
 function showUpdateDialog(options) {
   if (updateDialogOpen) return Promise.resolve(null);
