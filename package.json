@@ -23,6 +23,7 @@
     "files": [
       "main.js",
       "storylab.html",
+      "worldbuilding.js",
       "package.json",
       "preload.js",
       "build/icon.ico"
