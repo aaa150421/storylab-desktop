@@ -22,7 +22,7 @@ check(html.includes('folderId')&&html.includes('parentId')&&html.includes('activ
 check(!html.includes('normalizeWork')&&!html.includes('activeChapterId')&&!html.includes('state.works'),'Obsolete work/chapter data model remains in the application.');
 check(html.includes("type==='folder'")&&html.includes("type:'file'"),'Folder and file trash types are missing.');
 check(pkg.build?.files?.includes('storylab.html')&&pkg.build?.files?.includes('main.js')&&pkg.build?.files?.includes('preload.js'),'Electron package is missing application files.');
-check(!/(?<!\\$)\\$\\((['"][^'"]+['"])\\)\\.forEach/.test(html),'A multi-element selector incorrectly uses the single-element query helper.');
+check(!/(?<!\$)\$\((['"][^'"]+['"])\)\.forEach/.test(html),'A multi-element selector incorrectly uses the single-element query helper.');
 check(html.includes('const currentFile=id=>state.files.find(f=>f.id===(id||state.activeFileId))')&&html.includes('data-pane-file')&&html.includes('function renderCenter()'),'Split editor file selection and active file lookup are missing.');
 check(html.includes('class="tree-row folder-row"')&&html.includes('data-foldermenu-trigger=')&&html.includes("b.closest('[data-folder]')")&&html.includes('row.onclick=e=>'),'Clickable folder rows and folder action menu are missing.');
 check(!html.includes('data-addsub')&&!html.includes('title="하위 폴더"'),'Nested-folder creation controls should be removed.');
