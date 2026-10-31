@@ -15,7 +15,9 @@ let depth=0,quote='',escaped=false;
 for(const c of css){if(quote){if(escaped){escaped=false;continue;}if(c==='\\\\'){escaped=true;continue;}if(c===quote)quote='';continue;}if(c==='"'||c==="'"||c==='\x60'){quote=c;continue;}if(c==='{')depth++;if(c==='}'){depth--;if(depth<0)break;}}
 check(depth===0&&!quote,'CSS braces or strings are unbalanced.');
 for(const token of ['--bg:#fff','--purple:#8768c8','grid-template-columns:var(--rail) minmax(0,1fr) var(--right)','.left','.center','.right','.focus .center','.split'])check(css.includes(token),'Compact editor style is missing: '+token);
-for(const id of ['app','tabs','workTree','center','refContent','search','fileInput','exportTop','importTop','splitBtn','focusBtn','toast'])check(html.includes('id="'+id+'"'),'Required element is missing: #'+id);
+for(const id of ['app','tabs','workTree','center','refContent','search','fileInput','settingsExportBtn','settingsImportBtn','splitBtn','focusBtn','toast'])check(html.includes('id="'+id+'"'),'Required element is missing: #'+id);
+check(!html.includes('id="exportTop"')&&!html.includes('id="importTop"'),'Main-screen backup controls should be removed; backup belongs in settings.');
+check(html.includes('data-empty-create-file=')&&html.includes("$('[data-empty-create-file]')"),'Empty workspaces must provide a working entry into manuscript writing.');
 for(const fn of ['function renderTree()','function renderTabs()','function renderCenter()','function renderRefs()','function exportBackup()','function importBackup(file)','function scheduleSave()','function normalizeState(raw)','function addFolder()','function addFile(folderId=null)','function trashItem(type,id)'])check(html.includes(fn),'Required function is missing: '+fn);
 for(const feature of ['인물','메모','원고 구성','집중 모드','좌우 분할',"localStorage.setItem('storylab.project.'+activeProjectId,JSON.stringify(state))",'URL.createObjectURL(blob)','fr.readAsText(file','folders:','files:','scenes:','data-delfile'])check(html.includes(feature),'Required feature is missing: '+feature);
 check(html.includes('folderId')&&html.includes('parentId')&&html.includes('activeFileId'),'Workspace folder/file data model is missing.');

@@ -1,6 +1,6 @@
 {
   "name": "storylab-desktop",
-  "version": "1.9.24",
+  "version": "1.9.25",
   "description": "이야기공방 데스크톱 앱",
   "main": "main.js",
   "author": "StoryLab",
@@ -24,6 +24,7 @@
       "main.js",
       "storylab.html",
       "worldbuilding.js",
+      "project-manager.js",
       "package.json",
       "preload.js",
       "build/icon.ico"
