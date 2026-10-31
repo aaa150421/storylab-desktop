@@ -21,6 +21,10 @@ for(const feature of ['인물','메모','원고 구성','집중 모드','좌우 
 check(html.includes('folderId')&&html.includes('parentId')&&html.includes('activeFileId'),'Workspace folder/file data model is missing.');
 check(!html.includes('normalizeWork')&&!html.includes('activeChapterId')&&!html.includes('state.works'),'Obsolete work/chapter data model remains in the application.');
 check(html.includes("type==='folder'")&&html.includes("type:'file'"),'Folder and file trash types are missing.');
+check(html.includes("type==='note'")&&html.includes("type==='character'"),'Memo and character trash types are missing.');
+check(html.includes('class="ref-note-toggle"')&&html.includes('class="ref-note-full hidden"')&&!html.includes('class="ref-note-preview"'),'Reference panel memo bodies should appear only after opening a memo.');
+check(html.includes('data-outline-open=')&&!html.includes('data-outline-up=')&&!html.includes('data-outline-down='),'Manuscript list should show files without order editing controls.');
+check(html.includes('class="word-count" data-words=')&&!html.includes('class="editor-foot"><span data-words'),'Word count should appear in the editor header.');
 check(pkg.build?.files?.includes('storylab.html')&&pkg.build?.files?.includes('main.js')&&pkg.build?.files?.includes('preload.js'),'Electron package is missing application files.');
 check(!/(?<!\$)\$\((?:'[^']*'|"[^"]*")\)\.(?:forEach|map|filter|find)\b/.test(html),'A single-element query helper is being used as a multi-element collection.');
 check(html.includes('const currentFile=id=>state.files.find(f=>f.id===(id||state.activeFileId))')&&html.includes('data-pane-file')&&html.includes('function renderCenter()'),'Split editor file selection and active file lookup are missing.');
