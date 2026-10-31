@@ -24,6 +24,7 @@
       "main.js",
       "storylab.html",
       "worldbuilding.js",
+      "project-manager.js",
       "package.json",
       "preload.js",
       "build/icon.ico"
