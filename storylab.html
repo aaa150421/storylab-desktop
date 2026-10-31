@@ -130,6 +130,14 @@ body{font:13px/1.55 "Segoe UI","Malgun Gothic",sans-serif;color:var(--ink)}
 @media(max-width:980px){.write-area{padding:28px 26px 40px}.body-edit{font-size:15.5px}}
 @media(max-width:760px){body{font-size:12px}.write-area{padding:26px 18px 34px}.body-edit{font-size:15px;line-height:1.95}.ref-content{padding:12px}.editor-head{gap:6px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important}}
+
+/* Soft motion for panels and memo details */
+.app{transition:grid-template-columns 210ms cubic-bezier(.2,.75,.25,1),grid-template-rows 210ms cubic-bezier(.2,.75,.25,1)}
+.left,.right{transition:background-color 150ms ease}
+.workspace-note-detail,.ref-item,.outline-file-open{transition:background-color 150ms ease,border-color 150ms ease,box-shadow 150ms ease}
+.ref-note-full:not(.hidden){animation:ref-note-reveal 170ms cubic-bezier(.2,.75,.25,1) both}
+@keyframes ref-note-reveal{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){.app,.left,.right,.workspace-note-detail,.ref-item,.outline-file-open{transition:none!important}.ref-note-full:not(.hidden){animation:none!important}}
 </style></head><body><div class="app" id="app">
 <header class="top"><div class="brand"><span>이야기공방</span></div><div class="project-switcher"><span class="project-switcher-label">작업공간</span><select class="project-select" id="projectSelect" aria-label="작업 공간 선택" title="작업 공간 선택"></select><button class="project-add" id="newProjectBtn" title="새 작업 공간" aria-label="새 작업 공간">＋</button><button class="project-rename" id="renameProjectBtn" title="작업 공간 이름 변경" aria-label="작업 공간 이름 변경">✎</button></div><span class="crumb">현재 작업공간 / <b id="crumbTitle">새로운 이야기</b></span><div class="top-actions"><button class="icon-btn" id="toggleRightTop" title="참고 패널 숨기기">참고 패널 ▸</button><button class="icon-btn" id="splitBtn" title="좌우 분할">▥ 분할</button><button class="icon-btn" id="focusBtn" title="집중 모드">⛶ 집중</button><button class="icon-btn" id="settingsBtn" title="설정 열기">⚙ 설정</button></div></header>
 <div class="tabs" id="tabs" aria-hidden="true"></div><button class="panel-toggle panel-toggle-left" id="toggleLeft" title="원고 목록 숨기기" aria-label="원고 목록 숨기기">‹</button><button class="panel-toggle panel-toggle-right" id="toggleRight" title="참고 패널 숨기기" aria-label="참고 패널 숨기기">›</button>
